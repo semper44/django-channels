@@ -4,3 +4,6 @@ from django.apps import AppConfig
 class GroupappConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'groupapp'
+
+    def ready(self):
+        import groupapp.signals
