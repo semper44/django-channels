@@ -21,7 +21,7 @@ from django.conf import settings
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('hometweet.urls')),
-    path('', include('profiles.urls')),
+    path('', include('userprofiles.urls')),
     path('', include('chat.urls')),
     path('', include('groupapp.urls')),
     # path('compressor/', include('compressor.urls')),
