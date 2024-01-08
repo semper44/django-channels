@@ -61,8 +61,7 @@ soupsieve==2.4.1
 sqlparse==0.4.2
 tornado==6.2
 Twisted==22.10.0
-twisted-iocpsupport==1.0.4
-txaio==23.1.1
+twisted-iocpsupport; sys_platform == 'win32'txaio==23.1.1
 typing_extensions==4.7.1
 tzdata==2022.1
 tzlocal==5.0.1
