@@ -83,10 +83,6 @@ def profile_view(request, name):
     friends_length= 0
 
     profi = Profile.objects.get(user=request.user)
-    # print(profi)
-    # print(profi.cover_photo)
-    # print("profiles.cover_photo")
-
     try:
         group= Group.objects.get(name= f"{name}group")
         if request.user in group.user_set.all():

@@ -106,105 +106,110 @@ def home_view(request):
     threshold_datetime = timezone.now() - timezone.timedelta(hours=24)
     over_a_day = Status.objects.filter(date_created__lte=threshold_datetime)
     over_a_day.delete()
-    if user.is_authenticated:
-        statuslength= 0
-        status_exist = False
-        all_statuses = []
-        request_user_status = []
-        friends = []
-        personalpost=Post.objects.filter(author=request.user)
-        personalpost = Post.objects.filter(author=request.user)
-        friend = request.user.profile.friends.all()
-
-        for i in friend:
-            ts=Post.objects.filter(author=i.id)
-            
-            if ts.exists():
-                personalpost= personalpost.union(ts)
-            
-            # getting status for each friend of the user
-            friend_status =Status.objects.filter(author=i.id).order_by('-date_created')
-            
-            if friend_status.exists:
-                status = []
-                for z in friend_status:
-                    if z.file and z.author.cover_photo:
-                        details= {
-                            "text":z.text,
-                            "file":z.file.url,
-                            "owner":z.author.prof_pics.url,
-                            "cover_photo": request.build_absolute_uri(z.author.cover_photo)
-                        }
-                    elif z.file and not z.author.cover_photo:
-                        details= {
-                            "text":z.text,
-                            "owner":z.author.prof_pics.url,
-                            "file":z.file.url,
-                        }
-                    elif not z.file and not z.author.cover_photo:
-                        details= {
-                            "text":z.text,
-                            "owner":z.author.prof_pics.url
-                        }
-                    elif not z.file and z.author.cover_photo:
-                        details= {
-                            "text":z.text,
-                            "owner":z.author.prof_pics.url,
-                            "cover_photo": request.build_absolute_uri(z.author.cover_photo)
-                        } 
-                    
-                    status.append(details)
-                all_statuses.append(status)
-        owner_status = Status.objects.filter(author=request.user.id).order_by('-date_created')
-
-        if owner_status.exists():
-            for a in owner_status:
-                if a.file and a.author.cover_photo:
-                    detail= {
-                        "text":a.text,
-                        "file":a.file.url,
-                        "owner":a.author.prof_pics.url,
-                        "cover_photo": request.build_absolute_uri(a.author.cover_photo)
-                    }
-                elif a.file and not a.author.cover_photo:
-                     detail= {
-                        "text":a.text,
-                        "owner":a.author.prof_pics.url,
-                        "file":a.file.url,
-                    }
-                elif not a.file and not a.author.cover_photo:
-                    detail= {
-                        "text":a.text,
-                        "owner":a.author.prof_pics.url
-                    }           
-                elif not a.file and a.author.cover_photo:
-                    detail= {
-                        "text":a.text,
-                        "owner":a.author.prof_pics.url,
-                        "cover_photo": request.build_absolute_uri(a.author.cover_photo)
-
-                    }           
-                
-                request_user_status.append(detail)
-
-            statuslength= len(status)
-            all_statuses.append(request_user_status)
-        print(statuslength, len(request_user_status))
-        print(type(statuslength), "len(request_user_status)")
-
-        if statuslength < 1 and len(request_user_status) < 1:
+    profile_exist = Profile.objects.filter(user = request.user)
+    if profile_exist.exists():
+        if user.is_authenticated:
+            statuslength= 0
             status_exist = False
-        elif statuslength > 0 and len(request_user_status) < 1:
-            status_exist = True
-        elif statuslength < 1 and len(request_user_status) > 0:
-            status_exist = True
-        elif statuslength > 0 or len(request_user_status) > 0:
-            status_exist = True
-        
-        personalposting = personalpost.reverse()
-        context = {"tweets": personalposting, "status":all_statuses, "friends_id":friends, "statusexist":status_exist  }
+            all_statuses = []
+            request_user_status = []
+            friends = []
+            personalpost=Post.objects.filter(author=request.user)
+            personalpost = Post.objects.filter(author=request.user)
+            friend = request.user.profile.friends.all()
+
+            for i in friend:
+                ts=Post.objects.filter(author=i.id)
+                
+                if ts.exists():
+                    personalpost= personalpost.union(ts)
+                
+                # getting status for each friend of the user
+                friend_status =Status.objects.filter(author=i.id).order_by('-date_created')
+                
+                if friend_status.exists:
+                    status = []
+                    for z in friend_status:
+                        if z.file and z.author.cover_photo:
+                            details= {
+                                "text":z.text,
+                                "file":z.file.url,
+                                "owner":z.author.prof_pics.url,
+                                "cover_photo": request.build_absolute_uri(z.author.cover_photo)
+                            }
+                        elif z.file and not z.author.cover_photo:
+                            details= {
+                                "text":z.text,
+                                "owner":z.author.prof_pics.url,
+                                "file":z.file.url,
+                            }
+                        elif not z.file and not z.author.cover_photo:
+                            details= {
+                                "text":z.text,
+                                "owner":z.author.prof_pics.url
+                            }
+                        elif not z.file and z.author.cover_photo:
+                            details= {
+                                "text":z.text,
+                                "owner":z.author.prof_pics.url,
+                                "cover_photo": request.build_absolute_uri(z.author.cover_photo)
+                            } 
+                        
+                        status.append(details)
+                    all_statuses.append(status)
+            owner_status = Status.objects.filter(author=request.user.id).order_by('-date_created')
+
+            if owner_status.exists():
+                for a in owner_status:
+                    if a.file and a.author.cover_photo:
+                        detail= {
+                            "text":a.text,
+                            "file":a.file.url,
+                            "owner":a.author.prof_pics.url,
+                            "cover_photo": request.build_absolute_uri(a.author.cover_photo)
+                        }
+                    elif a.file and not a.author.cover_photo:
+                        detail= {
+                            "text":a.text,
+                            "owner":a.author.prof_pics.url,
+                            "file":a.file.url,
+                        }
+                    elif not a.file and not a.author.cover_photo:
+                        detail= {
+                            "text":a.text,
+                            "owner":a.author.prof_pics.url
+                        }           
+                    elif not a.file and a.author.cover_photo:
+                        detail= {
+                            "text":a.text,
+                            "owner":a.author.prof_pics.url,
+                            "cover_photo": request.build_absolute_uri(a.author.cover_photo)
+
+                        }           
+                    
+                    request_user_status.append(detail)
+
+                statuslength= len(status)
+                all_statuses.append(request_user_status)
+            print(statuslength, len(request_user_status))
+            print(type(statuslength), "len(request_user_status)")
+
+            if statuslength < 1 and len(request_user_status) < 1:
+                status_exist = False
+            elif statuslength > 0 and len(request_user_status) < 1:
+                status_exist = True
+            elif statuslength < 1 and len(request_user_status) > 0:
+                status_exist = True
+            elif statuslength > 0 or len(request_user_status) > 0:
+                status_exist = True
+            
+            personalposting = personalpost.reverse()
+            context = {"tweets": personalposting, "status":all_statuses, "friends_id":friends, "statusexist":status_exist  }
+        else:
+            return redirect("login")
     else:
-        return redirect("login")
+        profile =False
+        context ={'profile_exist':profile}
     template_names=["hometweet/home.html", "hometweet/status.html",]
     return render(request, template_names, context)
 
