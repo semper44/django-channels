@@ -43,195 +43,196 @@ total_mutual_friends = set()
 #         )
 
 
-# class OnlineConsumer(WebsocketConsumer):
-#     connected_clients = {}
-#     def connect(self):
-#         self.personal_mutual_friend = set()
-#         self.room_name = 'onlineusers'
-#         self.group= None
-#         self.group2 = None
-#         onlineUser = self.scope["user"].username
-#         self.room_group_name = f'chat_{self.room_name}'
-#         self.room_group_name2 = f'onlineuser_{onlineUser}'
 
-#         self.connected_clients[self.scope["user"].username] = self.channel_name
+class OnlineConsumer(WebsocketConsumer):
+    connected_clients = {}
+    def connect(self):
+        self.personal_mutual_friend = set()
+        self.room_name = 'onlineusers'
+        self.group= None
+        self.group2 = None
+        onlineUser = self.scope["user"].username
+        self.room_group_name = f'chat_{self.room_name}'
+        self.room_group_name2 = f'onlineuser_{onlineUser}'
 
-#         user = self.scope["user"]
-#         total_mutual_friends.add(user.username)
-#         profile= Profile.objects.get(user=user)
-#         friends=profile.friends.all()
-#         if friends.exists():
-#             self.personal_mutual_friend.clear()
-#             for i in friends:
-#                 self.personal_mutual_friend.add(i.username)
-#         else:
-#             self.personal_mutual_friend.clear()
+        self.connected_clients[self.scope["user"].username] = self.channel_name
+
+        user = self.scope["user"]
+        total_mutual_friends.add(user.username)
+        profile= Profile.objects.get(user=user)
+        friends=profile.friends.all()
+        if friends.exists():
+            self.personal_mutual_friend.clear()
+            for i in friends:
+                self.personal_mutual_friend.add(i.username)
+        else:
+            self.personal_mutual_friend.clear()
         
-#         if user.is_authenticated:
-#             details={
-#                     "user":user.email,
-#                     "username":user.username,
-#                     # "id":user.id,
-#                     "pics":user.prof_pics.url,
-#                 }
-#             if details not in connected_users:
-#                 connected_users.append(details) 
+        if user.is_authenticated:
+            details={
+                    "user":user.email,
+                    "username":user.username,
+                    # "id":user.id,
+                    "pics":user.prof_pics.url,
+                }
+            if details not in connected_users:
+                connected_users.append(details) 
 
-#         self.accept()
+        self.accept()
 
-#         self.send(text_data=json.dumps({
-#             "type":"online",
-#             "message":connected_users,
-#             "friends":list(self.personal_mutual_friend)
-#         }))
+        self.send(text_data=json.dumps({
+            "type":"online",
+            "message":connected_users,
+            "friends":list(self.personal_mutual_friend)
+        }))
 
-#         name=self.scope["user"].username
-#         person = CustomUser.objects.get(username= name)
-#         for x in self.personal_mutual_friend:
-#             # print(self.connected_clients)
-#             # print(total_mutual_friends)
-#             # print(self.personal_mutual_friend)
-#             # print("self.personal_mutual_frind")
-#             if x in self.connected_clients:
-#                 print(x)
-#                 self.group2 = self.connected_clients[x]
-#                 async_to_sync(self.channel_layer.send)(           
-#                     self.group2,
-#                     {
-#                         "type":"send_online",
-#                         "name":person.username,
-#                         "pics":person.prof_pics.url,
-#                         "online": list(total_mutual_friends)
-#                     }               
-#                 )
+        name=self.scope["user"].username
+        person = CustomUser.objects.get(username= name)
+        for x in self.personal_mutual_friend:
+            # print(self.connected_clients)
+            # print(total_mutual_friends)
+            # print(self.personal_mutual_friend)
+            # print("self.personal_mutual_frind")
+            if x in self.connected_clients:
+                print(x)
+                self.group2 = self.connected_clients[x]
+                async_to_sync(self.channel_layer.send)(           
+                    self.group2,
+                    {
+                        "type":"send_online",
+                        "name":person.username,
+                        "pics":person.prof_pics.url,
+                        "online": list(total_mutual_friends)
+                    }               
+                )
            
         
         
-#     def disconnect(self, close_code):
+    def disconnect(self, close_code):
         
-#         async_to_sync(self.channel_layer.group_discard)(
-#             self.room_group_name,
-#             self.channel_name,
-#         )
+        async_to_sync(self.channel_layer.group_discard)(
+            self.room_group_name,
+            self.channel_name,
+        )
         
-#     def receive(self, text_data=None, bytes_data=None):
-#         # user_timezone = get_localzone()
-#         # date= datetime.now(user_timezone)
-#         # # formatted_date= datetime.strptime(date, "%Y-%m-%d %H:%M")
-#         # formatted_date_str= date.strftime("%a at %H:%M")
-#         text_data_json = json.loads(text_data)
-#         postId= None
-#         sender= None
-#         message= text_data_json["message"]
-#         receiver_username = text_data_json.get('receiver')
-#         sender= text_data_json["sender"]
-#         # print(text_data_json)
-#         senderreceiver= CustomUser.objects.get(username= receiver_username)
+    def receive(self, text_data=None, bytes_data=None):
+        # user_timezone = get_localzone()
+        # date= datetime.now(user_timezone)
+        # # formatted_date= datetime.strptime(date, "%Y-%m-%d %H:%M")
+        # formatted_date_str= date.strftime("%a at %H:%M")
+        text_data_json = json.loads(text_data)
+        postId= None
+        sender= None
+        message= text_data_json["message"]
+        receiver_username = text_data_json.get('receiver')
+        sender= text_data_json["sender"]
+        # print(text_data_json)
+        senderreceiver= CustomUser.objects.get(username= receiver_username)
 
-#         try:
-#             if text_data_json["type"] == "likepost":
-#                 postId= text_data_json["postId"]
-#                 post= Post.objects.get(id= postId)
-#                 senderUser= CustomUser.objects.get(username= sender)
-#                 if self.scope["user"].username != receiver_username:
-#                     notification = Notification.objects.create(content=json.dumps(message), postId=post, sender=senderUser, seen= False, receiver=senderreceiver)
-#                     notification.save()
+        try:
+            if text_data_json["type"] == "likepost":
+                postId= text_data_json["postId"]
+                post= Post.objects.get(id= postId)
+                senderUser= CustomUser.objects.get(username= sender)
+                if self.scope["user"].username != receiver_username:
+                    notification = Notification.objects.create(content=json.dumps(message), postId=post, sender=senderUser, seen= False, receiver=senderreceiver)
+                    notification.save()
         
-#         except:
-#             senderUser= CustomUser.objects.get(id= sender)
-#             notification = Notification.objects.create(content=json.dumps(message), sender=senderUser, seen= False, receiver=senderreceiver)
-#             notification.save()
+        except:
+            senderUser= CustomUser.objects.get(id= sender)
+            notification = Notification.objects.create(content=json.dumps(message), sender=senderUser, seen= False, receiver=senderreceiver)
+            notification.save()
 
-#         print("text_data_json")
-#         print(text_data_json)
-#         if receiver_username:           
-#             if receiver_username in self.connected_clients:
-#                 print(self.connected_clients)
-#                 print(text_data_json["type"] == "loggedout")
-#                 print(text_data_json["type"] == "likepost")
-#                 print(text_data_json["type"] == "friendrequest")
-#                 receiver_channel_name = self.connected_clients[receiver_username]
-#                 self.group= receiver_channel_name
-#                 if self.scope["user"].username == receiver_username: 
-#                     if text_data_json["type"] == "loggedout":
-#                         print("loggedout")
-#                         user= CustomUser.objects.get(username= sender)           
-#                         disconnectUsername = user.username
+        print("text_data_json")
+        print(text_data_json)
+        if receiver_username:           
+            if receiver_username in self.connected_clients:
+                print(self.connected_clients)
+                print(text_data_json["type"] == "loggedout")
+                print(text_data_json["type"] == "likepost")
+                print(text_data_json["type"] == "friendrequest")
+                receiver_channel_name = self.connected_clients[receiver_username]
+                self.group= receiver_channel_name
+                if self.scope["user"].username == receiver_username: 
+                    if text_data_json["type"] == "loggedout":
+                        print("loggedout")
+                        user= CustomUser.objects.get(username= sender)           
+                        disconnectUsername = user.username
                         
-#                         if disconnectUsername in self.connected_clients:
-#                             del self.connected_clients[disconnectUsername]
-#                         else:
-#                             pass
-#                         total_mutual_friends.discard(disconnectUsername)
+                        if disconnectUsername in self.connected_clients:
+                            del self.connected_clients[disconnectUsername]
+                        else:
+                            pass
+                        total_mutual_friends.discard(disconnectUsername)
                         
-#                         for i in self.personal_mutual_friend:
-#                             if i in self.connected_clients:
-#                                 self.group2 = self.connected_clients[i]
-#                                 async_to_sync(self.channel_layer.send)(           
-#                                     self.group2,
-#                                     {
-#                                         "type":"send_logout",
-#                                         "sender":disconnectUsername,
-#                                         "friends":list(self.personal_mutual_friend)
-#                                     }               
-#                                 )
+                        for i in self.personal_mutual_friend:
+                            if i in self.connected_clients:
+                                self.group2 = self.connected_clients[i]
+                                async_to_sync(self.channel_layer.send)(           
+                                    self.group2,
+                                    {
+                                        "type":"send_logout",
+                                        "sender":disconnectUsername,
+                                        "friends":list(self.personal_mutual_friend)
+                                    }               
+                                )
                 
 
 
-#                             # async_to_sync(self.channel_layer.send)(           
-#                             # self.group,
-#                             # {
-#                             #     'type': 'send_add_message',
-#                             #     'message': message,
-#                             #     "postId": postId,
-#                             #     "status":"post"
-#                             # }
-#                             # )
+                            # async_to_sync(self.channel_layer.send)(           
+                            # self.group,
+                            # {
+                            #     'type': 'send_add_message',
+                            #     'message': message,
+                            #     "postId": postId,
+                            #     "status":"post"
+                            # }
+                            # )
                     
-#                 else:
-#                     if text_data_json["type"] == "likepost":             
-#                         async_to_sync(self.channel_layer.send)(           
-#                         self.group,
-#                         {
-#                             'type': 'send_like_message',
-#                             'message': message,
-#                             "sender": sender,
-#                             "status":"like"
-#                         }
-#                     )
+                else:
+                    if text_data_json["type"] == "likepost":             
+                        async_to_sync(self.channel_layer.send)(           
+                        self.group,
+                        {
+                            'type': 'send_like_message',
+                            'message': message,
+                            "sender": sender,
+                            "status":"like"
+                        }
+                    )
                     
-#                     elif text_data_json["type"] == "friendrequest":
-#                         async_to_sync(self.channel_layer.send)(           
-#                             self.group,
-#                             {
-#                                 'type': 'send_add_message',
-#                                 'message': message,
-#                                 "postId": postId,
-#                                 "status":"post"
-#                             }
-#                         )
-#             else:
-#                 userAccount= CustomUser.objects.get(username=receiver_username)                
-#                 userAccount.notifications+=1
-#                 userAccount.save(update_fields=["notifications"])
-#                 print("word")
+                    elif text_data_json["type"] == "friendrequest":
+                        async_to_sync(self.channel_layer.send)(           
+                            self.group,
+                            {
+                                'type': 'send_add_message',
+                                'message': message,
+                                "postId": postId,
+                                "status":"post"
+                            }
+                        )
+            else:
+                userAccount= CustomUser.objects.get(username=receiver_username)                
+                userAccount.notifications+=1
+                userAccount.save(update_fields=["notifications"])
+                print("word")
        
      
-#     def send_like_message(self, event):
-#         self.send(text_data=json.dumps(event))
-#         print("like")
+    def send_like_message(self, event):
+        self.send(text_data=json.dumps(event))
+        print("like")
 
 
-#     def send_add_message(self, event):
-#         self.send(text_data=json.dumps(event))
+    def send_add_message(self, event):
+        self.send(text_data=json.dumps(event))
 
-#     def send_logout(self, event):
-#         self.send(text_data=json.dumps(event))
-#         print("send_logout")
+    def send_logout(self, event):
+        self.send(text_data=json.dumps(event))
+        print("send_logout")
 
-#     def send_online(self, event):
-#         self.send(text_data=json.dumps(event))
-#         print("send_online")
+    def send_online(self, event):
+        self.send(text_data=json.dumps(event))
+        print("send_online")
 
 
 
