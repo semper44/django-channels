@@ -1,0 +1,53 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>login</title>
+    <link rel="stylesheet" href="{% static 'css/result.css' %}">
+
+</head>
+<body class="bg-base-lightbg h-full ">
+
+    {% if messages %}
+        <div class="flash-messages absolute w-full h-fit flex justify-end ">
+            <ul>
+                {% for message in messages %}
+                    <li id="flash-messages" class=" {% if message.tags %}{{ message.tags }}{% endif %}">
+                        <span class="bg-gradient-to-r from-teal-600 via-lime-400 to-teal-600 p-4 rounded-lg text-white mt-1">{{ message }}</span>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+    <div class="w-full h-[100vh] flex flex-col items-center justify-center">
+        <div class="text-2xl text-[#0d2438] text-center mb-4">Login</div>
+        <div >
+            <form action="" method = "POST" class="flex flex-col items-center gap-7">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <div class="">
+                    <input type="text" name="email" placeholder="Email" class="bg-[#F7F3F2] pl-3 w-[300px] h-[50px] rounded-xl border border-gray-600"/>
+                </div>
+                <div class="">
+                    <input type="password" name="password" placeholder="password" class="bg-[#F7F3F2] pl-3 w-[300px] h-[50px] rounded-xl border border-gray-600"/>
+                </div>
+                <div class="">
+                    <input type="submit" id="submit" value="Login" class="w-fit h-fit px-24 py-2 bg-green-600 text-gray-300 cursor-pointer rounded-xl hover:opacity-75"/>
+                </div>
+                <div class="flex text-[#0d2438]">Dont have an account yet? <span class="text-green-600 cursor-pointer ml-2"><a href="{% url 'register' %}">Register</span> </a></div>
+            
+            </form>
+        </div>
+    </div>
+    
+    <!-- <script>
+        setTimeout(function () {
+            document.getElementById('flash-messages').style.display = 'none';
+        }, 5000);
+    </script> -->
+</body>
+</html>

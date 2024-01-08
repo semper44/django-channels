@@ -1,0 +1,127 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="{% static 'package/swiper.min.css' %}">
+    <link rel="stylesheet" href="{% static 'output/tailwind-output.css' %}">
+   <script src="{% static 'package/swiper.min.js' %}"></script>
+</head>
+<style>
+      .custom-slide {
+        width: 140px !important; /* Adjust the width value as per your requirement */
+        position: relative !important;
+      }
+   </style>
+<body>
+
+    <!-- Modal Overlay -->
+<div id="modal-overlay" class="modal-overlay hidden">
+    <!-- Modal Dialog -->
+    <div class="fixed inset-0 grid items-center justify-center z-50">
+        <div class="fixed inset-0 bg-black/75"></div>
+        <div id="status_view-cancel" class="w-full cursor-pointer text-red-600 z-50" style="text-align: right;">X</div>
+        <!-- Swiper Container -->
+            <div class="h-[80%] sm:h-full flex items-center overflow-hidden">               
+                <div id="swiper" class="swiper w-[300px] h-fit ">       
+                    <div id="swiper-wrapper" class="swiper-wrapper h-full w-fit">
+                        <!-- Swiper slides go here -->
+                    </div> 
+                    <div class="swiper-button-prev"></div>
+		            <div class="swiper-button-next"></div>                   
+                </div>
+            </div>
+    </div>
+</div>
+    {% if statusexist %} 
+    <div id="swiperstatusclick" class="myswiper mt-2  md:mt-4 cursor-pointer ml-2">
+        <div class="swiper">
+            <div class="swiper-wrapper" style="gap: 10px;">
+                {% if status %}
+                    {% for item in status %}
+                        {% if item %}
+
+                            <div class="swiper-slide custom-slide custom-slide" >
+                                <div class="w-[140px] h-[250px] overflow-hidden relative rounded-lg bg-white dark:bg-base-darkbgvariant">
+                                    <div class="w-full h-full overflow-hidden">
+                                        <p class="hidden" data="{{ item|json_script:'item' }}">
+                                            {{ item|json_script:'item' }}
+                                        </p>
+                                        {% if item|length > 1 %}
+                                            {% for i in item %}
+                                                {% if i.text and not i.file %}
+                                                    <div class="w-full h-full overflow-hidden flex justify-center items-center" style="background-image: url('{{ i.cover_photo }}'); background-position: center; background-size: cover;">
+                                                        <div class="w-full h-fit bg-black bg-opacity-40 backdrop-blur-sm p-5">
+                                                            <div class="h-fit text-center text-white">{{ i.text }}</div>
+                                                        </div>
+                                                    </div>
+                                                {% elif i.text and i.file %}
+                                                    <div class="w-full h-full overflow-hidden flex justify-center items-center" style="background-image: url('{{ i.file }}'); background-position: center; background-size: cover;">
+                                                        <div class="w-full h-fit bg-black bg-opacity-40 backdrop-blur-sm p-5">
+                                                            <div class="h-fit text-center text-white">{{ i.text }}</div>
+                                                        </div>
+                                                    </div>
+                                                {% endif %}
+                                                {% if i.file %}
+                                                    <img src="{{ i.file }}" alt="" class="w-full h-full bg-cover bg-center">
+                                                {% endif %}
+                                            {% endfor %}
+                                        {% else %}
+                                            {% if item.0.text and not item.0.file %}
+                                                <div class="w-full h-full overflow-hidden flex justify-center items-center" style="background-image: url('{{ item.0.cover_photo }}'); background-position: center; background-size: cover;">
+                                                    <div class="w-full h-fit bg-black bg-opacity-40 backdrop-blur-sm p-5">
+                                                        <div class="h-fit text-center text-white">{{ item.0.text }}</div>
+                                                    </div>
+                                                </div>
+                                            {% elif item.0.text and item.0.file %}
+                                                <div class="w-full h-full overflow-hidden flex justify-center items-center" style="background-image: url('{{ item.0.file }}'); background-position: center; background-size: cover;">
+                                                    <div class="w-full h-fit bg-black bg-opacity-40 backdrop-blur-sm p-5">
+                                                        <div class="h-fit text-center text-white">{{ item.0.text }}</div>
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                            {% if item.0.file %}
+                                                <img src="{{ item.0.file }}" alt="" class="w-full h-full bg-cover bg-center">
+                                            {% endif %}
+                                        {% endif %}
+                                    </div>
+                                    <div class="absolute bottom-4 right-2">
+                                        {% if item|length > 1 %}
+                                            <div class="w-[41px] h-[41px] bg-green-600 rounded-full flex justify-center items-center">
+                                                <img src="{{ item.0.owner }}" class="w-[38px] h-[38px] rounded-full bg-white">
+                                            </div>
+                                        {% else %}
+                                            <img src="{{ item.0.owner }}" class="w-[38px] h-[38px] rounded-full bg-white">
+
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                {% else %}
+                    <div class="text-center text-gray-500">No status updates to show.</div>
+                {% endif %}
+            </div>
+        </div>
+    </div>   
+
+    {% else %}
+        <div class="w-full flex justify-center mt-7">
+            <div class="w-[90%] xl:w-[70%] h-fit rounded-lg bg-base-lightbgvariant dark:bg-base-darkbgvariant">
+                <!-- <div class="pl-6 py-2 h-fit text-black/25 dark:text-white"> -->
+                <div class="pl-6 py-2 h-fit text-[#0d2438] dark:text-white">
+                    No stories yet. <span id="status" class="text-green-600 cursor-pointer text-sm">Create yours <i  class="fa fa-plus-circle text-green-600  hover:text-green-300 cursor-pointer text-xl" aria-hidden="true" ></i>
+                    </span>
+                </div>
+                <div class="pl-6 py-2  h-fit text-[#0d2438] dark:text-white">
+                    <span class="text-green-600 cursor-pointer text-sm">Add more friends</span> to see thier stories
+                </div>
+
+            </div>
+        </div>
+    {% endif %}
+    
+   
+    <script src="{% static 'js/status.min.js' %}"></script> 
+</body>
+</html>

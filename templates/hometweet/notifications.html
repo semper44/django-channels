@@ -1,0 +1,36 @@
+{% extends 'base.html' %} 
+{% load static %}   
+
+{% block title %}
+<title>Notifications </title>
+{% endblock title %}
+
+{% block static %}
+{% endblock static %}
+
+{% block content %}
+
+<div class="w-full h-full">
+    {% for i in notification %}        
+        {% if i.postId  %}                   
+            <div class="w-full border-b pl-4 dark:border-gray-500 my-4 flex items-center gap-3 py-6 mb-1">
+                <img src="{{ i.sender.prof_pics.url}}" class="w-[50px] h-[50px] rounded-full">
+                <p class="text-[#0d2438] dark:text-white ">
+                    <a href="{% url 'profile' name=request.user.username %}" class="cursor-pointer">{{i.sender.username}}</a><span class="text-[#0d2438] dark:text-white ml-2">just liked your </span>
+                    <a href="{% url 'comments' slug=i.postId.slug %}" class="text-[#0d2438] dark:text-white cursor-pointer">post</a> 
+                </p> 
+            </div>
+                
+        {% else %}
+            <div class="w-full border-b pl-4 dark:border-gray-500 my-4 flex items-bcentergap-3 py-6 mb-1">
+                <img src="{{ i.sender.prof_pics.url}}" class="w-[50px] h-[50px] rounded-full">
+                <a href="{% url 'profile' name=request.user.username %}" class="text-[#0d2438] dark:text-white cursor-pointer">{{i.sender}}</a> <span>sent you a friend request</span>                    
+            </div>
+        {% endif %}
+            
+        
+    {% endfor %}
+</div>
+ 
+
+{% endblock content %}

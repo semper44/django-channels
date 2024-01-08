@@ -1,0 +1,322 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    
+    {% block title %}        
+    {% endblock title %}
+        
+    <script src="{% static 'js/alpine.js' %}"></script>
+    <script src="{% static 'js/toastify.js' %}"></script>
+    <script src="{% static 'jquery/jquery.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'css/bg.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/sidebar.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/toastify.css' %}">
+    <link rel="stylesheet" href="{% static 'output/result.css' %}">
+    <link rel="stylesheet" href="{% static 'main.css' %}">
+    <link rel="stylesheet" href="{% static 'css/base.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/loading.min.css' %}">
+
+
+ {% block static %}
+
+
+ {% endblock static %} 
+</head>
+<body id="baseparent" class="bg-base-lightbg dark:bg-base-darkbg h-full w-full">
+    <!-- preview upload -->
+    <div id="uploadPreview" class=" hidden w-full">
+        <div class="fixed inset-0 flex items-center justify-center z-50">
+            <div class="fixed inset-0 bg-black/75"></div>
+            <div class="w-full z-50 flex flex-col items-center justify-center">
+                <img id="uploadPreviewImage" src="#" alt="Profile Picture Preview" class="h-[450px] w-[80%] md:w-[50%]">   
+                <div class="w-full flex gap-5 justify-center">
+                    <button type="submit" id="uploadsubmitButton" class="w-fit py-2 px-10 mt-2 rounded-xl  text-white bg-green-600 cursor-pointer" >Continue</button>
+                    <button type="submit" id="uploadcancelButton" class="w-fit py-2 px-10 mt-2 rounded-xl  text-white bg-green-600 cursor-pointer" >Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- create post modal -->
+    <div id="modal" class="relative hidden w-full">
+        <div class="fixed inset-0 flex items-center justify-center z-50">
+            <div class="fixed inset-0 bg-black/75"></div>
+            <div class="bg-white dark:bg-base-darkbgvariant w-[80%] md:w-[50%] rounded-lg z-50 absolute">
+                <div class="flex items-center gap-6 pl-4">
+                    <img src="{{request.user.prof_pics.url}}" class="w-[45px] h-[45px] rounded-full mt-7">
+                    <p class="dark:text-gray-100 mt-4">Make a post</p>
+                </div>
+                <form method="POST" id="postform" enctype="multipart/form-data" class="pl-0 sm:pl-7">
+                    {% csrf_token %}            
+                    <!-- Content field -->
+                    <div>
+                      <textarea id="id_content" name="content" rows="4" cols="50" placeholder="write your post..." class="bg-transparent outline-none text-[#0d2438] dark:text-gray-300 ml-16"></textarea>
+                    </div>
+                    
+                    <!-- File field -->
+                    <div class="file-input-container">
+                        <input type="file" id="id_filepost" name="file" class="hidden" >
+                        <label for="id_filepost" class="post-file-icon-label">
+                            <span class="material-icons"><i class="fa-solid fa-file-image text-[#0d2438] dark:text-white pl-4" style=" font-size: 50px; cursor: grab;"></i></span> <!-- Replace with your icon -->
+                        </label>
+                        <div id="postparentmodalpreview"  class="hidden">
+                            <div id="post-preview-cancel" class="float-right cursor-pointer ml-2">x</div>
+                            <img id="postmodalpreview" src="#" alt="" class="w-[50px] h-[50px]">
+                        </div>
+                    </div>
+                     <!-- <button type="submit">Submit</button> -->
+                </form>
+                <div class="w-full justify-center flex gap-9 mt-6 pb-3">                       
+                    <button id="submit" type="button" class=" bg-green-600 hover:bg-green-500 text-white font-bold py-2 px-4 rounded">
+                        Post
+                    </button>
+                    <button id="button" class="bg-green-600 hover:bg-green-500 text-white font-bold py-2 px-4 rounded">
+                        Close Modal
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>            
+    <!-- create status -->
+    <div id="statusmodal" class="relative hidden w-full">
+        <div class="fixed inset-0 flex items-center justify-center z-50">
+            <div class="fixed inset-0 bg-black/75"></div>
+            <div class="bg-white dark:bg-base-darkbgvariant w-[80%] md:w-[50%] rounded-lg z-50 ">
+                <div class="flex items-center gap-6 pl-4">
+                    <img src="{{request.user.prof_pics.url}}" class="w-[45px] h-[45px] mt-7 rounded-full">
+                    <p class="dark:text-gray-100 mt-4">Create your status</p>
+                </div>
+                <form method="POST" id="statusform" enctype="multipart/form-data" class="pl-0 sm:pl-7">
+                    {% csrf_token %}            
+                    <!-- Content field -->
+                    <div>
+                      <textarea id="status_content" name="text" rows="4" cols="50" placeholder="write your post..." class="bg-transparent outline-none text-[#0d2438] dark:text-gray-300 ml-16"></textarea>
+                    </div>
+                    
+                    <!-- File field -->
+                    <div class="status-file-input-container ">
+                        <input type="file" id="id_filestatus" name="file" class="hidden">
+                        <label for="id_filestatus" class="status-file-icon-label">
+                            <span class="material-icons"><i class="fa-solid fa-file-image text-[#0d2438] dark:text-white pl-4" style="font-size: 50px; cursor: grab;"></i></span> <!-- Replace with your icon -->
+                        </label>
+                        <div id="statusparentmodalpreview"  class="hidden">
+                            <div id="status-preview-cancel" class="float-right cursor-pointer ml-2">x</div>
+                            <img id="statusmodalpreview" src="#" alt="" class="w-[50px] h-[50px]">
+                        </div>
+                    </div>
+                </form>
+                    <!-- <button type="submit">Submit</button> -->
+                <div class="mt-6 pb-3 flex  gap-4 justify-center">                       
+                <button id="statussubmit" type="button" class=" bg-green-600 hover:bg-green-500 text-white font-bold py-2 px-4 rounded">
+                    Post
+                </button>
+                <button id="statusbutton" class="bg-green-600 hover:bg-green-500 text-white font-bold py-2 px-4 rounded">
+                    Close Modal
+                </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="loadingmodal" class="relative w-full">
+        <div class="fixed inset-0 flex items-center justify-center z-50">
+            <div class="fixed inset-0 dark:bg-black bg-white"></div>
+                <div class="ripple"></div>
+            </div>
+        </div>
+    </div>
+
+     <!-- creategroup modal -->
+    <div id="creategroupmodal" class="relative hidden w-full">
+        <div class="fixed inset-0 flex items-center justify-center z-50 ">
+            <div class="fixed inset-0 bg-black/75"></div>
+            <div class="bg-base-lightbgvariant dark:bg-base-darkbgvariant w-[80%] md:w-[50%] rounded-lg relative ">
+                <div class="flex items-center gap-6 pl-4">
+                        <img src="{{request.user.prof_pics.url}}" class="w-[45px] h-[45px] rounded-full mt-7">
+                </div>
+                <div class="w-full">
+                    <form method="POST" id="groupform" enctype="multipart/form-data" class="w-full text-center">
+                        {% csrf_token %}            
+                        <!-- Content field -->
+                        <div class="w-full grid items-center justify-center gap-y-7 mt-3 md:mt-0">
+                            <input id="id_name" name="group_name" placeholder="group name" class="md:w-[350px] w-[100%] h-[40px] bg-transparent pl-2 rounded-lg outline-none text-[#0d2438] dark:text-gray-300 border dark:border-white">
+                            <input id="id_description" name="group_id_description" placeholder="Write about yourgroup" class=" w-[100%] md:w-[350px] h-[40px] bg-transparent  pl-2 rounded-lg outline-none text-[#0d2438] dark:text-gray-300 border dark:border-white">
+                        </div>
+                    
+                        <!-- File field -->
+                        <p class="text-gray-500 text-sm mt-2"> Upload a cover photo</p>
+                        <div class="group-file-input-container mt-3">
+                            <input type="file" id="group_id_file" name="file" class="hidden">
+                            <label for="group_id_file" class="group-file-icon-label">
+                                <span class="material-icons"><i class="fa-solid fa-file-image text-[#0d2438] dark:text-white" style="font-size: 50px; cursor: grab;"></i></span> <!-- Replace with your icon -->
+                            </label>
+                            <div id="parentmodalpreview"  class="hidden">
+                                <div id="group-preview-cancel" class="float-right cursor-pointer ml-2">x</div>
+                                <img id="modalpreview" src="#" alt="" class="w-[50px] h-[50px]">
+                            </div>
+                        </div>
+                        
+                        <!-- Submit button -->
+                    </form>
+                    <div class="mt-6 pb-3 flex  gap-4 justify-center">                       
+                        <button id="groupsubmit" type="submit" class=" bg-green-600 hover:bg-green-500 text-white font-bold py-2 px-4 rounded">
+                            Create
+                        </button>
+                        <button id="groupcancel" class="bg-green-600 hover:bg-green-500 text-white font-bold rounded bottom-4 py-2 px-4">
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="baseuserid" data-id="{{request.user.id}}" class="hidden">{{request.user.username}}</div>
+    <div class="w-full h-full flex bg-base-lightbg dark:bg-base-darkbg">
+    
+        <!-- left nav -->
+    <div id="leftnav" class="hidden md:block bg-base-lightbg dark:bg-base-darkbg  w-[200px] h-full border-r border-gray-300 fixed ">
+        {% include 'hometweet/leftnav.html' %}
+    </div>   
+
+        <!-- top mobile nav -->
+        <div class="w-full md:hidden  fixed bg-base-lightbg dark:bg-base-darkbg top-0 h-fit py-5  z-20 ">
+            <div class="w-full flex justify-between">
+                <div id="home"> 
+                    <h1 class="ml-4 text-[#0d2438] dark:text-white cursor-pointer"><i class="fa fa-bars" aria-hidden="true"></i>
+                    </h1>
+                </div>
+                <div class="w-fit mr-4 flex gap-3 items-center">                  
+                    <form method="get" class="relative" id="topsearchButtonform">
+                        <input type="text" 
+                        placeholder="Search"
+                        name="query"
+                        id="topsearchButton"
+                        class="text-[#0d2438] dark:text-gray-300 bg-transparent border-2 bg-0 outline-none border-[#0d2438] dark:border-gray-300 rounded-xl pl-3 h-[28px] ">
+                        <div class="absolute top-0 right-2" style="top: 2px;">
+                            <i class="fa fa-search text-[#0d2438] dark:text-white cursor-pointer" aria-hidden="true"></i>
+                        </div>               
+                    </form> 
+                    <a href="{% url 'notification_view' %}">
+                        <div id="bellicon2container" class="relative text-[#0d2438] dark:text-white ">
+                            <i class="fa fa-bell cursor-pointer " aria-hidden="true"></i>                           
+                            <div id="bellicon2"  class="rounded-full bg-red-600 text-white flex items-center justify-center" style="height: 22px; width: 22px; font-size: 13px;position: absolute; right: -8px; top: -10px"></div>
+                        </div>        
+                    </a>
+                </div>
+            </div>
+            <!-- search modal -->
+            <div id="searchmodalparent" class="hidden absolute w-[80%] h-fit py-4 transform translate-x-[13%] rounded-b-lg z-50 bg-white dark:bg-base-darkbgvariant">
+                <div id="searchmodalcancel" class="w-full text-right text-lg text-red-600 cursor-pointer pr-4"> X</div>
+                <div id="searchmodal" class="h-fit w-full text-[#0d2438] dark:text-gray-300 flex flex-col justify-center items-center gap-4">
+                </div>
+            </div>
+        </div>
+        
+    <!-- mobile sidebar -->
+    <div id="sidebar" class="md:hidden fixed h-full ">
+        <div class="md:hidden fixed bg-white dark:bg-base-darkbgvariant h-full">
+            <p id="sidebarCancel" class="my-5 ml-6"><i class="fa-solid fa-xmark text-[#0d2438] dark:text-gray-300 cursor-pointer"></i></p>
+            <div class="px-4 pb-3">
+                <img src="{{ request.user.prof_pics.url}}" class="w-[50px] h-[50px] rounded-full mt-7">
+                <div id="leftnavusername" class=" text-[#0d2438] dark:text-gray-300 my-1">{{ request.user.username }}</div>           
+                <div>
+                    <input type="checkbox" class="checkbox opacity-0 absolute" id="checkbox">
+                    <label for="checkbox" class="checkbox-label bg-transparent w-[50px] rounded-lg relative p-1 cursor-pointer flex justify-between items-center border border-gray-300 dark:border-gray-600 ">
+                        <i class="fas fa-sun text-red-700 "></i>
+                        <i class="fas fa-moon text-red-700 "></i>
+                    <span id="ball2"></span>
+                    </label>
+                </div>
+            </div>
+            <ul class="grid mt-2" style="gap: 4rem;">
+                <li>
+                    <div class="flex  text-[#0d2438] dark:text-gray-300 px-4 hover:bg-base-lightbgvariant dark:hover:bg-base-darkbgvariant rounded-lg cursor-pointer"><i class="fa fa-sign-out" aria-hidden="true" style="margin-top: 3.5px; margin-right: 5px"></i>Logout</div>
+                </li>
+                <li>
+                    <div class="flex  text-[#0d2438] dark:text-gray-300 px-4 hover:bg-base-lightbgvariant dark:hover:bg-base-darkbgvariant rounded-lg cursor-pointer"><i class="fa fa-cog" aria-hidden="true" style="margin-top: 3.5px; margin-right: 5px"></i>Settings</div>
+                </li>
+                <li>
+                    <div class="flex  text-[#0d2438] dark:text-gray-300 px-4 hover:bg-base-lightbgvariant dark:hover:bg-base-darkbgvariant rounded-lg cursor-pointer"><i class="fa fa-sign-out" aria-hidden="true" style="margin-top: 3.5px; margin-right: 5px"></i><a href="{% url 'find_friends_templates' %}">Find friends</a></div>
+                </li>
+                <li>
+                    <div id="logout2" class="flex  text-[#0d2438] dark:text-gray-300 px-4 hover:bg-base-lightbgvariant  dark:hover:bg-base-darkbgvariant rounded-lg cursor-pointer"><i class="fa fa-sign-out" aria-hidden="true" style="margin-top: 3.5px; margin-right: 5px"></i>Logout</div>
+                </li>
+            </ul>
+        </div>
+    </div> 
+
+    <!-- home -->
+    <div id="middleblock" class="home  w-full h-full mt-20 md:mt-0 mb-28 md:w-[70%] xl:w-[65%] bg-base-lightbg dark:bg-base-darkbg">
+        {% block content %}
+        {% endblock content %}
+    </div>
+   
+
+    <!-- mobile nav -->
+    <div class="md:hidden fixed rounded-tr-xl rounded-tl-xl bg-white dark:bg-base-darkbgvariant bottom-0 w-full h-fit py-5 z-99 ">
+        <div class="w-full flex justify-evenly">
+            <a href="{% url 'home' %}"><i class="fa fa-home text-[#0d2438] dark:text-white cursor-pointer" aria-hidden="true"></i></a>
+            <a href="{% url 'profile' name=request.user.username %}"><i class="fa fa-user text-[#0d2438] dark:text-white cursor-pointer" aria-hidden="true"></i></a>
+            <div x-data="{ open: false }" class="relative">
+                <div @click="open = true">
+                    <i class="fa fa-plus-circle text-green-600 cursor-pointer text-4xl" aria-hidden="true" ></i>
+                </div>
+                <template x-if="open">
+                    <div
+                        @click.away="open = false"
+                        x-transition:enter="transition ease-out origin-bottom-left duration-200"
+                        x-transition:enter-start="opacity-0 transform scale-90 translate-y-2"
+                        x-transition:enter-end="opacity-100 transform scale-100"
+                        x-transition:leave="transition origin-bottom-left ease-in duration-100"
+                        x-transition:leave-start="opacity-100 transform scale-100"
+                        x-transition:leave-end="opacity-0 transform scale-90 translate-y-2"
+                        class="absolute shadow-sm p-5 max-w-sm ml-2 bg-base-lightbgvariant dark:bg-base-darkbgvariant rounded-lg"
+                        style="top:-10rem;"
+                    >
+                        <button id="mobilecreatepost" onclick="mobilecreatepost()" class="a w-full py-2 text-sm text-[#0d2438] dark:text-gray-300 hover:text-gray-500 mb-2 cursor-pointer">Post</button>
+                        <button id="mobilecreatestatus" onclick="mobilecreatestatus()" class="b w-full py-2 text-sm text-[#0d2438] dark:text-gray-300 hover:text-gray-500 cursor-pointer" >Status</button>
+                        <button id="mobilecreatgroup" onclick="mobilecreatgroup()"  class="c w-full py-2 text-sm text-[#0d2438] dark:text-gray-300 hover:text-gray-500 cursor-pointer" >Group</button>
+                    </div>
+                </template>
+            </div>
+            <div id="topmessagenav" class="relative">
+                <a href="{% url 'chatintialmessage' %}"><i class="fa fa-envelope-open text-[#0d2438] dark:text-white cursor-pointer" aria-hidden="true"></i></a>
+                <div id="messagenotif2" class="hidden rounded-full bg-red-600" style="height: 22px; width: 22px; font-size: 13px;position: absolute; right: -8px; top: -8px"></div>
+            </div>
+            <a href="{% url 'allgroups' %}"><i class="fa fa-users text-[#0d2438] dark:text-white cursor-pointer" aria-hidden="true"></i></a>
+        </div>
+        
+    </div>
+
+        <!-- right nav -->
+    <div id="righnav" class="hidden border-l border-gray-300 fixed h-full right-1 xl:block w-[20%] bg-base-lightbg dark:bg-base-darkbg" >
+        {% include 'hometweet/rightnav.html' %}
+    </div>
+
+   
+   
+
+   <!-- modat and topbar search -->
+  
+    <div></div>
+    
+<!-- <script src="{% static 'js/base.min.js' %}"></script> -->
+
+<script src="{% static 'main.js' %}"></script> 
+<script src="{% static 'usedJsCode/base.js' %}"></script> 
+
+<!-- loading status -->
+<!-- <script>
+    window.addEventListener('load', function() {
+        document.querySelector("#loadingmodal").style.display="none"
+        });
+</scr> -->
+</body>
+</html>

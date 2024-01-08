@@ -1,0 +1,348 @@
+{% extends 'base.html' %} 
+{% load static %}   
+
+
+{% block title %}
+<title>Profile </title>
+{% endblock title %}
+
+{% block static %}
+
+ <link rel="stylesheet" href="{% static 'css/transformtranslate.min.css' %}">
+
+{% endblock static %}
+
+{% block content %}
+
+
+    <div class="w-full h-full bg-base-lightbg dark:bg-base-darkbg z-99">
+
+        <div id="profile_message_input" class="fixed hidden inset-0 z-50  md:left-[27%] md:w-[69%] lg:left-[21%] lg:w-[69%] xl:left-[18%]  xl:w-[60%] ">
+            <div class="w-full h-fit dark:bg-black absolute  bg-base-lightbg text-center py-4 bottom-0">
+                <div id="profileinput" class="mt-4  ml-6" style="width: 90%; display: flex; gap: 8px;">
+                    <input id="profilemessage" type="text" placeholder="type..." class="bg-transparent outline-none border pl-3 h-[50px] rounded-xl dark:text-white" style="width: 80%;">
+                    <div id="profilechat-message-submit" class=" text-[#0d2438] dark:text-white cursor-pointer" id="sendiv" style="display:flex; flex-direction: column; margin-top: 0.6rem;">
+                        <i class="fa fa-paper-plane" aria-hidden="true"></i>
+                        <input  class="cursor-pointer" type="button" value="Send">
+                    </div>
+                </div>
+            </div> 
+        </div>   
+        {% if blocked %}  
+            <p class="w-full h-full flex items-center justify-center dark:text-white">This user blocked you</p>
+        {% elif notfound %}
+            <p class="w-full flex justify-center dark:text-white mt-6">No profile found❌</p>
+        {% else %}        
+        <div class="w-full">
+            <div id="prof_pics_parent" class="w-full relative">
+                <!-- cover photo --> 
+                {% if user.cover_photo %}
+                <div class="w-full relative">
+                    <img src="{{user.cover_photo.url}}" alt="cover photo" class="h-[230px] w-full object-fill ">
+                    <div class="w-full h-fit flex justify-between bg-black bg-opacity-40 backdrop-blur-sm p-5 absolute bottom-0">
+                        <div class="flex gap-4 items-center">
+                            <div class="like-div flex gap-2 items-center">
+                                <i data-post-id="{{ i.id }}" class="fa fa-rss text-white cursor-pointer" aria-hidden="true"></i>                                                                           
+                                <div class="text-white text-sm">{{i.likes.count}}</div> 
+                            </div>
+                            <div class="like-div flex gap-2 items-center">
+                                <i data-post-id="{{ i.id }}" class="fa fa-heart text-white cursor-pointer" aria-hidden="true"></i>                                                                           
+                                <div class="text-white text-sm">{{i.likes.count}}</div> 
+                            </div>
+                        </div>                               
+                        <div class="flex gap-4 items-center">
+                            <div class="like-div flex gap-2 items-center">
+                                <i data-post-id="{{ i.id }}" class="fa fa-file text-white cursor-pointer" aria-hidden="true"></i>                                                                           
+                                <div class="text-white text-sm">{{len_posts}}</div> 
+                            </div>
+                            <div class="like-div flex gap-2 items-center">
+                                <i data-post-id="{{ i.id }}" class="fa fa-users text-white cursor-pointer" aria-hidden="true"></i>                                                                           
+                                <div class="text-white text-sm">{{friends_length}}</div> 
+                            </div>              
+                        </div>              
+                    </div>              
+                </div>              
+               {% endif %}
+
+                <!-- profile photo -->
+               <div data-content="{{request.user.id}}" id="prof_pics" class="w-[168px] h-[168px] rounded-full bg-green-600 flex justify-center items-center absolute left-1/2 transform -translate-x-1/2 -translate-y-[90px]" >
+                <img src="{{user.prof_pics.url}}" alt="profile photo" class="object-fill rounded-full mx-auto" style="height: 160px; width: 160px;">                                   
+                {% if same_person %}
+                <form method="post" enctype="multipart/form-data" class="absolute right-2 bottom-2">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+
+                    <input type="file" id="profilePictureInput" name="prof_pics" style="display: none;" accept="image/*">
+
+                    <label for="profilePictureInput" id="cameraIconLabel" class="cursor-pointer">
+                        <i id="cameraIcon" class="fa fa-camera text-green-600 pl-4" style="font-size: 25px;"></i>
+                    </label>
+
+                    
+                    
+                    <!-- Submit button -->
+                </form>
+                {% endif %}
+            </div>
+            <div id="imagePreview" class=" hidden w-full">
+                <div class="fixed inset-0 flex items-center justify-center z-50">
+                    <div class="fixed inset-0 bg-black/75"></div>
+                    <div class="w-full z-50 flex flex-col items-center justify-center">
+                        <img id="previewImage" src="#" alt="Profile Picture Preview" class="w-full h-[400px] md:w-[50%]">   
+                        <div class="w-full flex gap-5 justify-center">
+                            <button type="submit" id="submitButton" class="w-fit py-2 px-10 mt-2 rounded-xl  text-white bg-green-600 cursor-pointer" style="display: none;">Upload</button>
+                            <button type="submit" id="cancelButton" class="w-fit py-2 px-10 mt-2 rounded-xl  text-white bg-green-600 cursor-pointer" style="display: none;">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- buttons --> 
+                <div>    
+                    {% if same_person %}
+                        <div class="w-full flex flex-col items-center mt-[100px] gap-5">
+                            <div class="w-[220px] h-[40px] cursor-pointer text-center py-2 border border-green-600 hover:bg-green-600 text-[#0d2438] dark:text-gray-300 rounded-xl">Edit Profile</div>
+                        </div>
+                    {% else %}
+                        <div class="w-full h-full">
+                            <div class="w-full flex flex-col items-center mt-[100px] gap-5">
+                                
+                                {% if request.user not in friends %}                     
+                                    <div id="profileaddfriend" class="w-[220px] h-[40px] text-center py-2 border border-green-600 hover:bg-green-600 text-[#0d2438] dark:text-gray-300 rounded-xl cursor-pointer">Add friend</div></a>
+                                {% endif %}
+                                    
+                                <div id="profile_message" receiver="{{not_sameperson_id}}" sender="{{request.user.username}}" class="w-[220px] h-[40px] text-center py-2 border border-green-600 hover:bg-green-600 text-[#0d2438] dark:text-gray-300 rounded-xl cursor-pointer">Message</div>
+                                <div id="profileblock" class="w-[220px] h-[40px] text-center py-2 border border-green-600 hover:bg-green-600 text-[#0d2438] dark:text-gray-300 rounded-xl cursor-pointer">Block</div>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div> 
+                
+            <!-- likes and post -->
+            <div class="w-full mt-12 mb-7 flex justify-around">
+                <div data-content="post" id="post" onclick="showContent('post')" class="active w-fit cursor-pointer text-[#0d2438] dark:text-gray-300 border-b-[5px] border-[#1D2833] dark:hover:text-gray-500">Posts</div>
+                <div data-content="likes" onclick="showContent('likes')" class=" active w-fit cursor-pointer text-[#0d2438] dark:text-gray-300 dark:hover:text-gray-500">About</div>               
+                
+                {% if same_person %}
+                    <div id="groups" x-data="{ open: false }" class="relative w-fit">
+                        <div  @mouseenter="open = true" @mouseleave="open = false" data-content="groups" class=" active w-full cursor-pointer text-[#0d2438] dark:text-gray-300 dark:hover:text-gray-500 ">Groups <span><i class="fa fa-caret-up text-[#0d2438] dark:text-gray-300" aria-hidden="true"></i>
+                        </span>
+                        <div
+                            x-show="open"
+                            @click.away="open = false"
+                            x-transition:enter="transition ease-out origin-bottom-left duration-200"
+                            x-transition:enter-start="opacity-0 transform scale-90 translate-y-2"
+                            x-transition:enter-end="opacity-100 transform scale-100"
+                            x-transition:leave="transition origin-bottom-left ease-in duration-100"
+                            x-transition:leave-start="opacity-100 transform scale-100"
+                            x-transition:leave-end="opacity-0 transform scale-90 translate-y-2"
+                            class="absolute shadow-sm p-5 max-w-sm ml-2 border bg-base-lightbgvariant dark:bg-base-darkbgvariant rounded-lg"
+                            style="top:-8rem;"
+                        >
+                        <button id="create-content" class="w-full py-2 text-sm text-[#0d2438] dark:text-gray-300 hover:text-gray-500 mb-2 cursor-pointer">Create Group</button>
+                        <button id="allgroups" class="w-full py-2 text-sm text-[#0d2438] dark:text-gray-300 hover:text-gray-500 cursor-pointer" onclick="showContent('groups')">All Groups</button>
+                        </div>
+                    </div>
+                    </div>
+                {% else %}
+                    <!-- <div  data-content="groups" onclick="showContent('groups')" class=" active w-fit cursor-pointer text-[#0d2438] dark:text-gray-300 dark:hover:text-gray-500 ">Groupsys </div> -->
+                    <div data-content="friends" onclick="showContent('friends')" class="active w-fit cursor-pointer text-[#0d2438] dark:text-gray-300 dark:hover:text-gray-500">Friends</div>
+                {% endif %}                                                 
+            </div>
+            <!-- search and friends -->
+            <div class="w-full flex items-center mt-12 justify-around" style="margin-bottom: 2.5rem;">
+                    
+                    {% if same_person %}
+                        <div data-content="friends" onclick="showContent('friends')" class="active w-fit cursor-pointer text-[#0d2438] dark:text-gray-300 dark:hover:text-gray-500">Friends</div>
+                        <div id="myButton" data-content="findfriends" onclick="showContent('findfriends')" class="active w-fit cursor-pointer text-[#0d2438] dark:text-gray-300 dark:hover:text-gray-500">Find Friends</div>
+                        <div id="friendrequestcontainer" data-content="friendrequest" onclick="showContent('friendrequest')" class="active w-fit cursor-pointer text-[#0d2438] dark:text-gray-300 dark:hover:text-gray-500">Friends requests</div>
+                        <form method="get" class="sm:flex hidden relative">
+                            <input type="text" 
+                            placeholder="Search"
+                            name="query"
+                            data-content="search"
+                            id="searchButton"
+                            onclick="showContent('search')"
+                            class="active text-[#0d2438] dark:text-gray-300 bg-transparent border-2 bg-0 outline-none border-[#0d2438] dark:border-gray-300 rounded-xl pl-3 h-[28px] ">
+                            <div class="absolute top-0 right-2" style="top: 2px;">
+                                <i class="fa fa-search text-[#0d2438] dark:text-white cursor-pointer" aria-hidden="true"></i>
+                            </div>
+                        </form>
+                    {% endif %}
+            </div>
+
+            <!-- profile group -->
+            <div data-content="groups" class="content hidden w-full h-full px-6 py-2 grid justify-center items-center grid-cols-2 lg:grid-cols-3 gap-5 ">
+                <!-- groups -->
+                {% for i in groups  %}
+                <div class="w-full overflow-hidden p-1 flex flex-col gap-1 sm:p-2 sm:gap-3 justify-center items-center bg-base-lightbgvariant dark:bg-base-darkbgvariant shadow-lg rounded-md cursor-pointer transform origin-center transition-transform duration-300 hover:shadow-xl hover:scale-105">
+                    <div class="flex sm:gap-3 justify-center">                   
+                        {% if i.cover_photo %}           
+                            <img class="w-20 h-20 rounded-full" src="{{ i.cover_photo.url }}" alt="cover photo">
+                            
+                            {% else %}
+                            <img class="w-20 h-20 rounded-full" src="{{ i.cover_photo }}" alt="cover photo">
+
+                            {% endif %}
+                            
+                        <div class="w-full grid justify-items-center align-content-center">
+                            <p class="font-bold h-fit w-fit text-[#0d2438]cursor-pointer dark:text-gray-300">{{ i.name }}</p>
+                            <p class="text-[#0d2438] dark:text-gray-300 -mt-4 opacity-60">{{ i.description }}</p>
+                        </div>
+                    </div>
+                    
+                    <a href="{% url 'group-view' name=i.name %}" class="w-4/5 min-w-[107px] h-fit p-2 mb-3 rounded-md bg-green-500 text-gray-300 cursor-pointer text-center">
+                        <p>View group</p>                
+                    </a>                    
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- all Friends -->
+            <div data-content="friends" class="content hidden">
+                {% if friends_exists %}
+                <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-6 justify-center">
+                    {% for i in friends %}
+                    <div  class="w-fit h-fit flex gap-4 items-center cursor-pointer py-4 px-4 bg-base-lightbgvariant dark:bg-base-darkbgvariant shadow-lg hover:shadow-xl rounded-xl  hover:scale-105 transition-transform duration-300" style="justify-content: center;">                                              
+                            <div class="w-full mt-2">
+                                <img src="{{i.prof_pics.url}}" alt="" class="w-[80px] h-[80px] rounded-full">
+                            </div>
+                            <div class="text-green-600 dark:text-gray-300">
+                                <a href="{% url 'profile' name=i.username %}">
+                                    <p class="font-bold mb-3"> {{ i.username }}</p>
+                                </a>
+                                {{ i.bio }}
+                                <p id="unfriendButton" data-content="{{ i.username }}" class="p-2 text-white rounded-lg bg-green-600">Unfriend</p>
+                            </div> 
+                    </div>
+                    {% endfor %}
+                </div>  
+                {% else %}
+                    <div class="h-screen w-full bg-base-lightbg dark:bg-base-darkbg text-[#0d2438] dark:text-white text-center">
+                        No friends to fetch
+                    </div>
+                {% endif %}            
+            </div>
+
+            <!-- find friends -->
+            <div id="findfriendsdataContainer" data-content="findfriends" class="content hidden">
+                <div>
+                    <div class="dataparent text-[#0d2438] dark:text-white w-full bg-base-lightbg dark:bg-base-darkbg grid sm:grid-cols-2 lg:grid-cols-3 gap-x-4 justify-center"></div>
+                    <div class="dataparent2 text-[#0d2438] dark:text-white h-fit w-full bg-base-lightbg dark:bg-base-darkbg text-center"></div>
+                </div>
+                <div id="loadingsequence2" >
+                    <div class="dark:bg-black bg-white"></div>
+                    <div class="ripple text-center"></div>
+                </div>
+            </div>
+
+            <!-- groups -->
+            <div id="groupsdataContainer" data-content="groups" class="content hidden">
+                <div class="groupsparent text-[#0d2438] dark:text-white bg-base-lightbg dark:bg-base-darkbg"></div>
+            </div>
+
+
+            <div id="aboutdataContainer" data-content="likes" class="content hidden">
+                <div class="aboutparent"></div>
+            </div>
+
+            <!-- delete friend modal -->
+            <div id="profileunfriendmodal" class="relative hidden">
+                <div class="fixed inset-0 flex items-center justify-center z-50">
+                    <div class="fixed inset-0 bg-black/75"></div>
+                    <div class="bg-base-lightbgvariant dark:bg-base-darkbgvariant w-fit rounded-lg z-50" style="display: grid; justify-items: center; padding: 10px;">
+                        <h2 class="text-[#0d2438] dark:text-gray-300 mt-4">Are you sure?</h2>
+                        <div class="flex items-center gap-6 mb-4 mt-2">
+                            <p id="profileconfirmunfriend" class="dark:text-gray-100 mt-4" style="background-color: rgb(22, 163, 74); cursor: pointer; border-radius: 5px; padding: 3px 6px;"><i class="fa-solid fa-check" style="color: red; margin-right: 3px;"></i>Unfriend</p>
+                            <p id="profileclosemodal" class="dark:text-gray-100 mt-4" style="background-color: rgb(22, 163, 74); cursor: pointer; border-radius: 5px; padding: 3px 6px;"><i class="fa-solid fa-xmark" style="color: limegreen; margin-right: 3px; margin-top: 2px;"></i>Cancel</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- friends request -->
+            <div id="friendrequestdetails" data-content="friendrequest" class="content hidden mt-4">
+                <div>
+                    <div class="friendrequestparent w-full text-[#0d2438] dark:text-white grid justify-center gap-6 lg:grid-cols-2"></div>
+                    <div class="friendrequestparent2 w-full text-[#0d2438] dark:text-white text-center"></div>
+                </div>
+                <div id="loadingsequence" >
+                    <div class="dark:bg-black bg-white"></div>
+                    <div class="ripple text-center"></div>
+                </div>
+            </div>
+
+            <!-- search -->
+            <div data-content="search" class="content hidden">
+                
+            </div>
+            
+            <!-- loading sequence -->
+            
+
+            <!-- posts -->
+            <div id="postcontent" data-content="post" class="content w-full h-full flex flex-col items-center">
+                {% if posts %}
+                    {% for i in posts %} 
+                    <div class="w-[75%] h-fit hover:scale-105 transition-transform duration-300 ">                                 
+                        <div class="pb-4 lg:max-w-[512px] pt-2 bg-base-lightbgvariant dark:bg-base-darkbgvariant shadow-lg hover:shadow-xl rounded-t-xl mx-4">
+                            <div class="h-fit flex items-center gap-4 px-6">
+                                    <img src="{{request.user.prof_pics.url}}" class="rounded-full" style="width: 35px; height: 35px;">
+                                    <div class="text-green-300">{{ i.author.username }}</div>
+                            </div>
+                            <div class="px-8 mt-3 text-[#0d2438] dark:text-gray-300">
+                                {{ i.content }}
+                            </div>
+                        </div>
+                        {% if i.file %}
+                            <div class="aspect-w-16 aspect-h-9 ">
+                                <div class=" mx-4 lg:h-[449px] lg:max-w-[512px]">
+                                    <img src="{{i.file.url}}" alt="" class="object-cover object-center rounded-b-lg w-full h-full rounded-b-xl">
+                                    <!-- <img src="{{i.file.url}}" alt="" class="w-full h-[375px] rounded-br-lg rounded-bl-lg"> -->
+                                </div>
+                            </div>
+                        {% endif %}
+                        <div class="px-8 flex gap-4 items-center" style="padding-top: 0.7rem; padding-bottom: 2.5rem">
+                            {% if request.user in i.likes.all %}
+                            <div class="like-div flex gap-1 items-center">
+                                <i data-post-id="{{ i.id }}" class="like-button fa fa-heart text-red-600 cursor-pointer" aria-hidden="true"></i>                                                                           
+                                <div class="text-gray-500 text-sm">{{i.likes.count}}</div> 
+                            </div>
+                            {% else %}
+                            <i data-post-id="{{ i.id }}" class="like-button fa fa-heart text-[#0d2438] dark:text-white cursor-pointer" aria-hidden="true"></i>
+                            {% endif %}
+                            <a href="{% url 'comments' slug=i.slug %}"><i id="postcomments" class="fa fa-comments text-[#0d2438] dark:text-white cursor-pointer" aria-hidden="true"></i></a>
+                            <i  class="fa fa-share text-[#0d2438] dark:text-white cursor-pointer"   aria-hidden="true"></i>
+    
+                            {% if same_person %}
+                                <div class="profiletrash">
+                                    <i data-postdeleteid="{{i.id}}" class="trashchild fa fa-trash text-[#0d2438] dark:text-white cursor-pointer" aria-hidden="true"></i>
+                                </div>
+                            {% endif %}
+                            <div class="w-full flex gap-4">
+                                <p class="likeholder text-[#0d2438] dark:text-gray-500"></p>
+                                <p class="commentholder text-[#0d2438] dark:text-gray-500"></p>
+                            </div>
+                            
+                        </div>
+                    </div> 
+                    {% endfor %}
+                    
+                {% else %}
+                    <div class="h-screen w-full bg-base-lightbg dark:bg-base-darkbg text-[#0d2438] dark:text-white text-center">
+                        No feeds to fetch
+                    </div>
+                {% endif %}
+            </div> 
+
+
+        </div>
+    </div>
+    {% endif %}
+
+    
+<script>
+let envURL=" {{URL_KEY}}";let trash=document.querySelectorAll(".profiletrash");trash.forEach((trashbutton=>{trashbutton.addEventListener("click",(async e=>{const postId=trashbutton.children[0].getAttribute("data-postdeleteid");const eventPostId=e.target.parentElement.getAttribute("data-postdeleteid");if(postId===eventPostId){const response=await fetch(`${envURL}/delete_user_post/${postId}/`,{method:"POST",headers:{"X-CSRFToken":"{{ csrf_token }}"}});const data=await response.json();if(response.ok&&data.success==="true"){trashbutton.parentElement.parentElement.style.display="none";Toastify({text:"Delete succesfull ",duration:3e3,newWindow:true,gravity:"top",position:"right",stopOnFocus:true,style:{background:"linear-gradient(to right, #00b09b, #96c93d)"}}).showToast()}else{Toastify({text:"An error ocured, please try again later ",duration:3e3,newWindow:true,close:true,gravity:"top",position:"right",stopOnFocus:true,style:{background:"linear-gradient(to right, #00b09b, #96c93d)"}}).showToast()}}}))}));let profileunfriendmodal=document.querySelector("#profileunfriendmodal");let profileclosemodal=document.querySelector("#profileclosemodal");let profileconfirmunfriend=document.querySelector("#profileconfirmunfriend");let unfriendButton=document.querySelector("#unfriendButton");let dataparent=document.querySelector(".dataparent");let friendName=undefined;const profilePictureInput=document.getElementById("profilePictureInput");const cameraIconLabel=document.getElementById("cameraIconLabel");const cameraIcon=document.getElementById("cameraIcon");const imagePreview=document.getElementById("imagePreview");const previewImage=document.getElementById("previewImage");const profilesubmitButton=document.getElementById("submitButton");const profileCancelButton=document.getElementById("cancelButton");if(profilePictureInput){profilePictureInput.addEventListener("change",(function(){const selectedFile=profilePictureInput.files[0];if(selectedFile){const reader=new FileReader;reader.onload=function(e){previewImage.src=e.target.result;imagePreview.style.display="block";profilesubmitButton.style.display="block";profileCancelButton.style.display="block"};reader.readAsDataURL(selectedFile)}if(profilesubmitButton){profilesubmitButton.onclick=async e=>{const formData=new FormData(document.querySelector("#postform"));formData.append("prof_pics",selectedFile);const response=await fetch('{% url "change_profile_picture" %}',{method:"POST",body:formData,headers:{"X-CSRFToken":"{{ csrf_token }}"}});if(response.ok){window.location.reload();Toastify({text:"Successful",duration:3e3,newWindow:true,gravity:"top",position:"right",stopOnFocus:true,style:{background:"linear-gradient(to right, #00b09b, #96c93d)"}}).showToast()}else{Toastify({text:"Something went wrong, try again later",duration:3e3,newWindow:true,close:true,gravity:"top",position:"right",stopOnFocus:true,style:{background:"linear-gradient(to right, #00b09b, #96c93d)"}}).showToast()}}}if(profileCancelButton){profileCancelButton.onclick=function(e){profilePictureInput.value="";imagePreview.style.display="none";profilesubmitButton.style.display="none";profileCancelButton.style.display="none"}}}))}if(unfriendButton){unfriendButton.addEventListener("click",(e=>{profileunfriendmodal.style.display="block";friendName=e.target.getAttribute("data-content")}))}profileclosemodal.addEventListener("click",(()=>profileunfriendmodal.style.display="none"));profileconfirmunfriend.addEventListener("click",(e=>{const csrfUnfriendToken=getCookie("csrftoken");let xhr=new XMLHttpRequest;xhr.open("POST",`${envURL}/removefriends/${friendName}/`,true);xhr.setRequestHeader("Content-Type","application/json");xhr.setRequestHeader("X-CSRFToken",csrfToken);xhr.onreadystatechange=function(){if(xhr.readyState===XMLHttpRequest.DONE&&xhr.status===200){profileunfriendmodal.style.display="none"}};xhr.send()}));function showContent(contentType){let contentElements=document.getElementsByClassName("content");let buttons=document.querySelectorAll(".active");let posts=document.querySelector("#postcontent");for(let i=0;i<contentElements.length;i++){let content=contentElements[i];let dataContent=content.getAttribute("data-content");if(dataContent===contentType){if(dataContent==="findfriends"||dataContent==="friendrequest"||dataContent==="groups"||dataContent==="about"||dataContent==="friends"){content.style.width="100%";content.style.height="100%";content.style.display="grid";content.style.justifyContent="center";posts.style.display="none"}else if(dataContent==="post"){content.style.display="block";posts.style.display="flex";posts.style.flexDirection="column"}}else{content.style.display="none"}}for(let i=0;i<buttons.length;i++){let button=buttons[i];let dataContent=button.getAttribute("data-content");if(dataContent===contentType&&dataContent!=="search"){if(dataContent!=="search"){button.style.paddingBottom="10px";button.style.borderBottom="4px solid #0d2438"}}else{if(dataContent!=="search"){button.style.borderBottom="0 solid transparent"}}}}let profile_message2=document.querySelector("#profile_message");$(document).ready((function(){$("#friendrequestcontainer").click((function(){const colorMode=localStorage.getItem("mode");let friendBg;$(".friendrequestparent").empty();$.ajax({url:"{% url 'view_received_request' %}",type:"GET",dataType:"json",success:function(response){if(response.received_request.length<1){let nofriend=$("<p>").text("No friend request yet");$(".friendrequestparent").hide();$("#loadingsequence").hide();nofriend.appendTo(".friendrequestparent2")}else{$(".friendrequestparent2").hide();$("#loadingsequence").hide();$(".friendrequestparent").show();response.received_request.forEach((function(friend){let friendDivBg;let friendDiv=$("<div>");friendDiv.attr("id","frienddivbg");let container=$("<div>");let imageAndOthersContainer=$("<div>");let savedMode=localStorage.getItem("mode");friendDiv.css({width:"fit-content",height:"fit-content",padding:"1rem",display:"grid",gap:"5px","justify-item":"center","align-content":"center","background-color":`${friendDivBg?"#1D2833":"white"} `,"border-radius":"10px","box-shadow":"0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",cursor:"pointer","transform-origin":"center","transition-property":"transform","transition-duration":"300ms"});friendDiv.hover((function(){$(this).css({"box-shadow":"var(--box-shadow-xl)",transform:"scale(1.05)"})}),(function(){$(this).css({"box-shadow":"var(--box-shadow-lg)",transform:"scale(1)"})}));let usernameP=$("<p>").text(friend.name);usernameP.css({"font-size":"bold"});let acceptRequest=$("<p>").text("Accept request");acceptRequest.css({width:"fit",height:"fit",padding:"6","border-radius":"5px","background-color":"rgb(22 163 74)",color:"rgb(209 213 219)",cursor:"pointer"});let declineRequest=$("<p>").text("Decline request");declineRequest.css({width:"fit",height:"fit",padding:"6","border-radius":"5px","background-color":"rgb(22 163 74)",color:"rgb(209 213 219)",cursor:"pointer"});let bio=$("<p>").text(friend.bio);let image=$("<img>");image.attr("src",friend.pics);image.attr("alt","Profile Picture");image.attr("width","80");image.attr("height","80");image.css("border-radius","50%");let requestContainer=$("<div>");container.css({display:"grid",gap:"5px","align-content":"center"});imageAndOthersContainer.css({display:"flex",gap:"5px","align-item":"center"});requestContainer.css({display:"flex",gap:"5px","padding-right":"1rem","padding-top":"1rem"});container.append(usernameP);container.append(bio);requestContainer.append(acceptRequest);requestContainer.append(declineRequest);imageAndOthersContainer.append(image);imageAndOthersContainer.append(container);friendDiv.append(imageAndOthersContainer);friendDiv.append(requestContainer);acceptRequest.click((function(){const csrftoken=getCookie("csrftoken");$.ajax({url:`${envURL}/acceptfriendrequests/${friend.relId}/`,type:"POST",dataType:"json",beforeSend:function(xhr,settings){xhr.setRequestHeader("X-CSRFToken",csrftoken)},success:function(response){if(response.success=="ok"){requestContainer.empty();requestContainer.text("Accepted");requestContainer.css("text-align","center")}}})}));declineRequest.click((function(){const csrftoken=getCookie("csrftoken");$.ajax({url:`${envURL}/declinefriendrequest/${friend.sender}/`,type:"POST",dataType:"json",beforeSend:function(xhr,settings){xhr.setRequestHeader("X-CSRFToken",csrftoken)},success:function(response){if(response.success==="ok"){requestContainer.empty();requestContainer.text("Request declined");Toastify({text:"Request declined",duration:3e3,newWindow:true,gravity:"top",position:"right",stopOnFocus:true,style:{background:"linear-gradient(to right, #00b09b, #96c93d)"}}).showToast()}else{Toastify({text:"Error! please try again later",duration:3e3,newWindow:true,close:true,gravity:"top",position:"right",stopOnFocus:true,style:{background:"linear-gradient(to right, #00b09b, #96c93d)"}}).showToast()}}})}));friendDiv.appendTo(".friendrequestparent")}))}},error:function(error){}})}));$("#searchButton").click((function(){let query=$("#searchButton").val();$.ajax({url:"{% url 'search' %}",type:"GET",data:{query:query},dataType:"json",success:function(response){},error:function(){}})}))}));if(profile_message2){$("profileaddfriend").click((function(){let friendusername=profile_message2.getAttribute("receiver");$.ajax({url:`${envURL}/addfriends/${friendusername}/`,type:"POST",dataType:"json",beforeSend:function(xhr,settings){xhr.setRequestHeader("X-CSRFToken",csrftoken)},success:function(response){if(response.success=="ok"){$("profileaddfriend").text="Added"}}})}));$("profileblock").click((function(){$.ajax({url:`${envURL}/blockuser/${friendusername}/`,type:"POST",dataType:"json",beforeSend:function(xhr,settings){xhr.setRequestHeader("X-CSRFToken",csrftoken)},success:function(response){if(response.success=="ok"){$("profileblock").text="Blocked"}}})}))}const groupsElement=document.querySelector("#groups");const dropdownContent=document.querySelector("#dropdown-content");const createContent=document.querySelector("#create-content");const groupcancelprofile=document.querySelector("#groupcancelprofile");function getCookie(name){let cookieValue=null;if(document.cookie&&document.cookie!==""){const cookies=document.cookie.split(";");for(let i=0;i<cookies.length;i++){const cookie=cookies[i].trim();if(cookie.substring(0,name.length+1)===name+"="){cookieValue=decodeURIComponent(cookie.substring(name.length+1));break}}}return cookieValue}if(createContent){createContent.onclick=function(){creategroupmodal.style.display="block"}}if(groupcancelprofile){groupcancelprofile.onclick=function(e){e.preventDefault();creategroupmodal.style.display="none"}}$("#allgroups").on("click",(function(){$(".groupsparent").empty();$.ajax({method:"GET",url:"{% url 'allgroups' %}",processData:false,contentType:false,success:function(response){JSON.parse(response).forEach((details=>{let friendDiv=$("<div>");let container=$("<div>");let nameHolder=$("<div>");nameHolder.css({display:"grid",gap:"5px","justify-items":"center"});container.css({display:"flex",gap:"5px","justify-content":"center"});friendDiv.css({width:"fit-content",height:"fit-content","padding-top":"1rem","padding-bottom":"1rem","padding-left":"1rem","padding-right":"1rem",display:"grid",gap:"5px","justify-items":"center","align-content":"center","box-shadow":"0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)","border-radius":"10px","margin-top":"1rem","margin-bottom":"1rem","margin-left":"1rem","margin-right":"1rem",cursor:"pointer","transform-origin":"center","transition-property":"transform","transition-duration":"300ms"});friendDiv.hover((function(){$(this).css({"box-shadow":"var(--box-shadow-xl)",transform:"scale(1.05)"})}),(function(){$(this).css({"box-shadow":"var(--box-shadow-lg)",transform:"scale(1)"})}));let name=$("<p>").text(details.fields.name);let about=$("<p>").text(details.fields.description);let user=$("#prof_pics").data("content");name.css({"font-size":"bold"});about.css({opacity:"0.6","margin-bottom":"1rem"});let image=$("<img>");image.attr("src",details.fields.cover_photo);image.attr("alt","cover photo");image.attr("width","80");image.attr("height","80");image.css("border-radius","50%");let joinGroup;if(user===details.fields.owner){joinGroup=$("<p>").text("Your group");joinGroup.css("color","lime")}else{joinGroup=$("<p>").text("join group");joinGroup.css({width:"80%",height:"fit",padding:"6","border-radius":"5px","background-color":"rgb(22 163 74)",color:"rgb(209 213 219)",cursor:"pointer","text-align":"center"});joinGroup.click((function(){const csrftoken=getCookie("csrftoken");$.ajax({url:`${envURL}/join-group/${details.pk}`,type:"POST",dataType:"json",beforeSend:function(xhr,settings){xhr.setRequestHeader("X-CSRFToken",csrftoken)},success:function(response){}})}))}nameHolder.append(name);nameHolder.append(about);container.append(image);container.append(nameHolder);friendDiv.append(container);friendDiv.append(joinGroup);friendDiv.appendTo(".groupsparent");friendDiv.click((function(){window.location.href=`${envURL}/group-view/${details.fields.name}`}))}))},error:function(error){}})}));function postComment(url){let commentText=$("#commentmessage").val();let formData=new FormData;formData.append("csrfmiddlewaretoken","{{ csrf_token }}");formData.append("comments",commentText);if($("#comment_pics")[0]){formData.append("comment_pics",$("#comment_pics")[0].files[0])}$.ajax({method:"POST",url:url,data:formData,processData:false,contentType:false,success:function(response){},error:function(error){}})}function postReply(e,replyUrl){const clickedElement=$(this);const dataContent=clickedElement.attr("data-content");const replyForm=$(".replyform[data-content='"+dataContent+"']");if(replyForm.length>0){replyForm.toggle()}$("#replyinput").on("click",(function(){let replyText=$("#replymessage").val();let postSlug=replyForm.data("content");let formData=new FormData;formData.append("csrfmiddlewaretoken","{{ csrf_token }}");formData.append("reply_text",replyText);if($("#reply_pics")[0]){formData.append("reply_pics",$("#reply_pics")[0].files[0])}$.ajax({method:"POST",url:replyUrl,data:formData,processData:false,contentType:false,success:function(response){},error:function(error){}})}))}   
+</script>
+ 
+    {% endblock content %}

@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% load static %}   
+
+
+
+{% block title %}
+<title>Mesages </title>
+{% endblock title %}
+
+{% block static %}
+ <link rel="stylesheet" href="{% static 'css/overflowMessage.min.css' %}">
+{% endblock static %}
+
+{% block content %}
+
+<div class="w-full h-screen bg-base-lightbg dark:bg-base-darkbg">
+    <div class="flex h-full w-full">
+        <div id="onlinechat" class="w-full sm:w-[40%]" style="margin: 0 4%;">
+            <div id="onlinechatbutton" style="display:flex; justify-content: space-between; margin:0 10px;">
+                <div data-content="chat" onclick="showContent('chat')" id="chat" class="active w-fit h-fit text-center py-2 text-[#0d2438] dark:text-gray-300 cursor-pointer border-b-[5px] border-[#1D2833]" >chat</div>
+                <div data-content="online" onclick="showContent('online')" id="online" class="active w-fit h-fit text-center py-2 text-[#0d2438] dark:text-gray-300 cursor-pointer ml-8">online</div>
+            </div>
+
+                <!-- chats -->
+                <div id="chat-chat" data-content="chat"  class="content  text-[#0d2438] dark:text-gray-300 h-full w-full ml-2 mt-4">                   
+                               
+                </div>
+                <!-- online -->
+                <div id="online-people" data-content="online"  class="content  text-[#0d2438] dark:text-gray-300 hidden w-full ml-2 mt-4"></div>
+        </div>
+
+        <!-- realtime messages -->
+        <div id="realtimemessg" class="hidden h-[70vh] sm:block sm:h-[100vh] sm:pb-4" id="" style=" width:60%; position: relative; padding-top:20px ;">
+            <div id="realtimemessgcontainer" class="h-[70vh]" style="height:100%; width:100%;">
+                <div id="backarrow" class="block  sm:hidden"><i  class="fa fa-arrow-left pl-5 text-[#0d2438] dark:text-white cursor-pointer" aria-hidden="true"></i></div>
+                <div id="messageStore" class="dark:bg-base-darkbgvariant rounded-lg px-4 pb-4 opacity-0" style="height: 80%; display: flex; flex-direction: column; gap: 1.5rem; overflow-y: scroll; scrollbar-width: none; -ms-overflow-style: none;">
+                </div>
+                <div class="w-full flex justify-center">
+                    <div id="input" class="mt-4" style="width: 100%; display: flex; gap: 8px; margin-left: 4px;">
+                        <input id="message" type="text" placeholder="type..." class="bg-transparent outline-none border pl-3 h-[50px] rounded-xl dark:text-white" style="width: 80%;">
+                        <div id="chat-message-submit" class=" text-[#0d2438] dark:text-white cursor-pointer" id="sendiv" style="display:flex; flex-direction: column; margin-top: 0.6rem;">
+                            <i class="fa fa-paper-plane" aria-hidden="true"></i>
+                            <input  class="cursor-pointer" type="button" value="Send">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>  
+
+    function showContent(contentType) {
+        let contentElements = document.getElementsByClassName('content');
+        let buttons = document.querySelectorAll('.active');
+        
+        let dataparent = document.querySelector('.dataparent');
+
+        
+
+       
+        for (let i = 0; i < contentElements.length; i++) {
+            let content = contentElements[i];
+            let dataContent = content.getAttribute('data-content');
+            if (dataContent === contentType) {
+                    content.style.display = 'block';
+                }
+            else {
+            content.style.display = 'none';
+            }
+        }
+
+
+        for (let i = 0; i < buttons.length; i++) {
+            let button = buttons[i];  
+            let dataContent = button.getAttribute('data-content');
+            if (dataContent === contentType) {
+                button.style.borderBottom="4px solid #0d2438";
+            } else {
+                button.style.borderBottom="0 solid transparent";
+            }
+        }
+        }
+
+        if(window.location.pathname==="/messages/"){
+            localStorage.removeItem("count")
+        }
+
+</script>
+
+{% endblock content %}
+    

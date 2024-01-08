@@ -1,0 +1,54 @@
+{% extends 'base.html' %} 
+{% load static %}   
+
+
+{% block title %}
+<title>Groups</title>
+{% endblock title %}
+
+
+{% block content %}
+
+<div class="w-full h-full bg-base-lightbg dark:bg-base-darkbg pb-8 md:mb-0">
+    <div class="w-full flex items-center gap-3 pt-4">
+        <div class="text-[#0d2438] dark:text-gray-300 pl-6 ">Create your group </div>  
+        <div id="grouppagecreategroup"><i class="fa fa-plus-circle text-green-600 hover:text-green-300 cursor-pointer text-xl mt-3" aria-hidden="true" ></i>
+        </div>
+    </div>
+
+    <div class="w-full h-full pt-4 px-6 grid justify-center items-center grid-cols-2 lg:grid-cols-3 gap-5 ">
+        {% for i in groups  %}
+            <div class="w-[100%] p-1 flex flex-col gap-1 sm:p-2 sm:gap-3 justify-center items-center bg-base-lightbgvariant dark:bg-base-darkbgvariant shadow-lg rounded-md cursor-pointer transform origin-center transition-transform duration-300 hover:shadow-xl hover:scale-105">
+                <div class="flex sm:gap-3 justify-center">
+                    
+                    {% if i.cover_photo %}           
+                        <img class="w-20 h-20 rounded-full" src="{{ i.cover_photo.url }}" alt="cover photo">
+                        
+                        {% else %}
+                        <img class="w-20 h-20 rounded-full" src="{% static 'images/cover.jpg' %}" alt="cover photo">
+
+                        {% endif %}
+                        
+                    <div class="w-full grid justify-items-center align-content-center overflow-hidden">
+                        <p class="font-bold h-fit w-full text-[#0d2438] cursor-pointer dark:text-gray-300" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ i.name }}</p>
+                        <p class="text-[#0d2438] h-fit w-full dark:text-gray-300 -mt-4 opacity-60" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ i.description }}</p>
+                    </div>
+                </div>
+                
+                {% if request.user not in i.members.all and request.user != i.owner %}
+                    <a href="{% url 'join-group' id=i.id %}" class="w-4/5 min-w-[107px] h-fit p-2 mb-3 rounded-md bg-green-500 text-gray-300 cursor-pointer text-center">
+                        <p>Join group</p>
+                    </a>
+                {% else %}
+                    <a href="{% url 'group-view' name=i.name %}" class="w-4/5 min-w-[107px] h-fit p-2 mb-3 rounded-md bg-green-500 text-gray-300 cursor-pointer text-center">
+                        <p>View group</p>                
+                    </a>
+                {% endif %}
+                    
+            </div>
+        {% endfor %}
+    </div>
+</div>
+    
+
+{% endblock content %}

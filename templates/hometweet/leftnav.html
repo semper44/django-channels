@@ -1,0 +1,96 @@
+
+{% load static %}   
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+    
+    <div class="w-full h-full  flex flex-col items-center ">
+        <div class="w-full flex flex-col items-center mr-8">
+            <img src="{{ request.user.prof_pics.url}}" class="w-[50px] h-[50px] rounded-full mt-7">
+            <div id="leftnavusername" class=" text-[#0d2438] dark:text-gray-300 my-1">{{ request.user.username }}</div>
+        </div>
+
+        <div class="mr-8">
+            <input type="checkbox" class="checkbox opacity-0 absolute" id="checkbox">
+            <label for="checkbox" class="checkbox-label bg-transparent w-[50px] rounded-lg relative p-1 cursor-pointer flex justify-between items-center border border-gray-300 dark:border-gray-600 ">
+                <i class="fas fa-sun text-red-700 "></i>
+                <i class="fas fa-moon text-red-700 "></i>
+              <span id="ball"></span>
+            </label>
+        </div>
+
+        <div x-data="{ open: false }" class="relative mr-6">
+            <div @click="open = true">
+                <div id="create"  class="w-fit py-2 px-10 mt-2 rounded-xl  text-white bg-green-600 cursor-pointer">Create</div>
+            </div>
+            <template x-if="open">
+                <div
+                    @click.away="open = false"
+                    x-transition:enter="transition ease-out origin-bottom-left duration-200"
+                    x-transition:enter-start="opacity-0 transform scale-90 translate-y-2"
+                    x-transition:enter-end="opacity-100 transform scale-100"
+                    x-transition:leave="transition origin-bottom-left ease-in duration-100"
+                    x-transition:leave-start="opacity-100 transform scale-100"
+                    x-transition:leave-end="opacity-0 transform scale-90 translate-y-2"
+                    class="absolute shadow-sm p-5 max-w-sm ml-2 bg-base-lightbgvariant dark:bg-base-darkbgvariant rounded-lg"
+                    style="top:-7rem;"
+                >
+                    <button id="mobilecreatepost" onclick="mobilecreatepost()" class="a w-full py-2 text-sm text-[#0d2438] dark:text-gray-300 hover:text-gray-500 mb-2 cursor-pointer">Post</button>
+                    <button id="mobilecreatestatus" onclick="mobilecreatestatus()" class="b w-full py-2 text-sm text-[#0d2438] dark:text-gray-300 hover:text-gray-500 cursor-pointer" >Status</button>
+                    <button id="mobilecreatgroup" onclick="mobilecreatgroup()"  class="c w-full py-2 text-sm text-[#0d2438] dark:text-gray-300 hover:text-gray-500 cursor-pointer" >Group</button>
+                </div>
+            </template>
+        </div>
+
+        <div class="flex items-center">
+            <div class="w-fit h-full text-start">
+                <div class="text-[#0d2438] dark:text-white mt-5 py-2"><i class="fa fa-home" aria-hidden="true" ></i></div>
+                <div class="text-[#0d2438] dark:text-white mt-5 py-2"><i class="fa fa-user" aria-hidden="true" ></i></div>
+                <div class="text-[#0d2438] dark:text-white mt-5 py-2"><i class="fa fa-envelope" aria-hidden="true"></i></div>
+                <div class="text-[#0d2438] dark:text-white mt-5 py-2"><i class="fa fa-cog" aria-hidden="true" ></i></div>
+                <div class="text-[#0d2438] dark:text-white mt-5 py-2"><i class="fa fa-bell-o" aria-hidden="true"></i></div>
+                <div class="text-[#0d2438] dark:text-white mt-5 py-2"><i class="fa fa-users" aria-hidden="true" ></i></div>
+                <div class="text-[#0d2438] dark:text-white mt-5 py-2"><i class="fa fa-sign-out" aria-hidden="true"></i></div>
+            </div>
+            <div class="w-fit flex flex-col items-start">
+                <div class="text-[#0d2438] dark:text-gray-300 mt-5 hover:bg-base-lightbgvariant  dark:hover:bg-base-darkbgvariant py-2 px-4 rounded-lg cursor-pointer"><a href="{% url 'home' %}">Home</a></div>
+                <div class="text-[#0d2438] dark:text-gray-300 mt-5 hover:bg-base-lightbgvariant  dark:hover:bg-base-darkbgvariant py-2 px-4 rounded-lg cursor-pointer"><a href="{% url 'profile' name=request.user.username %}">Profile</a></div>
+               
+                <div id="leftnavmessage" class="text-center justify-center text-[#0d2438] dark:text-gray-300 mt-5 relative hover:bg-base-lightbgvariant  dark:hover:bg-base-darkbgvariant py-2 px-4 rounded-lg cursor-pointer">
+                    <a href="{% url 'chatintialmessage' %}">
+                        Messages</a>
+                    <!-- <div class=" bg-white text-white" style="height: 25px; width: 25px; display:flex; justify-content: center; align-items: center; border-radius: 50%; position: absolute; right: 0; top: -2px;"> -->
+                        <div id="messagenotif" class="rounded-full bg-red-600  hidden" style="height: 22px; width: 22px; font-size: 13px;position: absolute; right: 0; top: -2px">1</div>
+                    <!-- </div> -->
+                </div>
+                <div class="text-[#0d2438] dark:text-gray-300 mt-5 hover:bg-base-lightbgvariant  dark:hover:bg-base-darkbgvariant py-2 px-4 rounded-lg cursor-pointer">Settings</div>
+        
+                <a href="{% url 'notification_view' %}">
+                    <div id="belliconcontainer" class="flex text-[#0d2438] relative dark:text-gray-300 mt-5 hover:bg-base-lightbgvariant  dark:hover:bg-base-darkbgvariant py-2 px-4 rounded-lg cursor-pointer">
+                        Notifications
+                        <div id="bellicon"  class=" text-white rounded-full bg-red-600 flex items-center justify-center" style="height: 22px; width: 22px; font-size: 13px;position: absolute; right: 0; top: -2px"></div>
+                    </div>
+                </a>
+                
+                <a href="{% url 'allgroups' %}">
+                    <div class="flex  text-[#0d2438] dark:text-gray-300 mt-5 hover:bg-base-lightbgvariant  dark:hover:bg-base-darkbgvariant py-2 px-4 rounded-lg cursor-pointer">Communities</div>
+                </a>
+                <div id="logout" class="flex  text-[#0d2438] dark:text-gray-300 mt-5 hover:bg-base-lightbgvariant  dark:hover:bg-base-darkbgvariant py-2 px-4 rounded-lg cursor-pointer">Logout</div>
+                  
+            </div>
+        </div>
+     
+        
+    </div>
+    
+     <script src="{% static 'main.js' %}"></script> 
+   
+        
+</body>
+</html>
+    

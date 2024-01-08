@@ -1,0 +1,105 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>register</title>
+    <link rel="stylesheet" href="{% static 'css/result.css' %}">
+    <link rel="stylesheet" href="{% static 'main.css' %}">
+   
+</head>
+<body class="bg-base-lightbg h-full ">
+    {% if messages %}
+        <div id="flash-messages" class=" absolute w-full  h-fit flex justify-end">
+            <ul class="bg-gradient-to-r from-teal-600 via-lime-400 to-teal-600 p-4 rounded-lg text-white mt-1">
+                {% for message in messages %}
+                    <span>{{ message }}</span>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+    <div class="w-full h-[100vh] flex flex-col items-center justify-center">
+        <div class="text-2xl text-[#0d2438] text-center mb-4">Register</div>
+        <div >
+            <form method="POST" action="" class="flex flex-col items-center gap-7">
+                {% csrf_token %}
+                <div class="">
+                    <input type="text" name="email" placeholder="Email" class="bg-[#F7F3F2] pl-3 w-[300px] h-[50px] rounded-xl border border-gray-700"/>
+                </div>
+                <div class="">
+                    <input id="username" type="text" name="username" placeholder="Username" class="bg-[#F7F3F2] pl-3 w-[300px] h-[50px] rounded-xl border border-gray-700"/>
+                </div>
+                <div class="">
+                    <div class="relative">
+                        <input type="password" name="password1" placeholder="Password" class="bg-[#F7F3F2] pl-3 w-[300px] h-[50px] rounded-xl border border-gray-700"/>
+                        <span id="passwordshow" class="absolute right-0 pr-[10px] bottom-4 cursor-pointer"><i class="fa fa-eye" aria-hidden="true"></i></span>
+                    </div>
+                </div>
+                <div class="">
+                    <div class="relative">
+                        <input id="password2" type="password" name="password2" placeholder="Password-retype" class="bg-[#F7F3F2] pl-3 w-[300px] h-[50px] rounded-xl border border-gray-700"/>
+                        <span id="passwordshow2" class="absolute right-0 pr-[10px] bottom-4 cursor-pointer"><i class="fa fa-eye" aria-hidden="true"></i></span>
+                    </div>
+                </div>
+                <div class="">
+                    <input type="submit" id="submit" value="Register" class="w-fit h-fit px-24 py-2 bg-green-600 text-gray-300 rounded-xl hover:opacity-75 cursor-pointer"/>
+                </div>
+            </form>
+            <div class="flex text-[#0d2438] mt-4 justify-center">Already have an account? <span class="text-green-600 cursor-pointer ml-2"><a href="{% url 'login' %}">Login</span></a></div>
+        </div>
+        
+    </div>
+    
+    <script>
+        setTimeout(function () {
+            document.getElementById('flash-messages').style.display = 'none';
+        }, 3000);
+        const passwordshow =document.querySelector("#passwordshow")
+        const password =document.querySelector("input[name='password1']")
+        const passwordshow2 =document.querySelector("#passwordshow2")
+        const password2 =document.querySelector("input[name='password2']")
+        const username =document.querySelector("#username")
+
+        username.oninput = function(){
+            if(username !== ""){
+                let result= username.value.charAt(0).toLowerCase() + username.value.slice(1)
+                username.value = result
+            }
+        }
+
+
+
+        passwordshow.onclick = function(){
+            if (password.type === 'password') {
+                passwordshow.children[0].classList.remove= "fa fa-eye"
+                passwordshow.children[0].classList = "svg-inline--fa fa-eye-slash"
+                password.type = 'text';
+            } else {
+                passwordshow.children[0].classList= ""
+                passwordshow.children[0].classList = "svg-inline--fa fa-eye"
+                password.type = 'password';
+            }
+
+        }
+        
+        passwordshow2.onclick = function(){
+            if (password2.type === 'password') {
+                passwordshow2.children[0].classList.remove= "fa fa-eye"
+                passwordshow2.children[0].classList = "svg-inline--fa fa-eye-slash"
+                password2.type = 'text';
+            } else {
+                passwordshow2.children[0].classList= ""
+                passwordshow2.children[0].classList = "svg-inline--fa fa-eye"
+                password2.type = 'password';
+            }
+
+        }
+    </script>
+
+    
+    <script src="{% static 'main.js' %}"></script>
+</body>
+</html>

@@ -1,0 +1,181 @@
+{% extends 'base.html' %} 
+{% load static %}   
+
+
+{% block title %}
+<title>Search </title>
+{% endblock title %}
+
+{% block static %}
+{% endblock static %}
+
+{% block content %}
+<div class="w-full h-full mt-6">
+
+    <!-- search form -->
+    <div class="w-full px-6 pb-4 hidden md:block xl:hidden">                  
+        <form method="get" class="relative w-full">
+            <input type="text" 
+            placeholder="Search"
+            name="query"
+            data-content="search"
+            id="searchButton"
+            class="w-[80%] text-[#0d2438] dark:text-gray-300 bg-transparent border-2 bg-0 outline-none border-[#0d2438] dark:border-gray-300 rounded-xl pl-3 h-[28px] ">
+            <div class=" absolute" style="top: 2px; right:24%">
+                <i class="fa fa-search text-[#0d2438] dark:text-white cursor-pointer" aria-hidden="true"></i>
+            </div>               
+        </form> 
+    </div>
+
+        <!-- prof arr -->
+        <div class="w-full">
+            {% if prof_arr %}     
+                {% for result in prof_arr %}
+                <div class="w-full px-6 grid gap-6 grid-cols-1 lg:grid-cols-2 justify-center">
+                    {% if result.username %}
+                        <div  class="w-fit h-fit flex gap-4 items-center cursor-pointer py-4 px-4 bg-base-lightbgvariant dark:bg-base-darkbgvariant shadow-lg hover:shadow-xl rounded-xl  hover:scale-105 transition-transform duration-300" style="justify-content: center;">                                              
+                                <div class="w-full mt-2">
+                                    <img src="{{result.prof_pics}}" alt="" class="w-[80px] h-[80px] rounded-full">
+                                </div>
+                                <div class="text-[#0d2438] dark:text-gray-300">
+                                    <a href="{% url 'profile' name=result.username %}">
+                                        <p class="font-bold mb-3"> {{ result.username }}</p>
+                                    </a>
+                                    {{ result.bio }}
+                                </div>
+                                <div class="w-full flex justify-center gap-4">
+                                    <p id="unfriendButton" data-content="{{ i.username }}" class="p-2  rounded-lg bg-green-600 text-white dark:text-gray-300">Add</p>
+                                    <p id="searchaddfriendButton" data-content="{{ i.username }}" class="p-2  rounded-lg bg-green-600 text-white dark:text-gray-300">View</p>
+                                </div> 
+                        </div>
+                    {% endif %}
+                </div>         
+                {% endfor %}           
+            {% endif %}
+        </div>
+
+        <!-- post arr -->
+        <div class="w-full h-full flex flex-col items-center">
+            {% if post_arr %}
+                {% for i in post_arr %} 
+                <div class="w-full h-fit ">                                 
+                    <div class="pb-4 lg:max-w-[512px] pt-2 bg-base-lightbgvariant dark:bg-base-darkbgvariant shadow-lg hover:shadow-xl rounded-t-xl mx-4 hover:scale-105 transition-transform duration-300">
+                        <div class="h-fit flex items-center gap-4 px-6">
+                                <img src="{{request.user.prof_pics.url}}" class="rounded-full" style="width: 35px; height: 35px;">
+                                <div class="text-green-300">{{ i.author }}</div>
+                        </div>
+                        <div class="px-8 mt-3 text-[#0d2438] dark:text-gray-300">
+                            {{ i.content }}
+                        </div>
+                    </div>
+                    {% if i.file %}
+                        <div class="aspect-w-16 aspect-h-9 ">
+                            <div class=" mx-4 lg:h-[449px] lg:max-w-[512px]">
+                                <img src="{{i.file.url}}" alt="" class="object-cover object-center rounded-lg w-full h-full rounded-b-xl">
+                                <!-- <img src="{{i.file.url}}" alt="" class="w-full h-[375px] rounded-br-lg rounded-bl-lg"> -->
+                            </div>
+                        </div>
+                    {% endif %}
+                    <div class="px-8 flex gap-4 items-center" style="padding-top: 0.7rem; padding-bottom: 2.5rem">
+                            {% if request.user in i.likes.all %}
+                            <div class="like-div flex gap-1 items-center">
+                                <i data-post-id="{{ i.id }}" class="like-button fa fa-heart text-red-600 cursor-pointer" aria-hidden="true"></i>                                                                           
+                                <div class="text-gray-500 text-sm">{{i.likes.count}}</div> 
+                            </div>
+                            {% else %}
+                            <i data-post-id="{{ i.id }}" class="like-button fa fa-heart text-[#0d2438] dark:text-white cursor-pointer" aria-hidden="true"></i>
+                            {% endif %}
+                            <a href="{% url 'comments' slug=i.slug %}"><i id="postcomments" class="fa fa-comments text-[#0d2438] dark:text-white cursor-pointer" aria-hidden="true"></i></a>
+                            <i  class="fa fa-share text-[#0d2438] dark:text-white cursor-pointer"   aria-hidden="true"></i>
+                            <div class="w-full flex gap-4">
+                                <p class="likeholder text-[#0d2438] dark:text-gray-500"></p>
+                                <p class="commentholder text-[#0d2438] dark:text-gray-500"></p>
+                            </div>
+                    </div>
+                </div> 
+                {% endfor %}
+                
+            {% endif %}
+        </div> 
+
+        <!-- group post -->
+        <div class="w-full h-full flex flex-col items-center">
+            {% if group_post_arr %}
+                {% for g in group_post_arr %} 
+                <div class="w-[75%] h-fit ">                                 
+                    <div class="pb-4 lg:max-w-[512px] pt-2 bg-base-lightbgvariant dark:bg-base-darkbgvariant shadow-lg hover:shadow-xl rounded-t-xl mx-4 hover:scale-105 transition-transform duration-300">
+                        <div class="h-fit flex items-center gap-4 px-6">
+                                <img src="{{request.user.prof_pics.url}}" class="rounded-full" style="width: 35px; height: 35px;">
+                                <div class="text-green-300">{{ g.author }}</div>
+                        </div>
+                        <div class="px-8 mt-3 text-[#0d2438] dark:text-gray-300">
+                            {{ g.content }}
+                        </div>
+                    </div>
+                    {% if g.file %}
+                        <div class="aspect-w-16 aspect-h-9 ">
+                            <div class=" mx-4 lg:h-[449px] lg:max-w-[512px]">
+                                <img src="{{g.file.url}}" alt="" class="object-cover object-center rounded-lg w-full h-full rounded-b-xl">
+                                <!-- <img src="{{i.file.url}}" alt="" class="w-full h-[375px] rounded-br-lg rounded-bl-lg"> -->
+                            </div>
+                        </div>
+                    {% endif %}
+                    <div class="px-8 flex gap-4 items-center" style="padding-top: 0.7rem; padding-bottom: 2.5rem">
+                            {% if request.user in g.likes.all %}
+                            <div class="like-div flex gap-1 items-center">
+                                <i data-post-id="{{ g.id }}" class="like-button fa fa-heart text-red-600 cursor-pointer" aria-hidden="true"></i>                                                                           
+                                <div class="text-gray-500 text-sm">{{g.likes.count}}</div> 
+                            </div>
+                            {% else %}
+                            <i data-post-id="{{ g.id }}" class="like-button fa fa-heart text-[#0d2438] dark:text-white cursor-pointer" aria-hidden="true"></i>
+                            {% endif %}
+                            <a href="{% url 'comments' slug=g.slug %}"><i id="postcomments" class="fa fa-comments text-[#0d2438] dark:text-white cursor-pointer" aria-hidden="true"></i></a>
+                            <i  class="fa fa-share text-[#0d2438] dark:text-white cursor-pointer"   aria-hidden="true"></i>
+                            <div class="w-full flex gap-4">
+                                <p class="likeholder text-[#0d2438] dark:text-gray-500"></p>
+                                <p class="commentholder text-[#0d2438] dark:text-gray-500"></p>
+                            </div>
+                    </div>
+                </div> 
+                {% endfor %}
+                
+            {% endif %}
+        </div> 
+
+        <!-- all group search -->
+        <div class="w-full h-full pt-4 px-6 grid justify-center items-center grid-cols-2 lg:grid-cols-3 gap-5 ">
+            {% for group in group_arr  %}
+                <div class="w-[100%] overflow-hidden p-1 flex flex-col gap-1 sm:p-2 sm:gap-3 justify-center items-center bg-base-lightbgvariant dark:bg-base-darkbgvariant shadow-lg rounded-md cursor-pointer transform origin-center transition-transform duration-300 hover:shadow-xl hover:scale-105">
+                    <div class="flex sm:gap-3 justify-center">
+                    
+                        {% if group.cover_photo %}           
+                            <img class="w-20 h-20 rounded-full" src="{{ groupgroup.cover_photo.url }}" alt="cover photo">
+                            
+                            {% else %}
+                            <img class="w-20 h-20 rounded-full" src="{{ groupgroup.cover_photo }}" alt="cover photo">
+
+                            {% endif %}
+                            
+                        <div class="w-full grid justify-items-center align-content-center">
+                            <p class="font-bold h-fit w-fit text-[#0d2438]cursor-pointer dark:text-gray-300">{{ groupgroup.name }}</p>
+                            <p class="text-[#0d2438] dark:text-gray-300 -mt-4 opacity-60">{{ group.description }}</p>
+                        </div>
+                    </div>
+                    
+                    {% if request.user not in group.members.all and request.user != group.owner %}
+                        <a href="{% url 'join-group' id=group.id %}" class="w-4/5 min-w-[107px] h-fit p-2 mb-3 rounded-md bg-green-600 text-white dark:text-gray-300 cursor-pointer text-center">
+                            <p>Join group</p>
+                        </a>
+                    {% else %}
+                        <a href="{% url 'group-view' name=group.name %}" class="w-4/5 min-w-[107px] h-fit p-2 mb-3 rounded-md bg-green-600 text-white dark:text-gray-300 cursor-pointer text-center">
+                            <p>View group</p>                
+                        </a>
+                    {% endif %}
+                        
+                </div>
+            {% endfor %}
+        </div>
+        
+</div>
+
+{% endblock content %}

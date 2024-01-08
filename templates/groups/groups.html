@@ -1,0 +1,309 @@
+{% extends 'base.html' %} 
+{% load static %}   
+
+
+{% block title %}
+<title>Groups</title>
+{% endblock title %}
+
+
+{% block content %}
+ 
+
+<div id="groupimagePreview" class=" hidden w-[80%]">
+    <div class="fixed inset-0 flex items-center justify-center z-50">
+        <div class="fixed inset-0 bg-black/75"></div>
+        <div class="w-full z-50 flex flex-col items-center justify-center">
+            <img id="groupPreviewImage" src="#" alt="Profile Picture Preview" class="w-full h-[400px] md:w-[50%]">   
+            <div class="w-full flex gap-5 justify-center">
+                <button type="submit" id="groupsubmitButton" class="w-fit py-2 px-10 mt-2 rounded-xl  text-white bg-green-600 cursor-pointer" style="display: none;">Upload</button>
+                <button type="submit" id="groupcancelButton" class="w-fit py-2 px-10 mt-2 rounded-xl  text-white bg-green-600 cursor-pointer" style="display: none;">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="w-full h-full bg-base-lightbg dark:bg-base-darkbg">
+    {% if blocked %}  
+    <p class="w-full h-full flex items-center justify-center dark:text-white">You have been blocked from this group</p>
+    {% else %}        
+        <div class="w-full h-full bg-base-lightbg dark:bg-base-darkbg">
+            <!-- cover photo -->         
+            <div class="w-full relative">
+                {% if group.cover_photo %}
+                    <img src="{{group.cover_photo.url}}" alt="cover photo" class="h-[230px] w-full object-fill ">                     
+                {% endif %}
+                <!-- change cover_photo -->
+                {% if request.user == group.owner or  admin %}
+                    <form method="post" enctype="multipart/form-data" class="absolute right-2 bottom-2">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+
+                        <input type="file" id="groupcoverpictureInput" name="prof_pics" style="display: none;" accept="image/*">
+
+                        <label for="groupcoverpictureInput" id="groupcameraIconLabel" class="cursor-pointer">
+                            <i id="groupcameraIcon" class="fa fa-camera text-green-600 pl-4" style="font-size: 25px;"></i>
+                        </label>
+                        <!-- Submit button -->
+                    </form>
+                {% endif %}
+            </div>
+
+            <div class="w-full h-fit flex justify-between items-center px-4 border-b-2 border-gray-600 dark:border-[#0d2438] ">
+                <h1 class="text-[#0d2438] dark:text-gray-300">{{group.name}}</h1>
+                <div class="w-fit grid items-center py-4">
+                    {% if request.user == group.owner or  admin %}
+                        <div id="draftbutton" data-content="drafts" onclick="showContent('drafts')" class="active w-fit cursor-pointer text-[#0d2438] dark:text-gray-300 dark:hover:text-gray-500">Drafts</div>           
+                    {% endif %}
+                        {% if request.user == group.owner %}
+                        <a href="{% url 'delete-group' groupid=group.id %}">
+                            <div id="deletegroup" class="w-fit  cursor-pointer text-[#0d2438] dark:text-gray-300 dark:hover:text-gray-500">Delete group</div>      
+                        </a>
+                        {% elif request.user not in group.members.all %}
+                            <div id="joingroup" class="w-fit cursor-pointer text-[#0d2438] dark:text-gray-300 dark:hover:text-gray-500">Join group</div>
+                        {% else %}
+                            <div id="exitgroup" class="w-fit cursor-pointer  text-[#0d2438] dark:text-gray-300 dark:hover:text-gray-500">Exit group</div>
+                        {% endif %}
+                </div>  
+            </div>
+                
+                <!-- create post in group modal -->
+            <div id="groupmodalpost" class="relative hidden">
+                <div class="fixed inset-0 flex items-center justify-center z-50">
+                    <div class="fixed inset-0 bg-black/75"></div>
+                    <div class="bg-white dark:bg-base-darkbgvariant w-[80%] md:w-[50%] rounded-lg z-50 ">
+                        <div class="flex items-center gap-6 pl-4">
+                            <div class=" mt-7 rounded-full  flex justify-center items-center">
+                                <img src="{{request.user.prof_pics.url}}" class="w-[45px] h-[45px] rounded-full">
+                            </div>
+                            <p class="dark:text-gray-100 mt-4">Make a post</p>
+                        </div>
+                        <form method="POST" id="groupcreatepostform" enctype="multipart/form-data" class=" mt-4 sm:mt-0 grid justify-center items-center">
+                            {% csrf_token %}            
+                            <!-- Content field -->
+                            <div>
+                            <textarea id="id_insidegroupcontent" name="text" rows="4" cols="50" placeholder="write your post..." class="bg-transparent w-full resize-none outline-none text-[#0d2438] dark:text-white pl-4"></textarea>
+                            </div>
+                            <!-- text-[#81b1da8f]  [#343b418f]-->
+                            <!-- File field -->
+                            <div class="groupPostfile-input-container pl-4 sm:pl-0">
+                                <input type="file" id="groupcreate_id_post_file" name="file" class="hidden">
+                                <label id="groupPostid_post_file" for="groupcreate_id_post_file" class="file-icon-label">
+                                    <span class="material-icons"><i class="fa-solid fa-file-image text-[#0d2438] dark:text-white" style="font-size: 50px; cursor: grab;"></i></span> <!-- Replace with your icon -->
+                                </label>
+                                <div id="groupPostparentmodalpreview"  class="hidden">
+                                    <div id="groupPost-preview-cancel" class="float-right cursor-pointer ml-2">x</div>
+                                    <img id="groupPostmodalpreview" src="#" alt="" class="w-[50px] h-[50px]">
+                                </div>
+                            </div>
+                            
+                            <!-- Submit button -->
+                        </form>
+                        <div class="w-full justify-center flex gap-9 mt-6 pb-3">                       
+                            <button id="grouppostsubmit" type="submit" class=" bg-green-600 hover:bg-green-500 text-white font-bold py-2 px-4 rounded">
+                                Post
+                            </button>
+                            <button id="groupclose" class="bg-green-600 hover:bg-green-500 text-white font-bold py-2 px-4 rounded">
+                                Close Modal
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- post, memeberes, create and search buttons -->
+            <div class="w-full flex justify-evenly mt-7" >
+                <!-- posts -->
+                <div id="postbutton" data-content="posts" onclick="showContent('posts')" class="active w-fit cursor-pointer text-[#0d2438] dark:text-gray-300 dark:hover:text-gray-500">Posts</div>
+                <!-- Members -->
+                <div id="membersbutton" data-content="members" onclick="showContent('members')" class="active w-fit cursor-pointer text-[#0d2438] dark:text-gray-300 dark:hover:text-gray-500">Members</div>
+                <!-- create -->           
+                {% if request.user in group.members.all or request.user == group.owner %}
+                    <div id="groupcreate" data-content="create" class="active w-fit cursor-pointer text-[#0d2438] dark:text-gray-300 dark:hover:text-gray-500">Create</div>
+                    
+                {% endif %}
+                    
+
+                <!-- search and friends -->
+                <form method="get">
+                    <input type="text" 
+                    placeholder="Search group.."
+                    name="query"
+                    data-content="search"
+                    id="groupsearchButton"
+                    onclick="showContent('search')"
+                    class="active hidden sm:inline-block text-[#0d2438] dark:text-gray-300 bg-transparent border-2 bg-0 outline-none border-[#343b418f] dark:border-gray-300 rounded-xl pl-3 h-[28px] ">
+                </form>
+            </div>
+
+            <!-- all Friends, search, members posts -->
+            <div class="w-full mt-7 flex flex-col justify-center items-center">
+                <!-- members -->
+                <p id="group-name" class="hidden" data-content="{{group.name}}"></p>
+                <div data-content="members" class="content hidden">
+                    {% with length=group.members.all|length %}
+                    {% if length > 0 %}
+                    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 justify-center">
+                        {% for i in group.members.all %}   
+                        {% if request.user != i %} 
+                            <div  class="w-fit h-fit flex flex-col gap-4 items-center cursor-pointer py-4 px-4 bg-base-lightbgvariant dark:bg-base-darkbgvariant shadow-lg hover:shadow-xl rounded-xl  hover:scale-105 transition-transform duration-300" style="justify-content: center;">                                              
+                                <a href="{% url 'profile' name=i.username %}">
+                                    <div class="w-fit h-fit flex gap-4 items-center">
+                                        <div class="w-full mt-2">
+                                            <img src="{{i.prof_pics.url}}" alt="" class="w-[80px] h-[80px] rounded-full">
+                                        </div>
+                                        <div class="text-[#0d2438] dark:text-gray-300">
+                                            <p class="font-bold text-green-600 dark:text-white"> {{ i.username }}</p>
+                                            {{ i.bio }}
+                                        </div> 
+                                    </div>
+                                    
+                                    <div class="groupbuttons flex gap-4 justify-center text-white">
+                                        {% if request.user not in i.profiles.friends.all %}
+                                        <a href="{% url 'addfriends' friend=i.username %}">  
+                                            <p id="addfriendButton" data-content="{{ i.username }}" class="p-2  rounded-lg bg-green-600">Add</p>
+                                        </a>
+                                        {% endif %}
+
+                                        {% if request.user == group.owner or  admin %}
+                                            <a href="{% url 'deleteusergroup' userid=i.id groupid=group.id %}">
+                                                <p id="removefriendButton" data-content="{{ i.username }}" class="p-2 rounded-lg bg-green-600">Remove</p>
+                                            </a>
+                                        {% endif %}
+                                        {% if request.user == group.owner or admin  %}
+                                            <a href="{% url 'make_admin' userid=i.id groupname=group.name %}">
+                                                <p id="removefriendButton" data-content="{{ i.username }}" class="p-2 rounded-lg bg-green-600">Admin</p>
+                                            </a>
+                                        {% endif %}
+                                    </div>
+                                </a>
+                            </div>
+                        {% endif %}     
+                        {% endfor %}
+                    </div>
+                        {% if request.user in group.members.all and length == 1 %}
+                        <div class="h-screen w-full flex justify-center bg-base-lightbg dark:bg-base-darkbg text-[#0d2438] dark:text-white">
+                            No other members yet, only you
+                        </div>
+                        {% endif %}    
+
+                    {% else %}
+                        <div class="h-screen w-full flex justify-center bg-base-lightbg dark:bg-base-darkbg dark:text-gray-300 mt-7">
+                            No members yet
+                        </div>
+
+                    {% endif %}
+                    {% endwith %}
+                </div>
+
+                <!-- search -->
+                <div data-content="search" class="content hidden">
+                
+                </div>
+                
+                <!-- posts -->
+                <div id="postcontent" class="w-full h-full flex flex-col items-center justify-center">
+                    {% if post %}
+                        {% for i in post %}
+                            <div data-content="posts" class="content w-[75%] h-fit hover:scale-105 transition-transform duration-300">                                 
+                                <div class="pb-4 lg:max-w-[512px] pt-2 bg-base-lightbgvariant dark:bg-base-darkbgvariant shadow-lg hover:shadow-xl rounded-t-xl mx-4">
+                                    <div class="h-fit flex items-center gap-4 px-6">
+                                            <img src="{{i.author.prof_pics.url}}" class="rounded-full" style="width: 35px; height: 35px;">
+                                            <div class="text-green-300">{{ i.author.username }}</div>
+                                    </div>
+                                    
+                                    {% if i.text  %}
+                                        <div class="px-8 mt-3 text-[#0d2438] dark:text-gray-300">
+                                            {{ i.text }}
+                                        </div>
+                                    {% endif %}
+                                        
+                                    
+                                </div>
+                                {% if i.file %}
+                                    <div class="aspect-w-16 aspect-h-9 ">
+                                        <div class=" mx-4 lg:h-[449px] lg:max-w-[512px]">
+                                            <img src="{{i.file.url}}" alt="" class="object-cover object-center rounded-b-lg w-full h-full rounded-b-xl">
+                                            <!-- <img src="{{i.file.url}}" alt="" class="w-full h-[375px] rounded-br-lg rounded-bl-lg"> -->
+                                        </div>
+                                    </div>
+                                {% endif %}
+                                <div class="px-8 flex gap-4 items-center" style="padding-top: 0.7rem; padding-bottom: 2.5rem">
+                                        {% if request.user in i.like.all %}
+                                            <i data-post-id="{{ i.id }}" class="group-like-button fa fa-heart text-red-600 cursor-pointer" aria-hidden="true"></i>
+                                        {% else %}
+                                            <i data-post-id="{{ i.id }}" class="group-like-button fa fa-heart text-[#0d2438] dark:text-white cursor-pointer" aria-hidden="true"></i>
+                                        {% endif %}  
+                                        <a href="{% url 'groupcomments' slug=i.slug %}"><i id="postcomments" class="fa fa-comments text-[#0d2438] dark:text-white cursor-pointer" aria-hidden="true" ></i></a>
+                                        <i class="fa fa-share text-[#0d2438] dark:text-white cursor-pointer" aria-hidden="true" ></i>    
+                                        
+                                        {% if request.user == group.owner or  admin %}
+                                            <div class="trash">
+                                                <i data-groupid="{{i.usergroups.id}}" data-postid="{{i.id}}" class="trashchild fa fa-trash text-[#0d2438] dark:text-white cursor-pointer" aria-hidden="true"></i>
+                                            </div>
+                                        {% endif %}
+                                        <div class="w-full flex gap-4">
+                                            <p class="likeholder text-[#0d2438] dark:text-gray-500"></p>
+                                            <p class="commentholder text-[#0d2438] dark:text-gray-500"></p>
+                                        </div>
+                                </div>
+                            </div> 
+                        {% endfor %}
+                        
+                    {% else %}
+                        <div class="h-screen bg-base-lightbg dark:bg-base-darkbg dark:text-gray-300 mt-7">
+                            No post has been made in this group yet
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- drafts -->
+                <div id="draftscontainer"  data-content="drafts" class="content hidden w-full h-full px-3 gap-3">
+                    <div id="draftcontent"  class="w-full">
+                        {% if drafts %}
+                            {% for i in drafts %}
+                                <div data-content="drafts" class="content w-full h-fit bg-base-lightbgvariant dark:bg-base-darkbgvariant shadow-lg hover:shadow-xl rounded-t-xl py-4 hover:scale-105 transition-transform duration-300">
+                                    <div class="h-fit w-full flex items-center gap-4 px-6">
+                                        <img src="{{i.author.prof_pics.url}}" class="rounded-full" style="width: 35px; height: 35px;">
+                                        <div class="text-green-600">{{ i.author.username }}</div>
+                                    </div>
+                                    {% if i.text %}
+                                        <div class="px-8 mt-3 text-[#0d2438] dark:text-gray-300 ">
+                                            {{ i.text }}
+                                        </div>
+                                    {% endif %} 
+                                </div>
+                                {% if i.file %}
+                                    <div class="aspect-w-16 aspect-h-9 ">
+                                        <img src="{{i.file.url}}" alt="" class="object-cover object-center w-[90%] h-full pb-4 rounded-b-lg " >
+                                    </div>
+                                {% endif %} 
+                                <div class="w-full flex flex-col md:flex-row gap-4 justify-center mt-3">                         
+                                        <div data-postid="{{i.id}}" data-groupid="{{group.id}}"  class="approvepost w-full flex justify-center cursor-pointer ">
+                                            <p class="approvepostchild bg-green-600 text-white w-3/4 md:w-full py-2 px-4 flex items-center justify-center rounded-lg"> Approve </p>
+                                        </div>
+                                        <div data-postid="{{i.id}}" data-groupid="{{group.id}}"  class="declinepost w-full flex justify-center cursor-pointer ">
+                                            <p class="declinepostchild bg-green-600 text-white w-3/4 md:w-full py-2 px-4 flex items-center justify-center rounded-lg"> Decline </p>
+                                        </div>
+                                </div> 
+                            {% endfor %}
+                            
+                        {% else %}
+                            <div class="h-screen w-full text-center bg-base-lightbg dark:bg-base-darkbg dark:text-gray-300 mt-7">
+                                No post to be approved
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    {% endif %}
+</div>
+
+<script>
+let groupEnvURL=" {{URL_KEY}}";let groupSearch=document.querySelector("#groupsearchButton");let approvepost=document.querySelectorAll(".approvepost");let trash=document.querySelectorAll(".trash");let declinepost=document.querySelectorAll(".declinepost");let groupname=document.querySelector("#group-name").getAttribute("data-content");const groupcoverpictureInput=document.getElementById("groupcoverpictureInput");const groupcameraIconLabel=document.getElementById("groupcameraIconLabel");const groupcameraIcon=document.getElementById("groupcameraIcon");const groupimagePreview=document.getElementById("groupimagePreview");const groupPreviewImage=document.getElementById("groupPreviewImage");const groupsubmitButton=document.getElementById("groupsubmitButton");const groupcancelButton=document.getElementById("groupcancelButton");if(groupcoverpictureInput){groupcoverpictureInput.addEventListener("change",(function(){const selectedFile=groupcoverpictureInput.files[0];if(selectedFile){const reader=new FileReader;reader.onload=function(e){groupPreviewImage.src=e.target.result;groupimagePreview.style.display="block";groupsubmitButton.style.display="block";groupcancelButton.style.display="block"};reader.readAsDataURL(selectedFile)}if(groupsubmitButton){groupsubmitButton.onclick=async e=>{const formData=new FormData;formData.append("cover_photo",selectedFile);const response=await fetch(`${groupEnvURL}/change_group_cover_picture/${groupname}/`,{method:"POST",body:formData,headers:{"X-CSRFToken":"{{ csrf_token }}"}});if(response.ok){window.location.reload();Toastify({text:"Successful",duration:3e3,newWindow:true,gravity:"top",position:"right",stopOnFocus:true,style:{background:"linear-gradient(to right, #00b09b, #96c93d)"}}).showToast()}else{Toastify({text:"Something went wrong, try again later",duration:3e3,newWindow:true,close:true,gravity:"top",position:"right",stopOnFocus:true,style:{background:"linear-gradient(to right, #00b09b, #96c93d)"}}).showToast()}}}if(groupcancelButton){groupcancelButton.onclick=function(e){groupcoverpictureInput.value="";groupimagePreview.style.display="none";groupsubmitButton.style.display="none";groupcancelButton.style.display="none"}}}))}function showContent(contentType){let contentElements=document.getElementsByClassName("content");let buttons=document.querySelectorAll(".active");let posts=document.querySelector("#postcontent");let postbutton=document.querySelector("#postbutton");for(let i=0;i<contentElements.length;i++){let content=contentElements[i];let dataContent=content.getAttribute("data-content");if(dataContent===contentType){if(dataContent==="members"||dataContent==="posts"||dataContent==="search"||dataContent==="drafts"){content.style.width="90%";content.style.height="100%";content.style.display="flex";content.style.flexDirection="column";content.style.justifyContent="center";if(dataContent!=="drafts"){content.style.margin="1rem"}}}else{content.style.display="none"}}for(let i=0;i<buttons.length;i++){let button=buttons[i];let dataContent=button.getAttribute("data-content");if(dataContent===contentType&&dataContent!=="search"){if(dataContent!=="search"){button.style.paddingBottom="10px";button.style.borderBottom="4px solid #0d2438"}}else{if(dataContent!=="search"){button.style.borderBottom="0 solid transparent"}}}}postbutton.style.paddingBottom="10px";postbutton.style.borderBottom="4px solid #0d2438";approvepost.forEach((button=>{button.addEventListener("click",(async e=>{const postId=button.getAttribute("data-postid");const groupId=button.getAttribute("data-groupid");const formData=new FormData(document.querySelector("#groupcreatepostform"));const response=await fetch(`${groupEnvURL}/approve_post/${groupId}/${postId}/`,{method:"POST",body:formData,headers:{"X-CSRFToken":"{{ csrf_token }}"}});if(response.ok){button.style.display="none";button.nextElementSibling.style.display="none";let ap=document.createElement("h1");ap.innerHTML="Approved";ap.style.color="#16a34a";let v=button.parentElement;button.parentElement.append(ap);Toastify({text:"Post approved successfully ",duration:3e3,newWindow:true,gravity:"top",position:"right",stopOnFocus:true,style:{background:"linear-gradient(to right, #00b09b, #96c93d)"}}).showToast()}else{Toastify({text:"Post unappproved, please try again later ",duration:3e3,newWindow:true,close:true,gravity:"top",position:"right",stopOnFocus:true,style:{background:"linear-gradient(to right, #00b09b, #96c93d)"}}).showToast()}}))}));trash.forEach((trashbutton=>{trashbutton.addEventListener("click",(async e=>{const postId=trashbutton.querySelector(".trashchild").getAttribute("data-postid");const groupId=trashbutton.querySelector(".trashchild").getAttribute("data-groupid");const formData=new FormData(document.querySelector("#groupcreatepostform"));const response=await fetch(`${groupEnvURL}/delete_group_post/${groupId}/${postId}/`,{method:"POST",body:formData,headers:{"X-CSRFToken":"{{ csrf_token }}"}});const data=await response.json();if(response.ok===true&&data.success==="true"){trashbutton.parentElement.previousElementSibling.style.display="none";trashbutton.parentElement.style.display="none";Toastify({text:"Post deleted ",duration:3e3,newWindow:true,gravity:"top",position:"right",stopOnFocus:true,style:{background:"linear-gradient(to right, #00b09b, #96c93d)"}}).showToast()}else{Toastify({text:"Error, please try again later ",duration:3e3,newWindow:true,close:true,gravity:"top",position:"right",stopOnFocus:true,style:{background:"linear-gradient(to right, #00b09b, #96c93d)"}}).showToast()}}))}));declinepost.forEach((declinepostbutton=>{declinepostbutton.addEventListener("click",(async e=>{const postId=declinepostbutton.getAttribute("data-postid");const groupId=declinepostbutton.getAttribute("data-groupid");const formData=new FormData(document.querySelector("#groupcreatepostform"));const response=await fetch(`${groupEnvURL}/delete_group_post/${groupId}/${postId}/`,{method:"POST",body:formData,headers:{"X-CSRFToken":"{{ csrf_token }}"}});if(response.ok===true){declinepostbutton.style.display="none";declinepostbutton.previousElementSibling.style.display="none";let ap=document.createElement("h1");ap.innerHTML="Declined";ap.style.color="#16a34a";let v=declinepostbutton.parentElement;declinepostbutton.parentElement.append(ap);Toastify({text:"Post declined ",duration:3e3,newWindow:true,close:true,gravity:"top",position:"right",stopOnFocus:true,style:{background:"linear-gradient(to right, #00b09b, #96c93d)"}}).showToast()}else{Toastify({text:"Error, please try again later ",duration:3e3,newWindow:true,close:true,gravity:"top",position:"right",stopOnFocus:true,style:{background:"linear-gradient(to right, #00b09b, #96c93d)"}}).showToast()}}))}));
+</script>
+
+{% endblock content %}
