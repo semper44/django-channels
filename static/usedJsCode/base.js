@@ -272,7 +272,8 @@ btn2.addEventListener('click', toggleDarkMode);
 }
 
 //    chatting logic and notification
-const urls = `ws://${window.location.host}/ws/home/`
+const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+const urls = `${protocol}//${window.location.host}/ws/home/`
 let messages = document.querySelector('#online')
 let onlinePeople = document.querySelector('#online-people')
 const chatChat= document.querySelector("#chat-chat")
@@ -810,9 +811,12 @@ if(!profile_message){
 ;
 if (socket !== null && socket.readyState === WebSocket.OPEN) {
     socket.close();
-}                           
+}  
+const newprotocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+const urls2 = `${newprotocol}//${window.location.host}+ /ws/messages/${baseUserId}/${receiver}/ `
 socket = new WebSocket(
-    'ws://' + window.location.host + '/ws/messages/' + baseUserId + '/' + receiver +'/'
+    // 'ws://' + window.location.host + '/ws/messages/' + baseUserId + '/' + receiver +'/'
+    urls2
 );
 
 socket.onmessage = function(e) {
@@ -1829,7 +1833,9 @@ const baserooms= document.querySelector("#baseuserid").innerHTML
 
 
 // intitial user channels connection
-const srcs =  'ws://' + window.location.host + '/ws/chat/' + baserooms +'/'
+const initialprotocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+const srcs = `${initialprotocol}//${window.location.host}/ws/chat/${baserooms}/ `
+// const srcs =  'ws://' + window.location.host + '/ws/chat/' + baserooms +'/'
 const messagesocket = new WebSocket(srcs)
 
 
