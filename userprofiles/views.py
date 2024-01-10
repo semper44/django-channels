@@ -116,7 +116,6 @@ def profile_view(request, name):
                "blocked":False,
                "friends_length":friends_length,
                "groups":groups,
-               "URL_KEY": settings.URL_KEY
         }
         except:
             context= {"notfound": "No profile found"}
@@ -208,7 +207,6 @@ def find_friends(request):
         "find_friends": findfriend_list,
         "sent": list(sent_arr),
         "received": list(received_arr),
-        "URL_KEY": settings.URL_KEY
 
     }
     return JsonResponse(context)
@@ -454,12 +452,12 @@ def search_view(request):
                     group_post_arr.append(details)
         
         results= post_arr+prof_arr+group_arr+group_post_arr
-        context = {"results":results, "URL_KEY": settings.URL_KEY}  
+        context = {"results":results}  
         return JsonResponse(context)
     else:
         results = Profile.objects.all().none
 
-        context = {"results":results, "URL_KEY": settings.URL_KEY}        
+        context = {"results":results}        
         return JsonResponse(context)
     
 @login_required(login_url="login")

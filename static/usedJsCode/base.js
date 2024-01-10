@@ -1,3 +1,4 @@
+let processenv = 'https://django-channels-byf5.onrender.com'
 const topsearchButton = document.querySelector('#topsearchButton');
 const modal = document.querySelector('#modal');   
 const submitButton = document.querySelector('#submit');
@@ -7,7 +8,7 @@ const grouppagecreategroup = document.querySelector('#grouppagecreategroup');
 const topsearchmodal = document.querySelector('#searchmodal');
 const searchmodalparent = document.querySelector('#searchmodalparent');
 const searchmodalcancel = document.querySelector('#searchmodalcancel');
-let baseresponseUrlKey
+let baseresponseUrlKey = 'https://django-channels-byf5.onrender.com'
 
 
 let baseTypingTimer;
@@ -98,13 +99,13 @@ typingTimer= setTimeout( async () => {
                     profPics.src= item.prof_pics
                     parentdiv.append(profPics)
                     viewProfile.onclick=function(){
-                        window.location.href=`${data.URL_KEY}/profile/${item.username}/ `
+                        window.location.href=`${processenv}/profile/${item.username}/ `
                     }
                     
                 }else if(item.prof_pics && item.owner){
                     username.innerHTML=item.content
                     viewProfile.onclick=function(){
-                        window.location.href=`${data.URL_KEY}/comments/${item.slug}/ `
+                        window.location.href=`${processenv}/comments/${item.slug}/ `
                     }                                   
                 }
                 else{
@@ -114,9 +115,8 @@ typingTimer= setTimeout( async () => {
                     profPics.src= item.photo
                     parentdiv.append(profPics)
                     viewProfile.onclick=function(){
-                        window.location.href=`${data.URL_KEY}/group-view/${item.name}/ `
-                        ;
-                        ;
+                        window.location.href=`${processenv}/group-view/${item.name}/ `
+
                     } 
                     
                 }
@@ -290,13 +290,13 @@ const realtimemessg=document.querySelector("#realtimemessg")
 const onlinechat=document.querySelector("#onlinechat")
 const backarrow= document.querySelector("#backarrow")          
 const onlinechatbutton=document.querySelector("#onlinechatbutton")
-const likeCount = document.querySelector("#likeholder");
 const logout = document.querySelector("#logout");
-const csrfToken = document.querySelector('[name="csrfmiddlewaretoken"]').value;
+const csrfToken2 = document.querySelector('[name="csrfmiddlewaretoken"]').value;
 const onlineSocket = new WebSocket(urls)
 const requestUser= document.querySelector("#baseuserid").getAttribute("data-id")
 
-
+// console.log(csrfToken);
+// console.log('csrfToken');
 let addnotif
 if(localStorage.getItem("notificationadd") != undefined){
 addnotif=localStorage.getItem("notificationadd")
@@ -323,12 +323,14 @@ let profile_message = document.querySelector('#profile_message');
 let suggestions= document.querySelector("#suggestions")
 // rightnav findfriends
 let xhrfriends = new XMLHttpRequest();
-xhrfriends.open('GET',  `http://127.0.0.1:8000/findfriends/`, true);
+let url = `${processenv}/findfriends/`
+console.log(url);
+console.log('url');
+xhrfriends.open('GET',  url, true);
 xhrfriends.setRequestHeader('Content-Type', 'application/json');
 xhrfriends.onreadystatechange = function () {
 if (xhrfriends.readyState === XMLHttpRequest.DONE && xhrfriends.status === 200) {                          
         baseresponse= JSON.parse(xhrfriends.responseText)
-        baseresponseUrlKey = baseresponse.URL_KEY
         baseresponse.find_friends.slice(0, 3).forEach(item => {
             if(item.username !== ""){
             let parentdiv= document.createElement("div")
@@ -515,7 +517,7 @@ if (xhrfriends.readyState === XMLHttpRequest.DONE && xhrfriends.status === 200) 
         }
 
         let xhr2 = new XMLHttpRequest();
-        xhr2.open('GET',  "http://127.0.0.1:8000/reset_notif/ ", true);
+        xhr2.open('GET',  `${processenv}/reset_notif/`, true);
         xhr2.setRequestHeader('Content-Type', 'application/json');
         xhr2.onreadystatechange = function () {
             if (xhr2.readyState === XMLHttpRequest.DONE) {
@@ -555,7 +557,6 @@ let bgStatus;
 
 if(localStorage.getItem("mode")==="dark"){
 bgStatus="dark"
-;
 }else{
 bgStatus="light"
 }
@@ -1015,7 +1016,7 @@ function fetchData(onlinesignal){
         chatChat.innerHTML=""
     }
     let xhrchat = new XMLHttpRequest();
-    xhrchat.open('GET',  'http://127.0.0.1:8000/selfmessages', true);
+    xhrchat.open('GET',  `${processenv}/selfmessages/`, true);
     xhrchat.setRequestHeader('Content-Type', 'application/json');
     xhrchat.onreadystatechange = function () {
         if (xhrchat.readyState === XMLHttpRequest.DONE && xhrchat.status === 200) {   
@@ -1239,16 +1240,16 @@ if(offlinemessageNotification !== null || offlinemessageNotification !== undefin
     formData.append("offlinemessageNotification", offlinemessageNotification)
 }
 formData.append("offlineNotification", offlineNotification)
-const notifResponse = await fetch("http://127.0.0.1:8000/logout/", {
+const notifResponse = await fetch(`${processenv}/logout/`, {
     method: 'POST',
     body: formData,
     headers: {
-        'X-CSRFToken': '{{ csrf_token }}',
+        'X-CSRFToken': csrfToken2,
     },
 });
 if(notifResponse.ok){
     window.localStorage.clear()
-    window.location.href= "http://127.0.0.1:8000/login"
+    window.location.href= `${processenv}/login`
     onlineSocket.send(JSON.stringify({
         'message': `${samePerson} just liked your photo`,
         "receiver":samePerson,
@@ -1270,7 +1271,7 @@ logout2.onclick= async()=>{
         formData.append("offlinemessageNotification", offlinemessageNotification)
     }
     formData.append("offlineNotification", offlineNotification)
-    const notifResponse = await fetch("http://127.0.0.1:8000/logout", {
+    const notifResponse = await fetch(`${processenv}/logout/`, {
         method: 'POST',
         body: formData,
         headers: {
@@ -1280,7 +1281,7 @@ logout2.onclick= async()=>{
     if(notifResponse.ok){
         window.localStorage.clear()
         ;
-        window.location.href= "http://127.0.0.1:8000/login"
+        window.location.href= `${processenv}/login`
         onlineSocket.send(JSON.stringify({
             'message': `${samePerson} just liked your photo`,
             "receiver":samePerson,
@@ -1293,28 +1294,30 @@ logout2.onclick= async()=>{
 }
 
 
-function getCookie(name) {
-let cookieValue = null;
-if (document.cookie && document.cookie !== '') {
-    const cookies = document.cookie.split(';');
-    for (let i = 0; i < cookies.length; i++) {
-        const cookie = cookies[i].trim();
-        if (cookie.substring(0, name.length + 1) === (name + '=')) {
-            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-            break;
-        }
-    }
-}
-return cookieValue;
-};
+// function getCookie(name) {
+// let cookieValue = null;
+// if (document.cookie && document.cookie !== '') {
+//     const cookies = document.cookie.split(';');
+//     for (let i = 0; i < cookies.length; i++) {
+//         const cookie = cookies[i].trim();
+//         if (cookie.substring(0, name.length + 1) === (name + '=')) {
+//             cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+//             break;
+//         }
+//     }
+// }
+// return cookieValue;
+// };
 
 
-const csrftoken = getCookie('csrftoken');
+// const csrftoken = getCookie('csrftoken');
 
 $("#myButton").click(function () {
 $(".dataparent").empty();
+let url = `${processenv}/findfriends/`
+
 $.ajax({
-    url: "http://127.0.0.1:8000/findfriends",
+    url: url,
     type: "GET",
     dataType: "json",
     success: function (response) {
@@ -1417,13 +1420,15 @@ $.ajax({
 
                 // Append the friendDiv to the dataContainer
                 friendDiv.appendTo(appendDiv);
+                const csrfAjaxToken = document.querySelector('[name="csrfmiddlewaretoken"]').value;
+
                 addFriend.click(function () {
                     $.ajax({
-                    url: `${response.URL_KEY}/addfriends/${friend.username}/`,
+                    url: `${processenv}/addfriends/${friend.username}/`,
                     type: "POST",
                     dataType: "json",
                     beforeSend: function(xhr, settings) {
-                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                        xhr.setRequestHeader("X-CSRFToken", csrfAjaxToken);
                     },
                     success: function (response) {
                         if(response.success=="ok"){
@@ -1625,7 +1630,7 @@ $('#groupsubmit').on("click", function() {
     let name = $("#id_name").val();
     let description = $("#id_description").val();
     let formData = new FormData();
-    formData.append("csrfmiddlewaretoken", "{{ csrf_token }}");
+    formData.append("csrfmiddlewaretoken", csrfToken2);
     formData.append("name", name);
     formData.append("description", description);
     // [0].files[0]);
@@ -1635,7 +1640,7 @@ $('#groupsubmit').on("click", function() {
     
     $.ajax({
         method: "POST",
-        url: "http://127.0.0.1:8000/create-group",
+        url: `${processenv}/create-group/`,
         data: formData,
         processData: false,
         contentType: false,
@@ -1704,25 +1709,43 @@ if(groupcreatesubmit !== null){
             method: 'POST',
             body: formData,
             headers: {
-                'X-CSRFToken': '{{ csrf_token }}',
+                'X-CSRFToken': csrfToken2,
             },
         });
 
-        ;
         if (response.ok) {
+            console.log(response);
             groupmodal.style.display="none"
-            Toastify({
-                text: "Post successfull, waiting for approval ",
-                duration: 3000,
-                newWindow: true,
-                gravity: "top", // `top` or `bottom`
-                position: "right", // `left`, `center` or `right`
-                stopOnFocus: true, // Prevents dismissing of toast on hover
-                style: {
-                    background: "linear-gradient(to right, #00b09b, #96c93d)",
-                },
-                // onClick: function(){} // Callback after click
+            if(response.status === 201){
+                Toastify({
+                    text: "Post successfull ",
+                    duration: 3000,
+                    newWindow: true,
+                    gravity: "top", // `top` or `bottom`
+                    position: "right", // `left`, `center` or `right`
+                    stopOnFocus: true, // Prevents dismissing of toast on hover
+                    style: {
+                        background: "linear-gradient(to right, #00b09b, #96c93d)",
+                    },
+                    // onClick: function(){} // Callback after click
+                    }).showToast();
+
+                window.location.reload()
+            }
+            else{
+                Toastify({
+                    text: "Post successfull, waiting for approval ",
+                    duration: 3000,
+                    newWindow: true,
+                    gravity: "top", // `top` or `bottom`
+                    position: "right", // `left`, `center` or `right`
+                    stopOnFocus: true, // Prevents dismissing of toast on hover
+                    style: {
+                        background: "linear-gradient(to right, #00b09b, #96c93d)",
+                    },
+                    // onClick: function(){} // Callback after click
                 }).showToast();
+                }
             document.querySelector('#id_insidegroupcontent').value = ""
             document.querySelector('#groupcreate_id_post_file').value = ""
             
@@ -1752,10 +1775,11 @@ if(groupcreatesubmit !== null){
 
 
 $(document).ready(function () {
-let likeCount = $("#likeholder");           
+let likeCount = $(".likeholder"); 
+let c = '{{csrf_token}}'  
 $.ajaxSetup({
     headers: {
-        "X-CSRFToken": '{{csrf_token}}',
+        "X-CSRFToken": csrfToken2,
     },
 });
 
@@ -1763,12 +1787,15 @@ $(".like-button").on("click", function () {
     let postId = $(this).data("post-id");
     let clickedButton = $(this);
         $.ajax({
-            url: "http://127.0.0.1:8000/like_post",  // Replace 'like_post' with your actual URL name for liking a post
+            url: `${processenv}/like_post/`,  // Replace 'like_post' with your actual URL name for liking a post
             method: "POST",
             data: { post_id: postId },
             dataType: "json",
             success: function (data) {
-                likeCount.text(data.like_count);
+                console.log(data.like_count);
+                if(data.like_count >1){
+                    likeCount.text(data.like_count);
+                }
                 if (data.status==="like") {
                     clickedButton.css("color","rgb(220, 38, 38)")
                     onlineSocket.send(JSON.stringify({
@@ -1799,7 +1826,7 @@ $(".group-like-button").on("click", function () {
     let postId = $(this).data("post-id");
     let clickedButton = $(this);
         $.ajax({
-            url: "http://127.0.0.1:8000/group_like_post",  // Replace 'like_post' with your actual URL name for liking a post
+            url: `${processenv}/group_like_post/`,  // Replace 'like_post' with your actual URL name for liking a post
             method: "POST",
             data: { post_id: postId },
             dataType: "json",
@@ -1955,7 +1982,7 @@ const formData = new FormData(document.querySelector('#postform'));
 if(fileInput.files.length>0){
     formData.append('file', fileInput.files[0])
 }
-const response = await fetch('http://127.0.0.1:8000/create_post', {
+const response = await fetch(`${processenv}/create_post/`, {
     method: 'POST',
     body: formData,
     headers: {
@@ -1963,7 +1990,7 @@ const response = await fetch('http://127.0.0.1:8000/create_post', {
     },
 });
 
-
+console.log(response);
 if (response.ok) {
     Toastify({
         text: "Post successfull",
@@ -1977,7 +2004,7 @@ if (response.ok) {
         },
         // onClick: function(){} // Callback after click
         }).showToast();
-    
+    window.location.reload()
 } else {
     Toastify({
         text: "Post unsuccessfull, please try again later ",
@@ -1994,7 +2021,6 @@ if (response.ok) {
         }).showToast();
     // Handle error, maybe show an error message
 }
-window.location.reload()
 });
 
 
@@ -2017,7 +2043,7 @@ statuSubmitButton.addEventListener('click', async (e) => {
     if(fileInputStatus.files.length>0){
         formDatastatus.append('file', fileInputStatus.files[0])
     }
-    const response = await fetch('http://127.0.0.1:8000/create_status', {
+    const response = await fetch(`${processenv}/create_status/`, {
         method: 'POST',
         body: formDatastatus,
         headers: {

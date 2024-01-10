@@ -61,28 +61,64 @@ def change_group_cover_picture(request, name):
 @login_required(login_url="login")
 def post_on_group(request, name):
     if request.method=="POST":
-        blocked= Group.objects.filter(name= f"{name}blocked")
-        usergroup= UserGroups.objects.get(name=name)
-        success= None
-        if request.user not in blocked:
-            details= request.POST.copy()
-            details["usergroups"]= usergroup
-            if request.user == usergroup.owner:
-                details["status"]= "accept"
-            else:
-                details["status"]= "send"
-            details["author"]= request.user
-            request.POST= details
-            print(request.POST)
-            post_form=Users_Group_Post_form(request.POST, request.FILES)
-            if post_form.is_valid():
-                post_form.save()
-                success=True
-                print("hello")
-            print(post_form.errors)
-        else:
-                success=False
-    return JsonResponse({"status":success})
+        try:
+            if request.POST["text"] or request.FILES["file"]:
+                blocked= Group.objects.filter(name= f"{name}blocked")
+                usergroup= UserGroups.objects.get(name=name)
+                if request.user not in blocked:
+                    details= request.POST.copy()
+                    details["usergroups"]= usergroup
+                    if request.user == usergroup.owner:
+                        details["status"]= "accept"
+                        owner = True
+                    else:
+                        details["status"]= "send"
+                    details["author"]= request.user
+                    request.POST= details
+                    form = Users_Group_Post_form(request.POST, request.FILES)
+                    if form.is_valid():
+                        # Create a new post
+                        post = form.save(commit=False)
+                        profile= CustomUser.objects.get(username=request.user.username )
+                        post.author = profile # Assuming you have a user associated with the post
+                        post.save()
+                        success= None
+                        if owner:
+                            return JsonResponse({"success": True}, status=201)
+                        else:
+                            return JsonResponse({"success": True})
+                    
+                    else:
+                        print(form.errors)
+                        return JsonResponse({"success": False, "errors": form.errors})
+                
+        except:
+            print('nw')
+            pass        
+        # text =  request.POST.get('text')
+                # file =  request.FILES.get('file')
+                    
+            
+            
+                
+        #         if text and file:
+        #             print('all')
+        #             post_form=Users_Group_Post_form(request.POST, request.FILES)
+        #         elif not text and file:
+        #             print('file')
+        #             post_form=Users_Group_Post_form(request.FILES)
+        #         elif text and not file:
+        #             print('text')
+        #             post_form=Users_Group_Post_form(request.POST)
+        #         if post_form.is_valid():
+        #             post_form.save()
+        #             success=True
+        #         print(post_form.errors)
+        #     else:
+        #         success=False
+        #     return JsonResponse({"status":success})
+        # 
+
 
 @login_required(login_url="login")
 def join_group(request, id):
@@ -210,7 +246,7 @@ def group_view(request, name):
     else:
         blocked=True
 
-    context={"post":post, "blocked":blocked, "group":group, "drafts":draft, "admin":perm, "URL_KEY": settings.URL_KEY}
+    context={"post":post, "blocked":blocked, "group":group, "drafts":draft, "admin":perm}
     return render(request, "groups/groups.html", context)
 
 

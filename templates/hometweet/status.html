@@ -39,9 +39,8 @@
                 {% if status %}
                     {% for item in status %}
                         {% if item %}
-
                             <div class="swiper-slide custom-slide custom-slide" >
-                                <div class="w-[140px] h-[250px] overflow-hidden relative rounded-lg bg-white dark:bg-base-darkbgvariant">
+                                <div class="w-[140px] h-[250px] overflow-hidden relative rounded-lg bg-white dark:bg-base-darkbgvariant mb-4">
                                     <div class="w-full h-full overflow-hidden">
                                         <p class="hidden" data="{{ item|json_script:'item' }}">
                                             {{ item|json_script:'item' }}

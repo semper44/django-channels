@@ -10,7 +10,8 @@ from django.core.files import File
 
 
 
-def compress_image(image):    
+def compress_image(image): 
+    print('compr') 
     img = Image.open(image)
     if img.mode != "RGB":
         img = img.convert("RGB")   
@@ -18,6 +19,7 @@ def compress_image(image):
     img.save(img_output, 'JPEG', quality=80)     
     compressed_image = File(img_output, name=image.name)    
     return compressed_image
+
 
 
 def generate_random_string(length):
@@ -67,10 +69,14 @@ class Post(models.Model):
 
     
     def save(self, *args, **kwargs):
-        self.file = compress_image(self.file)
+        if self.file:
+            self.file = compress_image(self.file)
+        
         if not self.slug:
             self.slug = self.generate_unique_slug()
-        super().save(*args, **kwargs) 
+
+        super().save(*args, **kwargs)
+
 
 
 class Like(models.Model):

@@ -1,21 +1,31 @@
 
-let envURL =" {{URL_KEY}}"
-
+let envURL ='https://django-channels-byf5.onrender.com'
 let trash = document.querySelectorAll('.profiletrash'); 
 trash.forEach((trashbutton)=>{
     trashbutton.addEventListener('click', async (e) => {
+        // console.log(trashbutton.parentElement.parentElement.parentElement.childElementCount);
+        
         const postId = (trashbutton.children[0].getAttribute('data-postdeleteid'));
         const eventPostId = e.target.parentElement.getAttribute('data-postdeleteid');
                 if(postId === eventPostId){
-            const response = await fetch(`http://127.0.0.1:8000/delete_user_post/${postId}/`, {
+            const response = await fetch(`${envURL}/delete_user_post/${postId}/`, {
                 method: 'POST',
                 headers: {
-                    'X-CSRFToken': '{{ csrf_token }}',
+                    'X-CSRFToken': csrfToken2,
                 },
             });
 
                 const data = await response.json()
                 if (response.ok && data.success === "true") {
+                    const len_posts = document.querySelector('#len_posts')
+                    len_posts.innerHTML= (+len_posts.innerHTML)-1
+                    if(trashbutton.parentElement.parentElement.parentElement.childElementCount<2){
+                        let ptext = document.createElement('p')
+                        ptext.innerHTML = 'No feeds to fetch'
+                        ptext.classList.add('h-screen', 'w-full', 'bg-base-lightbg', 'dark:bg-base-darkbg', 'text-[#0d2438]', 'dark:text-white', 'text-center');
+                        const noFeeds = document.querySelector('#postcontent')
+                        noFeeds.append(ptext)
+                    }
                 trashbutton.parentElement.parentElement.style.display = "none"            
                 Toastify({
                     text: "Delete succesfull ",
@@ -90,7 +100,7 @@ if(profilePictureInput){
             profilesubmitButton.onclick = async (e)=> {
                 const formData = new FormData(document.querySelector('#postform'));
                 formData.append('prof_pics', selectedFile)
-                const response = await fetch('http://127.0.0.1:8000/ change_profile_picture', {
+                const response = await fetch(`${envURL}/change_profile_picture`, {
                 method: 'POST',
                 body: formData,
                 headers: {
@@ -150,7 +160,7 @@ profileclosemodal.addEventListener("click", ()=>profileunfriendmodal.style.displ
 profileconfirmunfriend.addEventListener("click", (e)=>{
 const csrfUnfriendToken = getCookie("csrftoken");
 let xhr = new XMLHttpRequest();
-xhr.open('POST',  `http://127.0.0.1:8000/removefriends/${friendName}/`, true);
+xhr.open('POST',  `${envURL}/removefriends/${friendName}/`, true);
     xhr.setRequestHeader('Content-Type', 'application/json');
     xhr.setRequestHeader('X-CSRFToken', csrfToken); 
     xhr.onreadystatechange = function () {
@@ -221,7 +231,7 @@ $(document).ready(function () {
         $(".friendrequestparent").empty()
        
         $.ajax({
-        url: "http://127.0.0.1:8000/received_request",
+        url: `${envURL}/received_request`,
         type: "GET",
         dataType: "json",
         success: function (response) {
@@ -411,7 +421,7 @@ $(document).ready(function () {
     $("#searchButton").click(function () {
         let query= $("#searchButton").val()
         $.ajax({
-            url: "http://127.0.0.1:8000/search",
+            url: `${envURL}/search`,
             type: "GET",
             data:{"query":query},
             dataType: "json",
@@ -429,7 +439,7 @@ if(profile_message2){
         let friendusername= profile_message2.getAttribute("receiver")
 
         $.ajax({
-            url: `http://127.0.0.1:8000/addfriends/${friendusername}/`,
+            url: `${envURL}/addfriends/${friendusername}/`,
             type: "POST",
             dataType: "json",
             beforeSend: function(xhr, settings) {
@@ -446,7 +456,7 @@ if(profile_message2){
 
     $("profileblock").click(function () {
         $.ajax({
-            url: `http://127.0.0.1:8000/blockuser/${friendusername}/`,
+            url: `${envURL}/blockuser/${friendusername}/`,
             type: "POST",
             dataType: "json",
             beforeSend: function(xhr, settings) {
@@ -505,7 +515,7 @@ $("#allgroups").on("click", function(){
 $(".groupsparent").empty()
 $.ajax({
     method: "GET",
-    url: "http://127.0.0.1:8000/allgroups",
+    url: `${envURL}/allgroups`,
     processData: false,
     contentType: false,
     success: function(response) {

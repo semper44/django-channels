@@ -55,36 +55,44 @@ def try_view(request):
 
 @login_required(login_url="login")
 def create_post_view(request):
-    if request.method == 'POST':
-        print(request.POST)
-        if request.POST["content"]or request.FILES["file"]:
-            form = make_tweet_form(request.POST, request.FILES)
-            if form.is_valid():
-                # Create a new post
-                post = form.save(commit=False)
-                profile= CustomUser.objects.get(username=request.user.username )
-                post.author = profile # Assuming you have a user associated with the post
-                post.save()
-                return JsonResponse({"success": True})
-            print(form.errors)
-            return JsonResponse({"success": False, "errors": form.errors})
-        return JsonResponse({"success": False, "errors": "empty"})
-    
+    if request.user.is_authenticated:
+        if request.method == 'POST':
+            try:
+                if request.POST['content'] or  request.FILES['file']:
+                    form = make_tweet_form(request.POST, request.FILES)
+                    if form.is_valid():
+                    # Create a new post
+                        post = form.save(commit=False)
+                        profile = CustomUser.objects.get(username=request.user.username)
+                        post.author = profile 
+                        post.save()
+                        return JsonResponse({"success": True})
+                    else:
+                        return JsonResponse({"success": False, "errors": form.errors}, status = 400)
+
+            except :    
+                return JsonResponse({"error": "Invalid request method"}, status = 400)
+            return JsonResponse({"error": "Invalid request method"},status = 400)
+
 
 @login_required(login_url="login")
 def create_status_view(request):
     if request.method == 'POST':
-        if request.POST["text"] or request.FILES["file"]:
-            form = make_status_form(request.POST, request.FILES)
-            if form.is_valid():
-                # Create a new post
-                post = form.save(commit=False)
-                profile= CustomUser.objects.get(username=request.user.username )
-                post.author = profile # Assuming you have a user associated with the post
-                post.save()
-                return JsonResponse({"success": True})
-            print(form.errors)
-            return JsonResponse({"success": False, "errors": form.errors})
+        try:
+            if request.POST["text"] or request.FILES["file"]:
+                form = make_status_form(request.POST, request.FILES)
+                if form.is_valid():
+                    # Create a new post
+                    post = form.save(commit=False)
+                    profile= CustomUser.objects.get(username=request.user.username )
+                    post.author = profile # Assuming you have a user associated with the post
+                    post.save()
+                    return JsonResponse({"success": True})
+                print(form.errors)
+                return JsonResponse({"success": False, "errors": form.errors})
+            
+        except:
+            return JsonResponse({"success": False, "errors": "empty"}, status = 400)
         return JsonResponse({"success": False, "errors": "empty"})
 
 
@@ -167,6 +175,7 @@ def comment_view(request, slug):
                 continue
         except:
             comment_arr.append(i)
+    print('posts')
     context={"post":post, "comments":comment_arr}
     return render(request, "hometweet/comment.html", context)
 

@@ -117,7 +117,7 @@ def home_view(request):
             personalpost=Post.objects.filter(author=request.user)
             personalpost = Post.objects.filter(author=request.user)
             friend = request.user.profile.friends.all()
-
+            print('wene')
             for i in friend:
                 ts=Post.objects.filter(author=i.id)
                 
@@ -131,6 +131,7 @@ def home_view(request):
                     status = []
                     for z in friend_status:
                         if z.file and z.author.cover_photo:
+                            
                             details= {
                                 "text":z.text,
                                 "file":z.file.url,
@@ -161,12 +162,15 @@ def home_view(request):
 
             if owner_status.exists():
                 for a in owner_status:
+                    # print( a.author.cover_photo.url)
+                    # print( a.author.prof_pics)
+                    # print('z.author.cover_photo')
                     if a.file and a.author.cover_photo:
                         detail= {
                             "text":a.text,
                             "file":a.file.url,
                             "owner":a.author.prof_pics.url,
-                            "cover_photo": request.build_absolute_uri(a.author.cover_photo)
+                            "cover_photo": a.author.cover_photo.url
                         }
                     elif a.file and not a.author.cover_photo:
                         detail= {
@@ -183,13 +187,13 @@ def home_view(request):
                         detail= {
                             "text":a.text,
                             "owner":a.author.prof_pics.url,
-                            "cover_photo": request.build_absolute_uri(a.author.cover_photo)
+                            "cover_photo": a.author.cover_photo.url
 
                         }           
                     
                     request_user_status.append(detail)
 
-                statuslength= len(status)
+                statuslength= len(request_user_status)
                 all_statuses.append(request_user_status)
             print(statuslength, len(request_user_status))
             print(type(statuslength), "len(request_user_status)")
@@ -209,7 +213,7 @@ def home_view(request):
             return redirect("login")
     else:
         profile =False
-        context ={'profile_exist':profile}
+        context ={'profile_exist':profile }
     template_names=["hometweet/home.html", "hometweet/status.html",]
     return render(request, template_names, context)
 

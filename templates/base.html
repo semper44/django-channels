@@ -29,6 +29,7 @@
  {% endblock static %} 
 </head>
 <body id="baseparent" class="bg-base-lightbg dark:bg-base-darkbg h-full w-full">
+   
     <!-- preview upload -->
     <div id="uploadPreview" class=" hidden w-full">
         <div class="fixed inset-0 flex items-center justify-center z-50">
@@ -185,40 +186,40 @@
         {% include 'hometweet/leftnav.html' %}
     </div>   
 
-        <!-- top mobile nav -->
-        <div class="w-full md:hidden  fixed bg-base-lightbg dark:bg-base-darkbg top-0 h-fit py-5  z-20 ">
-            <div class="w-full flex justify-between">
-                <div id="home"> 
-                    <h1 class="ml-4 text-[#0d2438] dark:text-white cursor-pointer"><i class="fa fa-bars" aria-hidden="true"></i>
-                    </h1>
-                </div>
-                <div class="w-fit mr-4 flex gap-3 items-center">                  
-                    <form method="get" class="relative" id="topsearchButtonform">
-                        <input type="text" 
-                        placeholder="Search"
-                        name="query"
-                        id="topsearchButton"
-                        class="text-[#0d2438] dark:text-gray-300 bg-transparent border-2 bg-0 outline-none border-[#0d2438] dark:border-gray-300 rounded-xl pl-3 h-[28px] ">
-                        <div class="absolute top-0 right-2" style="top: 2px;">
-                            <i class="fa fa-search text-[#0d2438] dark:text-white cursor-pointer" aria-hidden="true"></i>
-                        </div>               
-                    </form> 
-                    <a href="{% url 'notification_view' %}">
-                        <div id="bellicon2container" class="relative text-[#0d2438] dark:text-white ">
-                            <i class="fa fa-bell cursor-pointer " aria-hidden="true"></i>                           
-                            <div id="bellicon2"  class="rounded-full bg-red-600 text-white flex items-center justify-center" style="height: 22px; width: 22px; font-size: 13px;position: absolute; right: -8px; top: -10px"></div>
-                        </div>        
-                    </a>
-                </div>
+    <!-- top mobile nav -->
+    <div class="w-full md:hidden  fixed bg-base-lightbg dark:bg-base-darkbg top-0 h-fit py-5  z-20 ">
+        <div class="w-full flex justify-between">
+            <div id="home"> 
+                <h1 class="ml-4 text-[#0d2438] dark:text-white cursor-pointer"><i class="fa fa-bars" aria-hidden="true"></i>
+                </h1>
             </div>
-            <!-- search modal -->
-            <div id="searchmodalparent" class="hidden absolute w-[80%] h-fit py-4 transform translate-x-[13%] rounded-b-lg z-50 bg-white dark:bg-base-darkbgvariant">
-                <div id="searchmodalcancel" class="w-full text-right text-lg text-red-600 cursor-pointer pr-4"> X</div>
-                <div id="searchmodal" class="h-fit w-full text-[#0d2438] dark:text-gray-300 flex flex-col justify-center items-center gap-4">
-                </div>
+            <div class="w-fit mr-4 flex gap-3 items-center">                  
+                <form method="get" class="relative" id="topsearchButtonform">
+                    <input type="text" 
+                    placeholder="Search"
+                    name="query"
+                    id="topsearchButton"
+                    class="text-[#0d2438] dark:text-gray-300 bg-transparent border-2 bg-0 outline-none border-[#0d2438] dark:border-gray-300 rounded-xl pl-3 h-[28px] ">
+                    <div class="absolute top-0 right-2" style="top: 2px;">
+                        <i class="fa fa-search text-[#0d2438] dark:text-white cursor-pointer" aria-hidden="true"></i>
+                    </div>               
+                </form> 
+                <a href="{% url 'notification_view' %}">
+                    <div id="bellicon2container" class="relative text-[#0d2438] dark:text-white ">
+                        <i class="fa fa-bell cursor-pointer " aria-hidden="true"></i>                           
+                        <div id="bellicon2"  class="rounded-full bg-red-600 text-white flex items-center justify-center" style="height: 22px; width: 22px; font-size: 13px;position: absolute; right: -8px; top: -10px"></div>
+                    </div>        
+                </a>
             </div>
         </div>
-        
+        <!-- search modal -->
+        <div id="searchmodalparent" class="hidden absolute w-[80%] h-fit py-4 transform translate-x-[13%] rounded-b-lg z-50 bg-white dark:bg-base-darkbgvariant">
+            <div id="searchmodalcancel" class="w-full text-right text-lg text-red-600 cursor-pointer pr-4"> X</div>
+            <div id="searchmodal" class="h-fit w-full text-[#0d2438] dark:text-gray-300 flex flex-col justify-center items-center gap-4">
+            </div>
+        </div>
+    </div>
+    
     <!-- mobile sidebar -->
     <div id="sidebar" class="md:hidden fixed h-full ">
         <div class="md:hidden fixed bg-white dark:bg-base-darkbgvariant h-full">
@@ -310,6 +311,7 @@
 <!-- <script src="{% static 'js/base.min.js' %}"></script> -->
 
 <script src="{% static 'main.js' %}"></script> 
+
 <script src="{% static 'usedJsCode/base.js' %}"></script> 
 
 <!-- loading status -->

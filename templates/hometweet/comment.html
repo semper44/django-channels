@@ -22,9 +22,9 @@
         </div>
         <div class="text-[#0d2438] dark:text-gray-300 px-4  py-4" style="margin-left: 1.5rem;">{{post.content}}</div>
         <p style="display: none;" data-content="{{post.slug}}" id="comment-id"></p>
-       
     </div>
-    {% if post.file.url %}
+    
+    {% if post.file %}
     <img src="{{post.file.url}}" alt="" class="md:object-cover md:object-center rounded-lg w-full h-full rounded-b-xl lg:w-[30%] lg:h-[375px]">   
     {% endif %}
     

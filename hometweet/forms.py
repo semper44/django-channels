@@ -8,6 +8,11 @@ class make_tweet_form(ModelForm):
     class Meta:
         model = Post
         fields = ["content", "file"]
+    # def __init__(self, *args, **kwargs):
+    #     print("Form data:", args[0])  # Check the data being passed
+    #     print("Form files:", kwargs.get('files'))  # Check the files being passed
+    #     super().__init__(*args, **kwargs)
+
 
 class make_status_form(ModelForm):
     class Meta:

@@ -27,7 +27,7 @@ document.addEventListener( "DOMContentLoaded" ,function(){
         e.preventDefault();
         const formData = new FormData(document.querySelector('#rightnavsearchform'));
         const searchParams = new URLSearchParams(formData);
-        const url = 'http://127.0.0.1:8000/search' + '?' + searchParams.toString();
+        const url = 'https://django-channels-byf5.onrender.com/search' + '?' + searchParams.toString();
 
         const response = await fetch(url, {
             method: 'GET',
@@ -140,7 +140,7 @@ document.addEventListener( "DOMContentLoaded" ,function(){
             e.preventDefault();
             const formData = new FormData(document.querySelector('#rightnavsearchform'));
             const searchParams = new URLSearchParams(formData);
-            const url = 'http://127.0.0.1:8000/search' + '?' + searchParams.toString();
+            const url = 'https://django-channels-byf5.onrender.com/search' + '?' + searchParams.toString();
 
             const response = await fetch(url, {
                 method: 'GET',

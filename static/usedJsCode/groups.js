@@ -2,7 +2,7 @@
     // let groupmodal = document.querySelector('#groupmodalpost'); 
     // let groupsubmit = document.querySelector('#grouppostsubmit'); 
     // let groupclose = document.querySelector('#groupclose'); 
-    let groupEnvURL =" {{URL_KEY}}"
+    let groupEnvURL = 'https://django-channels-byf5.onrender.com'
     let groupSearch = document.querySelector('#groupsearchButton'); 
     let approvepost = document.querySelectorAll('.approvepost'); 
     let trash = document.querySelectorAll('.trash'); 
@@ -17,6 +17,10 @@
     const groupPreviewImage = document.getElementById('groupPreviewImage');
     const groupsubmitButton = document.getElementById('groupsubmitButton');
     const groupcancelButton = document.getElementById('groupcancelButton');
+    const csrfToken3 = document.querySelector('[name="csrfmiddlewaretoken"]').value;
+
+    console.log(csrfToken3);
+
 
     // Listen for changes in the file input
     if(groupcoverpictureInput){
@@ -45,7 +49,7 @@
                     method: 'POST',
                     body: formData,
                     headers: {
-                        'X-CSRFToken': '{{ csrf_token }}',
+                        'X-CSRFToken': csrfToken3,
                     },
                 });
                     if(response.ok){
@@ -198,8 +202,9 @@
         trashbutton.addEventListener('click', async (e) => {
         const postId = trashbutton.querySelector(".trashchild").getAttribute('data-postid');
         const groupId = trashbutton.querySelector(".trashchild").getAttribute('data-groupid');
-        
         const formData = new FormData(document.querySelector('#groupcreatepostform'));
+        const noFeeds = document.querySelector('#postcontent')
+        console.log(noFeeds);
         const response = await fetch(`${groupEnvURL}/delete_group_post/${groupId}/${postId}/`, {
             method: 'POST',
             body: formData,
@@ -211,8 +216,17 @@
         
         const data = await response.json()
         if (response.ok===true && data.success === "true") {
-            trashbutton.parentElement.previousElementSibling.style.display="none"
-            trashbutton.parentElement.style.display="none"
+           console.log(trashbutton.parentElement.parentElement.parentElement.childElementCount);
+           console.log(trashbutton.parentElement.parentElement.childElementCount);
+            if(trashbutton.parentElement.parentElement.parentElement.childElementCount<2){
+                let ptext = document.createElement('p')
+                ptext.innerHTML = 'No feeds to fetch'
+                ptext.classList.add('h-screen', 'w-full', 'bg-base-lightbg', 'dark:bg-base-darkbg', 'text-[#0d2438]', 'dark:text-white', 'text-center');
+                const noFeeds = document.querySelector('#postcontent')
+                noFeeds.append(ptext)
+            }
+            
+            trashbutton.parentElement.parentElement.style.display="none"
             Toastify({
                 text: "Post deleted ",
                 duration: 3000,
