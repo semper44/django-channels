@@ -228,7 +228,13 @@
                                 {% endif %}
                                 <div class="px-8 flex gap-4 items-center" style="padding-top: 0.7rem; padding-bottom: 2.5rem">
                                         {% if request.user in i.like.all %}
-                                            <i data-post-id="{{ i.id }}" class="group-like-button fa fa-heart text-red-600 cursor-pointer" aria-hidden="true"></i>
+                                            <i data-post-id="{{ i.id }}" class="group-like-button fa fa-heart text-red-600 cursor-pointer" aria-hidden="true">
+                                                <div class="likeholder text-gray-500 text-sm">                                 
+                                                    {% if i.like.count > 1 %}
+                                                        {{i.like.count}}                                        
+                                                    {% endif %}                                       
+                                                </div> 
+                                            </i>
                                         {% else %}
                                             <i data-post-id="{{ i.id }}" class="group-like-button fa fa-heart text-[#0d2438] dark:text-white cursor-pointer" aria-hidden="true"></i>
                                         {% endif %}  
@@ -240,10 +246,6 @@
                                                 <i data-groupid="{{i.usergroups.id}}" data-postid="{{i.id}}" class="trashchild fa fa-trash text-[#0d2438] dark:text-white cursor-pointer" aria-hidden="true"></i>
                                             </div>
                                         {% endif %}
-                                        <div class="w-full flex gap-4">
-                                            <p class="likeholder text-[#0d2438] dark:text-gray-500"></p>
-                                            <p class="commentholder text-[#0d2438] dark:text-gray-500"></p>
-                                        </div>
                                 </div>
                             </div> 
                         {% endfor %}

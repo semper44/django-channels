@@ -97,6 +97,8 @@ def profile_view(request, name):
             # profiles = user.profile
             # groups = user.usergroups.all()
             friend = profiles.friends.all()
+            print(friend)
+            print('friend')
             if friend.exists():
                 friends_exists=True
             else:

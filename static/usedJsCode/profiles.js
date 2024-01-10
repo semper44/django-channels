@@ -2,9 +2,7 @@
 let envURL ='https://django-channels-byf5.onrender.com'
 let trash = document.querySelectorAll('.profiletrash'); 
 trash.forEach((trashbutton)=>{
-    trashbutton.addEventListener('click', async (e) => {
-        // console.log(trashbutton.parentElement.parentElement.parentElement.childElementCount);
-        
+    trashbutton.addEventListener('click', async (e) => {        
         const postId = (trashbutton.children[0].getAttribute('data-postdeleteid'));
         const eventPostId = e.target.parentElement.getAttribute('data-postdeleteid');
                 if(postId === eventPostId){
@@ -521,107 +519,116 @@ $.ajax({
     success: function(response) {
         // Handle the response here
         // window.location.reload()
-        JSON.parse(response).forEach((details)=>{
-            let friendDiv = $("<div>");
-            let container = $("<div>");
-            let nameHolder = $("<div>");
-            nameHolder.css({"display": "grid", "gap":"5px", "justify-items":"center"})
-            container.css({ "display": "flex", "gap":"5px", "justify-content":"center"})
-            // Apply the Tailwind CSS classes to the friendDiv
-            friendDiv.css({
-            "width": "fit-content",
-            "height": "fit-content",
-            "padding-top": "1rem",
-            "padding-bottom": "1rem",
-            "padding-left": "1rem",
-            "padding-right": "1rem",
-            "display":"grid",
-            "gap":"5px",
-            "justify-items":"center",
-            "align-content":"center",
-            "box-shadow": "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
-            "border-radius": "10px",
-            "margin-top": "1rem",
-            "margin-bottom": "1rem",
-            "margin-left": "1rem",
-            "margin-right": "1rem",
-            "cursor":"pointer",
-            "transform-origin": "center",
-            "transition-property": "transform",
-            "transition-duration": "300ms"
-            });
-
-            // Apply additional hover styles
-            friendDiv.hover(function () {
-                $(this).css({
-                    "box-shadow": "var(--box-shadow-xl)",
-                    "transform": "scale(1.05)"
+        if(response.length <1){
+            let ptext = $("<p>").text("No groups found");
+            // Add classes to ptext using jQuery
+            ptext.addClass('h-screen w-full bg-base-lightbg dark:bg-base-darkbg text-[#0d2438] dark:text-white text-center');
+            // Append ptext to #postcontent using jQuery
+            $('.groupsparent').append(ptext);
+        }else{
+            JSON.parse(response).forEach((details)=>{
+                let friendDiv = $("<div>");
+                let container = $("<div>");
+                let nameHolder = $("<div>");
+                nameHolder.css({"display": "grid", "gap":"5px", "justify-items":"center"})
+                container.css({ "display": "flex", "gap":"5px", "justify-content":"center"})
+                // Apply the Tailwind CSS classes to the friendDiv
+                friendDiv.css({
+                "width": "fit-content",
+                "height": "fit-content",
+                "padding-top": "1rem",
+                "padding-bottom": "1rem",
+                "padding-left": "1rem",
+                "padding-right": "1rem",
+                "display":"grid",
+                "gap":"5px",
+                "justify-items":"center",
+                "align-content":"center",
+                "box-shadow": "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
+                "border-radius": "10px",
+                "margin-top": "1rem",
+                "margin-bottom": "1rem",
+                "margin-left": "1rem",
+                "margin-right": "1rem",
+                "cursor":"pointer",
+                "transform-origin": "center",
+                "transition-property": "transform",
+                "transition-duration": "300ms"
                 });
-            }, 
-            function () {
-                $(this).css({
-                    "box-shadow": "var(--box-shadow-lg)",
-                    "transform": "scale(1)"
+    
+                // Apply additional hover styles
+                friendDiv.hover(function () {
+                    $(this).css({
+                        "box-shadow": "var(--box-shadow-xl)",
+                        "transform": "scale(1.05)"
+                    });
+                }, 
+                function () {
+                    $(this).css({
+                        "box-shadow": "var(--box-shadow-lg)",
+                        "transform": "scale(1)"
+                    });
                 });
-            });
-
-            // Create a new <p> element to display the username
-            let name = $("<p>").text(details.fields.name);
-            let about = $("<p>").text(details.fields.description);
-            let user = $("#prof_pics").data('content')
-            name.css({"font-size":"bold"})
-            about.css({ "opacity":"0.6", "margin-bottom":"1rem"})
-            let image = $("<img>");
-            image.attr("src", details.fields.cover_photo);
-            image.attr("alt", "cover photo");
-            image.attr("width", "80"); // Set the desired width
-            image.attr("height", "80");
-            image.css("border-radius", "50%")
-                                                let joinGroup;
-            if(user===details.fields.owner){
-                joinGroup= $("<p>").text("Your group")
-                joinGroup.css("color","lime")
-            }else{
-                joinGroup= $("<p>").text("join group")
-                joinGroup.css({
-                    "width":"80%",
-                    "height":"fit",
-                    "padding":"6",
-                    "border-radius":"5px",
-                    "background-color":"rgb(22 163 74)",
-                    "color":"rgb(209 213 219)",
-                    "cursor":"pointer",
-                    "text-align":"center"                        
-                })
-                joinGroup.click(function () {
-                    const csrftoken = getCookie('csrftoken');
-                    $.ajax({
-                        url: `${envURL}/join-group/${details.pk}`,
-                        type: "POST",
-                        dataType: "json",
-                        beforeSend: function(xhr, settings) {
-                            xhr.setRequestHeader("X-CSRFToken", csrftoken);
-                        },
-                        success: function (response) {
-                                                    }
+    
+                // Create a new <p> element to display the username
+                let name = $("<p>").text(details.fields.name);
+                let about = $("<p>").text(details.fields.description);
+                let user = $("#prof_pics").data('content')
+                name.css({"font-size":"bold"})
+                about.css({ "opacity":"0.6", "margin-bottom":"1rem"})
+                let image = $("<img>");
+                image.attr("src", details.fields.cover_photo);
+                image.attr("alt", "cover photo");
+                image.attr("width", "80"); // Set the desired width
+                image.attr("height", "80");
+                image.css("border-radius", "50%")
+                                                    let joinGroup;
+                if(user===details.fields.owner){
+                    joinGroup= $("<p>").text("Your group")
+                    joinGroup.css("color","lime")
+                }else{
+                    joinGroup= $("<p>").text("join group")
+                    joinGroup.css({
+                        "width":"80%",
+                        "height":"fit",
+                        "padding":"6",
+                        "border-radius":"5px",
+                        "background-color":"rgb(22 163 74)",
+                        "color":"rgb(209 213 219)",
+                        "cursor":"pointer",
+                        "text-align":"center"                        
                     })
-                })
-            
-            }
+                    joinGroup.click(function () {
+                        const csrftoken = getCookie('csrftoken');
+                        $.ajax({
+                            url: `${envURL}/join-group/${details.pk}`,
+                            type: "POST",
+                            dataType: "json",
+                            beforeSend: function(xhr, settings) {
+                                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                            },
+                            success: function (response) {
+                                                        }
+                        })
+                    })
+                
+                }
                 nameHolder.append(name);
-            nameHolder.append(about);
-            container.append(image);
-            container.append(nameHolder);
-            friendDiv.append(container)
-            friendDiv.append(joinGroup)
-            friendDiv.appendTo(".groupsparent");
-
-            friendDiv.click(function () {
-                window.location.href=`${envURL}/group-view/${details.fields.name}`
+                nameHolder.append(about);
+                container.append(image);
+                container.append(nameHolder);
+                friendDiv.append(container)
+                friendDiv.append(joinGroup)
+                friendDiv.appendTo(".groupsparent");
+    
+                friendDiv.click(function () {
+                    window.location.href=`${envURL}/group-view/${details.fields.name}`
+                })
             })
-        })
+        }
     },
     error: function(error) {
+        console.log(error);
                 // Handle the error here
     }
 });

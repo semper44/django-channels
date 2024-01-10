@@ -7,10 +7,12 @@ from .models import UserGroups, Group_coment, UserGroups_Post
 from user.models import CustomUser
 from django.db.models import Q
 from itertools import chain
+from django.core.serializers import serialize
+
 from django.shortcuts import get_object_or_404
 from django.core import serializers
 from .forms import GroupcoverpictureInput
-from django.conf import settings
+# from django.conf import settings
 
 
 
@@ -148,10 +150,23 @@ def make_admin(request, userid, groupname):
     return redirect(f"/group-view/{groupname}/")
 
 
+# @login_required(login_url="login")
+# def list_all_groups(request):
+#     groups= UserGroups.objects.all()
+#     return render(request, "groups/allgroups.html", {"groups": groups})
+
 @login_required(login_url="login")
 def list_all_groups(request):
-    groups= UserGroups.objects.all()
-    return render(request, "groups/allgroups.html", {"groups": groups})
+    groups = UserGroups.objects.all()
+
+    # Check if there are any groups
+    if groups.exists():
+        # Serialize the groups data if they exist
+        serialized_groups = serialize('json', groups)
+        return JsonResponse(serialized_groups, safe=False)
+    else:
+        # Return an empty JSON array if no groups exist
+        return JsonResponse([], safe=False)
 
 @login_required(login_url="login")
 def delete_user_from_group(request, userid, groupid):

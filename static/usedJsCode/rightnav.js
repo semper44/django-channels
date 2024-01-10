@@ -16,7 +16,6 @@ document.addEventListener( "DOMContentLoaded" ,function(){
 
     document.querySelector("#rightnavcancel").addEventListener("click", ()=>{
         rightnavParent.style.display="none"
-        console.log(document.querySelector("#rightnavParent"))
         document.querySelector("#allrightnavsuggestions").style.display="block"
     })
     

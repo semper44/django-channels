@@ -61,9 +61,7 @@ class UserGroups_Post(models.Model):
 
 
     def save(self, *args, **kwargs):
-        print('ut')
         if self.file:
-            print('344')
             self.file = compress_image(self.file)
         if not self.slug:
             self.slug = self.generate_unique_slug()

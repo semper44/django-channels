@@ -12,16 +12,32 @@
 <body class="bg-base-lightbg h-full ">
 
     {% if messages %}
-        <div class="flash-messages absolute w-full h-fit flex justify-end ">
-            <ul>
-                {% for message in messages %}
-                    <li id="flash-messages" class=" {% if message.tags %}{{ message.tags }}{% endif %}">
-                        <span class="bg-gradient-to-r from-teal-600 via-lime-400 to-teal-600 p-4 rounded-lg text-white mt-1">{{ message }}</span>
-                    </li>
-                {% endfor %}
-            </ul>
-        </div>
-    {% endif %}
+    <div class="flash-messages absolute w-full h-fit flex justify-end ">
+        <ul>
+            {% for message in messages %}
+                <li id="flash-messages" class="{% if message.tags %}{{ message.tags }}{% endif %}">
+                    <span class="bg-gradient-to-r from-teal-600 via-lime-400 to-teal-600 p-4 rounded-lg text-white mt-1">{{ message }}</span>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- Add JavaScript script to handle timeout -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            let flashMessages = document.getElementById('flash-messages');
+
+            // Display the flash message
+            flashMessages.style.display = 'block';
+
+            // Set a timeout to hide the flash message after 3000 milliseconds (3 seconds)
+            setTimeout(function() {
+                flashMessages.style.display = 'none';
+            }, 4000);
+        });
+    </script>
+{% endif %}
+
 
     <div class="w-full h-[100vh] flex flex-col items-center justify-center">
         <div class="text-2xl text-[#0d2438] text-center mb-4">Login</div>

@@ -204,7 +204,6 @@
         const groupId = trashbutton.querySelector(".trashchild").getAttribute('data-groupid');
         const formData = new FormData(document.querySelector('#groupcreatepostform'));
         const noFeeds = document.querySelector('#postcontent')
-        console.log(noFeeds);
         const response = await fetch(`${groupEnvURL}/delete_group_post/${groupId}/${postId}/`, {
             method: 'POST',
             body: formData,

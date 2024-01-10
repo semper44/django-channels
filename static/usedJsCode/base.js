@@ -295,8 +295,6 @@ const csrfToken2 = document.querySelector('[name="csrfmiddlewaretoken"]').value;
 const onlineSocket = new WebSocket(urls)
 const requestUser= document.querySelector("#baseuserid").getAttribute("data-id")
 
-// console.log(csrfToken);
-// console.log('csrfToken');
 let addnotif
 if(localStorage.getItem("notificationadd") != undefined){
 addnotif=localStorage.getItem("notificationadd")
@@ -324,109 +322,113 @@ let suggestions= document.querySelector("#suggestions")
 // rightnav findfriends
 let xhrfriends = new XMLHttpRequest();
 let url = `${processenv}/findfriends/`
-console.log(url);
-console.log('url');
 xhrfriends.open('GET',  url, true);
 xhrfriends.setRequestHeader('Content-Type', 'application/json');
 xhrfriends.onreadystatechange = function () {
 if (xhrfriends.readyState === XMLHttpRequest.DONE && xhrfriends.status === 200) {                          
         baseresponse= JSON.parse(xhrfriends.responseText)
+       
         baseresponse.find_friends.slice(0, 3).forEach(item => {
-            if(item.username !== ""){
-            let parentdiv= document.createElement("div")
-            let buttonparentdiv= document.createElement("div")
-            let namesparentdiv= document.createElement("div")
-            let imageparentdiv= document.createElement("div")
-            let profPics= document.createElement("img")
-            let username= document.createElement("p")
-            let bio= document.createElement("p")
-            let viewProfile= document.createElement("p")
-            let addfriend= document.createElement("p")
-            parentdiv.style.width="80%"
-            parentdiv.style.padding="1.5rem 0"
-            parentdiv.style.height="fit-content"
-            parentdiv.style.position="relative"
-            parentdiv.style.backgroundColor="transparent"
-
-            // parentdiv.style.backgroundImage= "url("+ item.cover +")"
-            parentdiv.style.border="0.8px solid #635a5aab"
-            parentdiv.style.borderRadius="10px"
-            parentdiv.style.minHeight="108px"
-
-            profPics.src= item.pics
-            profPics.style.width="60px"
-            profPics.style.height="60px"
-            profPics.style.borderRadius="50%"
-            profPics.style.position="absolute"
-            profPics.style.left="4%"
-            profPics.style.zIndex="20"
-
-
-            parentdiv.append(profPics)
-            // profPics.style.paddingLeft="7%"
-            username.innerHTML=item.username
-            username.style.color="white"
-            username.style.width="100%"
-            username.style.textAlign="center"
-
-
-            bio.innerHTML="item.bio"
-            bio.style.color="white"
-            bio.style.width="100%"
-            bio.style.textAlign="center"
-
-            addfriend.innerHTML="Add"
-            viewProfile.innerHTML="View"
-            addfriend.style.height="fit-content"
-            addfriend.style.width="fit-content"
-            addfriend.style.padding="5px"
-            addfriend.style.color="white"
-            addfriend.style.backgroundColor="limegreen"
-            addfriend.style.borderRadius="5px"
-            addfriend.style.cursor="pointer"
-
-            viewProfile.style.height="fit-content"
-            viewProfile.style.width="fit-content"
-            viewProfile.style.padding="5px"
-            viewProfile.style.color="white"
-            viewProfile.style.borderRadius="5px"
-            viewProfile.style.backgroundColor="limegreen"
-            viewProfile.style.zIndex="20"
-            viewProfile.style.marginTop="8px"
-            viewProfile.style.cursor="pointer"
-            viewProfile.onclick=function(){
-                window.location.href=`${baseresponseUrlKey}/profile/${item.username}/ `
+            if(baseresponse.sent.includes(item.username) || baseresponse.received.includes(item.username)){
+                       
             }
+            else{ 
+                if(item.username !== ""){
+                let parentdiv= document.createElement("div")
+                let buttonparentdiv= document.createElement("div")
+                let namesparentdiv= document.createElement("div")
+                // let imageparentdiv= document.createElement("div")
+                let profPics= document.createElement("img")
+                let username= document.createElement("p")
+                let bio= document.createElement("p")
+                let viewProfile= document.createElement("p")
+                let addfriend= document.createElement("p")
+                parentdiv.style.width="80%"
+                parentdiv.style.padding="1.5rem 0"
+                parentdiv.style.height="fit-content"
+                parentdiv.style.position="relative"
+                parentdiv.style.backgroundColor="transparent"
 
-            addfriend.onclick=function(){
-                window.location.href=`${baseresponseUrlKey}/addfriends/${item.username}/ `
-            }
+                // parentdiv.style.backgroundImage= "url("+ item.cover +")"
+                parentdiv.style.border="0.8px solid #635a5aab"
+                parentdiv.style.borderRadius="10px"
+                parentdiv.style.minHeight="108px"
 
-            
-            namesparentdiv.style.display="grid"
-            namesparentdiv.style.backgroundColor="black"
-            namesparentdiv.style.opacity="0.4"
-            namesparentdiv.style.backdropFilter="blur(2px)"
-            namesparentdiv.style.position="absolute"
-            namesparentdiv.style.bottom="0"
-            namesparentdiv.style.width="100%"
-            namesparentdiv.style.height="50%"
-            namesparentdiv.style.borderRadius="5px"
-            namesparentdiv.style.paddingBottom="3x"
-            namesparentdiv.append(username)
-            namesparentdiv.append(bio)
+                profPics.src= item.pics
+                profPics.style.width="60px"
+                profPics.style.height="60px"
+                profPics.style.borderRadius="50%"
+                profPics.style.position="absolute"
+                profPics.style.left="4%"
+                profPics.style.zIndex="20"
 
-            buttonparentdiv.append(addfriend)
-            buttonparentdiv.append(viewProfile)
-            buttonparentdiv.style.position="absolute"
-            buttonparentdiv.style.right="4%"
-            buttonparentdiv.style.top="6%"
-            buttonparentdiv.style.zIndex="10"
-            
-            // buttonparentdiv.append(imageparentdiv)
-            parentdiv.append(buttonparentdiv)
-            parentdiv.append(namesparentdiv)
-            suggestions.append(parentdiv)
+
+                parentdiv.append(profPics)
+                // profPics.style.paddingLeft="7%"
+                username.innerHTML=item.username
+                username.style.color="white"
+                username.style.width="100%"
+                username.style.textAlign="center"
+
+
+                bio.innerHTML="item.bio"
+                bio.style.color="white"
+                bio.style.width="100%"
+                bio.style.textAlign="center"
+
+                addfriend.innerHTML="Add"
+                viewProfile.innerHTML="View"
+                addfriend.style.height="fit-content"
+                addfriend.style.width="fit-content"
+                addfriend.style.padding="5px"
+                addfriend.style.color="white"
+                addfriend.style.backgroundColor="limegreen"
+                addfriend.style.borderRadius="5px"
+                addfriend.style.cursor="pointer"
+
+                viewProfile.style.height="fit-content"
+                viewProfile.style.width="fit-content"
+                viewProfile.style.padding="5px"
+                viewProfile.style.color="white"
+                viewProfile.style.borderRadius="5px"
+                viewProfile.style.backgroundColor="limegreen"
+                viewProfile.style.zIndex="20"
+                viewProfile.style.marginTop="8px"
+                viewProfile.style.cursor="pointer"
+                viewProfile.onclick=function(){
+                    window.location.href=`${baseresponseUrlKey}/profile/${item.username}/ `
+                }
+
+                addfriend.onclick=function(){
+                    window.location.href=`${baseresponseUrlKey}/addfriends/${item.username}/ `
+                }
+
+                
+                namesparentdiv.style.display="grid"
+                namesparentdiv.style.backgroundColor="black"
+                namesparentdiv.style.opacity="0.4"
+                namesparentdiv.style.backdropFilter="blur(2px)"
+                namesparentdiv.style.position="absolute"
+                namesparentdiv.style.bottom="0"
+                namesparentdiv.style.width="100%"
+                namesparentdiv.style.height="50%"
+                namesparentdiv.style.borderRadius="5px"
+                namesparentdiv.style.paddingBottom="3x"
+                namesparentdiv.append(username)
+                namesparentdiv.append(bio)
+
+                buttonparentdiv.append(addfriend)
+                buttonparentdiv.append(viewProfile)
+                buttonparentdiv.style.position="absolute"
+                buttonparentdiv.style.right="4%"
+                buttonparentdiv.style.top="6%"
+                buttonparentdiv.style.zIndex="10"
+                
+                // buttonparentdiv.append(imageparentdiv)
+                parentdiv.append(buttonparentdiv)
+                parentdiv.append(namesparentdiv)
+                suggestions.append(parentdiv)
+                }
             }
             dbnotif = item.notif
             logout_notification= item.logout_notification
@@ -1323,161 +1325,160 @@ $.ajax({
     success: function (response) {
         $("#loadingsequence2").hide()
         let appendDiv= $(".dataparent")
-        ;
-        ;
-        response.find_friends.forEach(function (friend) {
-        let savedMode = localStorage.getItem('mode');
-        if(friend.username){    
-            let friendDiv = $("<div>");
-            friendDiv.attr("id", "findfrienddivbg");
-            let container = $("<div>");
-            let friendDivBg;
-            if (savedMode) {
-                if(savedMode==="light"){
-                    friendDivBg= false;
-                }else{
-                    friendDivBg= true
-                }
-            }
-            // Apply the Tailwind CSS classes to the friendDiv
-            friendDiv.css({
-            "width": "100%",
-            "height": "80%",
-            "padding": "1rem",
-            "display":"flex",
-            "gap":"5px",
-            "justify-content":"center",
-            "align-content":"center",
-            "background-color":`${friendDivBg?"#1D2833":"white"} `,
-            "box-shadow": "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
-            "border-radius": "10px",
-            "margin-top": "1rem",
-            "margin-bottom": "1rem",
-            "margin-left": "1rem",
-            "margin-right": "1rem",
-            "transform-origin": "center",
-            "transition-property": "transform",
-            "transition-duration": "300ms"
-            });
+        if(response.find_friends.length < 1){
+            let nofriend = $("<p>").text("No suggestion to fetch");
+            let appendDiv2= $(".dataparent2")
+            let containernofriend = $("<div>");
+            containernofriend.css({"width": "100%", "text-align":"center"});
 
-            // Apply additional hover styles
-            friendDiv.hover(function () {
-                $(this).css({
-                    "box-shadow": "var(--box-shadow-xl)",
-                    "transform": "scale(1.05)"
-                });
-                }, function () {
-                $(this).css({
-                    "box-shadow": "var(--box-shadow-lg)",
-                    "transform": "scale(1)"
-                });
-            });                           
-            
-            // Append the elements to the friendDiv                          
-            if(response.sent.includes(friend.username) || response.received.includes(friend.username)){
-                let nofriend = $("<p>").text("No suggestion to fetch");
-                let appendDiv2= $(".dataparent2")
-                let containernofriend = $("<div>");
-                containernofriend.css({"width": "100%", "text-align":"center"});
-
-                containernofriend.append(nofriend);
-                // friendDiv.append(containernofriend);
-                appendDiv.hide()
-                containernofriend.appendTo(appendDiv2);
-            }
-            else{
-                appendDiv.show()
-                $(".dataparent2").hide()
-                let addFriend = $("<p>").text("Add friend");
-                addFriend.css({
-                    "width":"fit",
-                    "height":"fit",
-                    "padding":"6",
-                    "border-radius":"5px",
-                    "background-color":"rgb(22 163 74)",
-                    "color":"rgb(209 213 219)",
-                    "cursor":"pointer"                        
-                })
-                let usernameP = $("<p>").text(friend.username);
-                ;
-                ;
-                
-                (savedMode==="light" || savedMode===null)?usernameP.css({"font-size":"bold", "color":"limegreen"}): usernameP.css({"font-size":"bold", "color":"white"})
-                let bio = $("<p>").text(friend.bio);
-                let image = $("<img>");
-                image.attr("src", friend.pics);
-                image.attr("alt", "Profile Picture");
-                image.addClass("w-[80px] h-[80px]" ); // Set the desired width
-                image.attr("height", "60px !important");
-                image.css("border-radius", "50%")
-                container.css({"display": "grid", "gap":"5px"})
-
-                container.append(usernameP);
-                container.append(bio);
-                container.append(addFriend);
-                friendDiv.append(image);
-                friendDiv.append(container)                            
-
-                // Append the friendDiv to the dataContainer
-                friendDiv.appendTo(appendDiv);
-                const csrfAjaxToken = document.querySelector('[name="csrfmiddlewaretoken"]').value;
-
-                addFriend.click(function () {
-                    $.ajax({
-                    url: `${processenv}/addfriends/${friend.username}/`,
-                    type: "POST",
-                    dataType: "json",
-                    beforeSend: function(xhr, settings) {
-                        xhr.setRequestHeader("X-CSRFToken", csrfAjaxToken);
-                    },
-                    success: function (response) {
-                        if(response.success=="ok"){
-                            Toastify({
-                                text: "Request sent",
-                                duration: 3000,
-                                newWindow: true,
-                                gravity: "top", // `top` or `bottom`
-                                position: "right", // `left`, `center` or `right`
-                                stopOnFocus: true, // Prevents dismissing of toast on hover
-                                style: {
-                                    background: "linear-gradient(to right, #00b09b, #96c93d)",
-                                },
-                                // onClick: function(){} // Callback after click
-                                }).showToast();
-                        
-                        addFriend.text("Request sent")
-                        onlineSocket.send(JSON.stringify({
-                            'message': `${friend.username} sent you a friend request`,
-                            "receiver":friend.username,
-                            "sender": requestUser,
-                            "type":"friendrequest"
-                        }));
+            containernofriend.append(nofriend);
+            // friendDiv.append(containernofriend);
+            appendDiv.hide()
+            containernofriend.appendTo(appendDiv2);
+        }else{
+            response.find_friends.forEach(function (friend) {
+                let savedMode = localStorage.getItem('mode');
+                if(friend.username){    
+                    let friendDiv = $("<div>");
+                    friendDiv.attr("id", "findfrienddivbg");
+                    let container = $("<div>");
+                    let friendDivBg;
+                    if (savedMode) {
+                        if(savedMode==="light"){
+                            friendDivBg= false;
                         }else{
-                            Toastify({
-                                text: "Request not sent! try again later",
-                                duration: 3000,
-                                newWindow: true,
-                                close: true,
-                                gravity: "top", // `top` or `bottom`
-                                position: "right", // `left`, `center` or `right`
-                                stopOnFocus: true, // Prevents dismissing of toast on hover
-                                style: {
-                                    background: "linear-gradient(to right, #00b09b, #96c93d)",
-                                },
-                                // onClick: function(){} // Callback after click
-                                }).showToast();
-                        
+                            friendDivBg= true
                         }
-                    
                     }
-                })
-                })
+                    // Apply the Tailwind CSS classes to the friendDiv
+                    friendDiv.css({
+                    "width": "100%",
+                    "height": "80%",
+                    "padding": "1rem",
+                    "display":"flex",
+                    "gap":"5px",
+                    "justify-content":"center",
+                    "align-content":"center",
+                    "background-color":`${friendDivBg?"#1D2833":"white"} `,
+                    "box-shadow": "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
+                    "border-radius": "10px",
+                    "margin-top": "1rem",
+                    "margin-bottom": "1rem",
+                    "margin-left": "1rem",
+                    "margin-right": "1rem",
+                    "transform-origin": "center",
+                    "transition-property": "transform",
+                    "transition-duration": "300ms"
+                    });
+        
+                    // Apply additional hover styles
+                    friendDiv.hover(function () {
+                        $(this).css({
+                            "box-shadow": "var(--box-shadow-xl)",
+                            "transform": "scale(1.05)"
+                        });
+                        }, function () {
+                        $(this).css({
+                            "box-shadow": "var(--box-shadow-lg)",
+                            "transform": "scale(1)"
+                        });
+                    });                           
                     
-            }
+                    // Append the elements to the friendDiv                        
+                    if(response.sent.includes(friend.username) || response.received.includes(friend.username)){
+                       
+                    }
+                    else{       
+                        appendDiv.show()
+                        $(".dataparent2").hide()
+                        let addFriend = $("<p>").text("Add friend");
+                        addFriend.css({
+                            "width":"fit",
+                            "height":"fit",
+                            "padding":"6",
+                            "border-radius":"5px",
+                            "background-color":"rgb(22 163 74)",
+                            "color":"rgb(209 213 219)",
+                            "cursor":"pointer"                        
+                        })
+                        let usernameP = $("<p>").text(friend.username);                
+                        (savedMode==="light" || savedMode===null)?usernameP.css({"font-size":"bold", "color":"limegreen"}): usernameP.css({"font-size":"bold", "color":"white"})
+                        let bio = $("<p>").text(friend.bio);
+                        let image = $("<img>");
+                        image.attr("src", friend.pics);
+                        image.attr("alt", "Profile Picture");
+                        image.addClass("w-[80px] h-[80px]" ); // Set the desired width
+                        image.attr("height", "60px !important");
+                        image.css("border-radius", "50%")
+                        container.css({"display": "grid", "gap":"5px"})
+        
+                        container.append(usernameP);
+                        container.append(bio);
+                        container.append(addFriend);
+                        friendDiv.append(image);
+                        friendDiv.append(container)                            
+        
+                        // Append the friendDiv to the dataContainer
+                        friendDiv.appendTo(appendDiv);
+                        const csrfAjaxToken = document.querySelector('[name="csrfmiddlewaretoken"]').value;
+        
+                        addFriend.click(function () {
+                            $.ajax({
+                            url: `${processenv}/addfriends/${friend.username}/`,
+                            type: "POST",
+                            dataType: "json",
+                            beforeSend: function(xhr, settings) {
+                                xhr.setRequestHeader("X-CSRFToken", csrfAjaxToken);
+                            },
+                            success: function (response) {
+                                if(response.success=="ok"){
+                                    Toastify({
+                                        text: "Request sent",
+                                        duration: 3000,
+                                        newWindow: true,
+                                        gravity: "top", // `top` or `bottom`
+                                        position: "right", // `left`, `center` or `right`
+                                        stopOnFocus: true, // Prevents dismissing of toast on hover
+                                        style: {
+                                            background: "linear-gradient(to right, #00b09b, #96c93d)",
+                                        },
+                                        // onClick: function(){} // Callback after click
+                                        }).showToast();
+                                
+                                addFriend.text("Request sent")
+                                onlineSocket.send(JSON.stringify({
+                                    'message': `${friend.username} sent you a friend request`,
+                                    "receiver":friend.username,
+                                    "sender": requestUser,
+                                    "type":"friendrequest"
+                                }));
+                                }else{
+                                    Toastify({
+                                        text: "Request not sent! try again later",
+                                        duration: 3000,
+                                        newWindow: true,
+                                        close: true,
+                                        gravity: "top", // `top` or `bottom`
+                                        position: "right", // `left`, `center` or `right`
+                                        stopOnFocus: true, // Prevents dismissing of toast on hover
+                                        style: {
+                                            background: "linear-gradient(to right, #00b09b, #96c93d)",
+                                        },
+                                        // onClick: function(){} // Callback after click
+                                        }).showToast();
+                                
+                                }
+                            
+                            }
+                        })
+                        })
+                            
+                    }
+                }
+            
+            
+            });
         }
-    
-    
-    });
     },
     error: function (error) {
         ;
@@ -1714,7 +1715,6 @@ if(groupcreatesubmit !== null){
         });
 
         if (response.ok) {
-            console.log(response);
             groupmodal.style.display="none"
             if(response.status === 201){
                 Toastify({
@@ -1792,7 +1792,6 @@ $(".like-button").on("click", function () {
             data: { post_id: postId },
             dataType: "json",
             success: function (data) {
-                console.log(data.like_count);
                 if(data.like_count >1){
                     likeCount.text(data.like_count);
                 }
@@ -1831,7 +1830,9 @@ $(".group-like-button").on("click", function () {
             data: { post_id: postId },
             dataType: "json",
             success: function (data) {
-                likeCount.text(data.like_count);
+                if(data.like_count >1){
+                    likeCount.text(data.like_count);
+                }
                 if (data.status==="like") {
                     clickedButton.css("color","rgb(220, 38, 38)")
                 } else {
@@ -1990,7 +1991,6 @@ const response = await fetch(`${processenv}/create_post/`, {
     },
 });
 
-console.log(response);
 if (response.ok) {
     Toastify({
         text: "Post successfull",

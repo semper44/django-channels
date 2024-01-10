@@ -19,6 +19,19 @@
                 {% endfor %}
             </ul>
         </div>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                let flashMessages = document.getElementById('flash-messages');
+    
+                // Display the flash message
+                flashMessages.style.display = 'block';
+    
+                // Set a timeout to hide the flash message after 3000 milliseconds (3 seconds)
+                setTimeout(function() {
+                    flashMessages.style.display = 'none';
+                }, 4000);
+            });
+        </script>
     {% endif %}
 
     <div class="w-full h-[100vh] flex flex-col items-center justify-center">
