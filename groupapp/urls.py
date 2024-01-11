@@ -1,6 +1,7 @@
 from django.urls import path
 from .views import (join_group, post_on_group,  create_group, exit_group,group_view, 
                     group_search,delete_user_from_group, list_all_groups,
+                    list_all_groups_json,
                     save_comment_view,
                     comment_view,
                     reply_view,
@@ -29,6 +30,7 @@ urlpatterns = [
     path('delete_user_from_group/<int:userid>/<int:groupid>/', delete_user_from_group, name="deleteusergroup"),
     path('group_search/<int:id>/', group_search, name="group_search"),
     path('allgroups/', list_all_groups, name="allgroups"),
+    path('allgroups/json/', list_all_groups_json, name="allgroupsjson"),
      path('group/comment/save/<slug:post_slug>/', save_comment_view, name="groupcommentsave"),
     path('group/comments/<slug:slug>/', comment_view, name="groupcomments"),
     path('group/reply/<int:comment_id>/', reply_view, name="groupreply"),

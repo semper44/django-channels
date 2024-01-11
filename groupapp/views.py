@@ -150,13 +150,13 @@ def make_admin(request, userid, groupname):
     return redirect(f"/group-view/{groupname}/")
 
 
-# @login_required(login_url="login")
-# def list_all_groups(request):
-#     groups= UserGroups.objects.all()
-#     return render(request, "groups/allgroups.html", {"groups": groups})
-
 @login_required(login_url="login")
 def list_all_groups(request):
+    groups= UserGroups.objects.all()
+    return render(request, "groups/allgroups.html", {"groups": groups})
+
+@login_required(login_url="login")
+def list_all_groups_json(request):
     groups = UserGroups.objects.all()
 
     # Check if there are any groups

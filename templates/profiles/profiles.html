@@ -19,6 +19,7 @@
 
         <div id="profile_message_input" class="fixed hidden inset-0 z-50  md:left-[27%] md:w-[69%] lg:left-[21%] lg:w-[69%] xl:left-[18%]  xl:w-[60%] ">
             <div class="w-full h-fit dark:bg-black absolute  bg-base-lightbg text-center py-4 bottom-0">
+                <div id="profilemessagecancel" class="float-right text-red-600">X</div>
                 <div id="profileinput" class="mt-4  ml-6" style="width: 90%; display: flex; gap: 8px;">
                     <input id="profilemessage" type="text" placeholder="type..." class="bg-transparent outline-none border pl-3 h-[50px] rounded-xl dark:text-white" style="width: 80%;">
                     <div id="profilechat-message-submit" class=" text-[#0d2438] dark:text-white cursor-pointer" id="sendiv" style="display:flex; flex-direction: column; margin-top: 0.6rem;">
@@ -42,21 +43,21 @@
                     <div class="w-full h-fit flex justify-between bg-black bg-opacity-40 backdrop-blur-sm p-5 absolute bottom-0">
                         <div class="flex gap-4 items-center">
                             <div class="like-div flex gap-2 items-center">
-                                <i data-post-id="{{ i.id }}" class="fa fa-rss text-white cursor-pointer" aria-hidden="true"></i>                                                                           
-                                <div class="text-white text-sm">{{i.likes.count}}</div> 
+                                <i data-post-id="{{ i.id }}" title="Groups" class="fa fa-rss text-white cursor-pointer" aria-hidden="true"></i>                                                                           
+                                <div class="text-white text-sm">{{groupslength}}</div> 
                             </div>
                             <div class="like-div flex gap-2 items-center">
-                                <i data-post-id="{{ i.id }}" class="fa fa-heart text-white cursor-pointer" aria-hidden="true"></i>                                                                           
+                                <i data-post-id="{{ i.id }}" title="Likes" class="fa fa-heart text-white cursor-pointer" aria-hidden="true"></i>                                                                           
                                 <div class="text-white text-sm">{{i.likes.count}}</div> 
                             </div>
                         </div>                               
                         <div class="flex gap-4 items-center">
                             <div class="like-div flex gap-2 items-center">
-                                <i data-post-id="{{ i.id }}" class="fa fa-file text-white cursor-pointer" aria-hidden="true"></i>                                                                           
+                                <i data-post-id="{{ i.id }}" title="Posts" class="fa fa-file text-white cursor-pointer" aria-hidden="true"></i>                                                                           
                                 <div id="len_posts" class="text-white text-sm">{{len_posts}}</div> 
                             </div>
                             <div class="like-div flex gap-2 items-center">
-                                <i data-post-id="{{ i.id }}" class="fa fa-users text-white cursor-pointer" aria-hidden="true"></i>                                                                           
+                                <i data-post-id="{{ i.id }}" title="Friends" class="fa fa-users text-white cursor-pointer" aria-hidden="true"></i>                                                                           
                                 <div class="text-white text-sm">{{friends_length}}</div> 
                             </div>              
                         </div>              

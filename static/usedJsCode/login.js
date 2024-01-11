@@ -1,0 +1,1 @@
+const e=document.querySelector("#passwordshow"),s=document.querySelector("input[name='password1']");e.onclick=function(){"password"===s.type?(e.children[0].classList.remove="fa fa-eye",e.children[0].classList="svg-inline--fa fa-eye-slash",s.type="text"):(e.children[0].classList="",e.children[0].classList="svg-inline--fa fa-eye",s.type="password")};

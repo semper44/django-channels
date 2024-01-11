@@ -14,7 +14,7 @@
 
 {% block content %}
 <p id="comment_type" class="hidden">{{post.comment_type}}</p>
-<div class="w-full h-full bg-base-lightbg dark:bg-base-darkbg ">
+<div class="w-full h-screen bg-base-lightbg dark:bg-base-darkbg ">
     <div class="grid pl-4 p-4 rounded-lg shadow-md" style="box-shadow: 0 0 10px rgba(13, 19, 26, 0.5);">
         <div class="w-fit flex text-center mt-7">
             <img src="{{post.author.prof_pics.url}}" class="rounded-full" style="width: 35px; height: 35px;">
@@ -28,7 +28,7 @@
     <img src="{{post.file.url}}" alt="" class="md:object-cover md:object-center rounded-lg w-full h-full rounded-b-xl lg:w-[30%] lg:h-[375px]">   
     {% endif %}
     
-    <div id="commentstore" class="f" style="height: 35%;  overflow-y: scroll; scrollbar-width: none; -ms-overflow-style: none;">
+    <div id="commentstore" class="f" style="height: 27%;  overflow-y: scroll; scrollbar-width: none; -ms-overflow-style: none;">
         {% for i in comments  %}
             <div class="grid pl-4">
                 <div class="w-fit flex text-center mt-7">

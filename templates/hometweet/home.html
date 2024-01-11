@@ -56,7 +56,14 @@
                                         {% if request.user in i.likes.all %}
                                         <div class="like-div flex gap-1 items-center">
                                             <i data-post-id="{{ i.id }}" class="like-button fa fa-heart text-red-600 cursor-pointer" aria-hidden="true"></i>
-                                            <div class="text-gray-500 text-sm">{{i.likes.count}}</div>
+                                            <div class="text-gray-500 text-sm">
+                                                
+                                                {% if i.likes.count > 1 %}
+                                                    {{i.likes.count}}
+                                                    
+                                                {% endif %}
+                                                    
+                                            </div>
                                         </div>
                                         {% else %}
                                             <i data-post-id="{{ i.id }}" class="like-button fa fa-heart text-[#0d2438] dark:text-white cursor-pointer" aria-hidden="true"></i>

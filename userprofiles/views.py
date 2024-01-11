@@ -108,6 +108,9 @@ def profile_view(request, name):
             if request.user.id == user.id:
                 same_person=True
             posts = Post.objects.filter(author_id= profiles.id)
+
+            print(friends_length)
+            print('group')
             
             context = {"posts":posts,"friends_exists":friends_exists, 
                "friends":friend, "same_person":same_person,
@@ -118,6 +121,7 @@ def profile_view(request, name):
                "blocked":False,
                "friends_length":friends_length,
                "groups":groups,
+               "groupslength":len(groups),
         }
         except:
             context= {"notfound": "No profile found"}
@@ -362,6 +366,7 @@ def view_received_request(request):
 
 @login_required(login_url="login")
 def search_view(request):
+    print('search')
     if "query" in request.GET:
         queries = request.GET.get("query")
         prof_arr=[]
@@ -457,13 +462,15 @@ def search_view(request):
         context = {"results":results}  
         return JsonResponse(context)
     else:
-        results = Profile.objects.all().none
-
+        results = []
         context = {"results":results}        
         return JsonResponse(context)
-    
+
+
+
 @login_required(login_url="login")
 def search_view_template(request):
+    print('okser')
     if "query" in request.GET:
         queries = request.GET.get("query")
         print(":query")
@@ -551,7 +558,7 @@ def search_view_template(request):
                     details={"text":x.text}
                     group_post_arr.append(details)
 
-        results= post_arr+prof_arr+group_arr+group_post_arr
+        # results= post_arr+prof_arr+group_arr+group_post_arr
         context = {"post_arr":post_arr,"prof_arr": prof_arr, "group_arr": group_arr,"group_post_arr": group_post_arr }  
     else:
         print(":nooooquery")
