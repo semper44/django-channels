@@ -14,21 +14,29 @@
 
 {% block content %}
 <p id="comment_type" class="hidden">{{post.comment_type}}</p>
-<div class="w-full h-screen bg-base-lightbg dark:bg-base-darkbg ">
-    <div class="grid pl-4 p-4 rounded-lg shadow-md" style="box-shadow: 0 0 10px rgba(13, 19, 26, 0.5);">
-        <div class="w-fit flex text-center mt-7">
-            <img src="{{post.author.prof_pics.url}}" class="rounded-full" style="width: 35px; height: 35px;">
-            <div class="text-green-300 ml-2">{{ post.author.username }}</div>
+<div class="w-full h-screen lg:h-full bg-base-lightbg dark:bg-base-darkbg ">
+    <div class="w-full h-fit" style="box-shadow: 0 0 10px rgba(13, 19, 26, 0.5);">                                 
+        <div class="pb-2 lg:max-w-[300px] pt-2 mx-4">
+            <div class="h-fit flex items-center gap-4 px-6">
+                <img src="{{post.author.prof_pics.url}}" class="rounded-full" style="width: 35px; height: 35px;">
+                <div class="text-green-300">{{ post.author.username }}</div>
+            </div>
+            <div class="px-8 mt-3 text-[#0d2438] dark:text-gray-300">
+                {{ post.content }}
+            </div>
+            <p style="display: none;" data-content="{{post.slug}}" id="comment-id"></p>
         </div>
-        <div class="text-[#0d2438] dark:text-gray-300 px-4  py-4" style="margin-left: 1.5rem;">{{post.content}}</div>
-        <p style="display: none;" data-content="{{post.slug}}" id="comment-id"></p>
-    </div>
+        <div class="pb-6 pl-8">
+            {% if post.file %}
+            <img src="{{post.file.url}}" alt="" class="object-contain object-center rounded-lg w-[80%] text-center rounded-xl md:w-[80%] h-[300px] md:h-[400px]">   
+            {% endif %}
+            <div id="generalcomments" class=" float-right mr-4">
+                <i  class="fa fa-comments text-[#0d2438] dark:text-white cursor-pointer" aria-hidden="true"></i>
+            </div>
+        </div>
+    </div> 
     
-    {% if post.file %}
-    <img src="{{post.file.url}}" alt="" class="md:object-cover md:object-center rounded-lg w-full h-full rounded-b-xl lg:w-[30%] lg:h-[375px]">   
-    {% endif %}
-    
-    <div id="commentstore" class="f" style="height: 27%;  overflow-y: scroll; scrollbar-width: none; -ms-overflow-style: none;">
+    <div id="commentstore" class="h-[50%]  md:h-[55%]" style="overflow-y: scroll;">
         {% for i in comments  %}
             <div class="grid pl-4">
                 <div class="w-fit flex text-center mt-7">
@@ -42,6 +50,7 @@
             {% if i.comment_pics %}
             <img src="{{i.comment_pics.url}}" alt="" class="w-[155px] h-[175px] md:h-[270px] md:w-[240px] lg:w-full lg:h-[375px] rounded-lg" style="margin-left:2.5rem ; margin-top: 2px;">   
             {% endif %}
+
             <div class="postrepliesparent px-8 flex gap-4 items-center" style="padding-top: 4px; margin-left: 0.8rem;">
                 <i class="fa fa-heart text-[#0d2438] dark:text-white cursor-pointer" aria-hidden="true"></i>
                 <div class="postreplies" data-content="{{i.id}}"><i class="fa fa-comments text-[#0d2438] dark:text-white cursor-pointer" aria-hidden="true"></i></div>
@@ -50,34 +59,42 @@
                 {% endif %}
             </div>    
             </div>
-            <form method="POST" enctype="multipart/form-data" class="replyform pl-7 hidden" data-content="{{i.id}}">
+            <!-- <form method="POST" id="replyform" data-content="{{i.id}}" enctype="multipart/form-data" class="fixed hidden inset-0 z-50  md:left-[27%] md:w-[69%] lg:left-[21%] lg:w-[69%] xl:left-[18%]  xl:w-[60%] ">
                 {% csrf_token %} 
-                <div id="replyinput" class="mt-4 pl-4" style="display: flex; gap: 8px; margin-left: 1rem;" >
-                    <input id="replymessage" type="text" placeholder="reply..." class="bg-transparent outline-none border pl-3 h-[50px] rounded-xl dark:text-white" style="width: 85%;">
-                    <div id="reply-submit" style="display:flex; flex-direction: column; cursor: pointer; margin-top: 0.6rem; color: white;">
-                        <i class="fa fa-paper-plane text-[#0d2438] dark:text-white cursor-pointer" aria-hidden="true" ></i>
-                        <input type="button" value="Send">
+                <div id="replyinput" class="w-full h-fit dark:bg-black absolute  bg-base-lightbg text-center py-4 bottom-0">
+                    <div id="commentcancel1" class="float-right text-red-600 cursor-pointer mr-4">X</div>
+                    <div class="mt-4  ml-6" style="width: 90%; display: flex; gap: 8px;">
+                        <input id="replymessage" type="text" placeholder="type..." class="bg-transparent outline-none border pl-3 h-[50px] rounded-xl dark:text-white" style="width: 80%;">
+                        <div  class=" text-[#0d2438] dark:text-white cursor-pointer" id="reply-submit1" style="display:flex; flex-direction: column; margin-top: 0.6rem;">
+                            <i class="fa fa-paper-plane" aria-hidden="true"></i>
+                            <input  class="cursor-pointer" type="button" value="Send">
+                        </div>
                     </div>
-                </div>
-            </form>
+                </div> 
+            </form>  -->
+
         {% endfor %}
     </div>
         
-    <form method="POST" id="commentform" enctype="multipart/form-data" class="pl-7">
+    <form method="POST" id="commentform" enctype="multipart/form-data" class="fixed hidden inset-0 z-50  md:left-[27%] md:w-[69%] lg:left-[21%] lg:w-[69%] xl:left-[18%]  xl:w-[60%] ">
         {% csrf_token %} 
-        <div id="input" class="mt-4 pl-4" style="display: flex; gap: 8px; margin-left: 0.9rem;" >
-            <input id="commentmessage" type="text" placeholder="comment..." class="bg-transparent outline-none border pl-3 h-[50px] rounded-xl dark:text-white" style="width: 80%;">
-            <div class="text-[#0d2438] dark:text-white cursor-pointer" id="comment-submit" style="display:flex; flex-direction: column; margin-top: 0.6rem;">
-                <i class="fa fa-paper-plane  cursor-pointer" aria-hidden="true" ></i>
-                <input type="button" value="Send" class="cursor-pointer">
+        <div class="w-full h-fit dark:bg-black absolute  bg-base-lightbg text-center py-4 bottom-0">
+            <div id="commentcancel" class="float-right text-red-600 cursor-pointer mr-4">X</div>
+            <div class="mt-4  ml-6" style="width: 90%; display: flex; gap: 8px;">
+                <input id="commentmessage" type="text" placeholder="type..." class="bg-transparent outline-none border pl-3 h-[50px] rounded-xl dark:text-white" style="width: 80%;">
+                <div  class=" text-[#0d2438] dark:text-white cursor-pointer" id="comment-submit" style="display:flex; flex-direction: column; margin-top: 0.6rem;">
+                    <i class="fa fa-paper-plane" aria-hidden="true"></i>
+                    <input  class="cursor-pointer" type="button" value="Send">
+                </div>
             </div>
-        </div>
-    </form>
+        </div> 
+    </form>      
     
 </div> 
 
 <script>
-$(document).ready((function(){const commentstore=document.querySelector("#commentstore");$("#comment-submit").on("click",(function(){let commentText=$("#commentmessage").val();let postSlug=$("#comment-id").data("content");let formData=new FormData;formData.append("csrfmiddlewaretoken","{{ csrf_token }}");formData.append("comments",commentText);if($("#comment_pics")[0]){formData.append("comment_pics",$("#comment_pics")[0].files[0])}$.ajax({method:"POST",url:"/comment/save/"+postSlug+"/",data:formData,processData:false,contentType:false,success:function(response){window.location.reload();Toastify({text:"comment posted",duration:3e3,newWindow:true,gravity:"top",position:"right",stopOnFocus:true,style:{background:"linear-gradient(to right, #00b09b, #96c93d)"}}).showToast()},error:function(error){Toastify({text:"Something went wrong, try again later",duration:3e3,newWindow:true,close:true,gravity:"top",position:"right",stopOnFocus:true,style:{background:"linear-gradient(to right, #00b09b, #96c93d)"}}).showToast()}})}));$("#commentstore").on("click",".postreplies",(function(e){const clickedElement=$(this);const dataContent=clickedElement.attr("data-content");const replyForm=$(".replyform[data-content='"+dataContent+"']");if(replyForm.length>0){replyForm.toggle()}$("#reply-submit").on("click",(function(){let replyText=$("#replymessage").val();let postSlug=replyForm.data("content");let formData=new FormData;formData.append("csrfmiddlewaretoken","{{ csrf_token }}");formData.append("reply_text",replyText);if($("#reply_pics")[0]){formData.append("reply_pics",$("#reply_pics")[0].files[0])}$.ajax({method:"POST",url:"/reply/save/"+postSlug+"/",data:formData,processData:false,contentType:false,success:function(response){replyText="";window.location.reload()},error:function(error){}})}))}));$("#more-replies").on("click",(function(){let commentstore=$("#commentstore");let comment_id=$("#more-replies").data("content");commentstore.empty();$.ajax({method:"GET",url:"/reply/"+comment_id+"/",dataType:"json",success:function(response){response.replies.forEach((function(reply){let replyiamgeandauthor=$("div");let image;let gridParent=$("<div>").addClass("pl-4");let gridChild=$("<div>").addClass("w-fit flex text-center mt-7");let img=$("<img>").addClass("rounded-full").css({width:"35px",height:"35px"});img.attr("src",reply.prof_pics);let username=$("<p>").addClass("text-green-300 ml-2");username.text(reply.reply_author);gridChild.append(img,username);gridParent.append(gridChild);let outerDiv=$("<div>").addClass("h-fit w-fit bg-base-lightbg dark:bg-base-darkbgvariant shadow-lg hover:shadow-xl rounded-xl ").css({"margin-left":"3.6rem"});let innerDiv=$("<div>").addClass("text-white px-4 py-4").text(reply.reply);outerDiv.append(innerDiv);if(reply.reply_pics){image=$("<img>").attr("src","{{reply.reply_pics.url}}").attr("alt","").addClass("w-[155px] h-[175px] md:h-[270px] md:w-[240px] lg:w-full lg:h-[375px] rounded-lg")}let repliesContainer=$("<div>").addClass("postrepliesparent px-8 flex gap-4 items-center").css({"padding-top":"4px","margin-left":"1.8rem"});let heartIcon=$("<i>").addClass("fa fa-heart").attr("aria-hidden","true").css({color:"white",cursor:"pointer"});let postRepliesDiv=$("<div>").addClass("postreplies").attr("data-content","{{i.id}}");let commentsIcon=$("<i>").addClass("fa fa-comments").attr("aria-hidden","true").css({color:"white",cursor:"pointer"});postRepliesDiv.append(commentsIcon);repliesContainer.append(heartIcon,postRepliesDiv);commentstore.append(gridParent,outerDiv,repliesContainer)}))},error:function(error){}})}))}));
+    $(document).ready(function(){document.querySelector("#commentstore"),$("#comment-submit").on("click",function(){let e=$("#commentmessage").val(),o=$("#comment-id").data("content"),t=new FormData;t.append("csrfmiddlewaretoken","{{ csrf_token }}"),t.append("comments",e),$("#comment_pics")[0]&&t.append("comment_pics",$("#comment_pics")[0].files[0]),$.ajax({method:"POST",url:"/comment/save/"+o+"/",data:t,processData:!1,contentType:!1,success:function(e){window.location.reload(),Toastify({text:"comment posted",duration:3e3,newWindow:!0,gravity:"top",position:"right",stopOnFocus:!0,style:{background:"linear-gradient(to right, #00b09b, #96c93d)"}}).showToast()},error:function(e){Toastify({text:"Something went wrong, try again later",duration:3e3,newWindow:!0,close:!0,gravity:"top",position:"right",stopOnFocus:!0,style:{background:"linear-gradient(to right, #00b09b, #96c93d)"}}).showToast()}})}),document.querySelector("#generalcomments").onclick=function(){document.querySelector("#commentform").style.display="block",document.querySelector("#commentmessage").focus()},document.querySelector("#commentcancel").onclick=function(){document.querySelector("#commentform").style.display="none"},$("#commentcancel1").on("click",function(){$("#replyform").css("display","none")})});
+    
 
 </script>
 {% endblock content %}
