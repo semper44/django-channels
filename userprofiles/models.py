@@ -9,7 +9,6 @@ class Profile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete= models.CASCADE, db_index=True)
     friends = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True, related_name="friend" )
     group = models.ManyToManyField(Group, blank=True,)
-    # slug = models.SlugField(unique= True, blank= True)
 
 
     def __str__(self):

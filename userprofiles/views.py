@@ -186,32 +186,41 @@ def find_friends(request):
     for p in user_friends:
         user_profiles_arr.append(p.username)
 
-    for i in all_profiles:    
-        if i.username in user_profiles_arr:
-            # print(p.username)
-            continue
-        else:
-            findfriend_list.append({
-                # "pics":str(request.build_absolute_uri(p.prof_pics)),
-                "pics":i.prof_pics.url,
-                "username":i.username,
-                "cover":request.build_absolute_uri(i.cover_photo),
-                "bio":i.bio,
-                "notif":notif,
-                "message_notif":message_notif,
-                "logout_notification":logout_notification,
-                "logout_message_notification":logout_message_notification
-            })
-
+    for i in all_profiles:   
         for sent, received in zip_longest(received_request, sent_request):
             if sent is not None:
                 sent_arr.add(sent.sender.user.username)
 
             if received is not None:
                 received_arr.add(received.receiver.user.username)
+        if i.username in user_profiles_arr or i.username in sent_arr or i.username in received_arr:
+            print(i.username, 'is')
+            continue
+        else:
+            print(i.username != '')
+            print(i.username != None)
+            if i.username != '':
+                print(i.username, 'not')
+                findfriend_list.append({
+                    # "pics":str(request.build_absolute_uri(p.prof_pics)),
+                    "pics":i.prof_pics.url,
+                    "username":i.username,
+                    "cover":request.build_absolute_uri(i.cover_photo),
+                    "bio":i.bio,
+                    "notif":notif,
+                    "message_notif":message_notif,
+                    "logout_notification":logout_notification,
+                    "logout_message_notification":logout_message_notification
+                })
+
+
     context = {
         "find_friends": findfriend_list,
         "sent": list(sent_arr),
+        'notif':notif,
+        'logout_notification':logout_notification,
+        'logout_message_notification':logout_message_notification,
+        'message_notif':message_notif,
         "received": list(received_arr),
 
     }
@@ -264,11 +273,9 @@ def find_friends_templates(request):
 
 @login_required(login_url="login")
 def remove_friend_view(request, friend):
+    friends_length_arr = 0 
     if request.method == "POST":
         user = request.user
-        print("friend")
-        print(friend)
-        print(user.id)
         receiverUser= CustomUser.objects.get(username= friend)
         receiver=Profile.objects.get(user = receiverUser)
         senderUser= CustomUser.objects.get(username= user.username)
@@ -277,8 +284,11 @@ def remove_friend_view(request, friend):
         rel.delete()
         sender.friends.remove(receiverUser)
         receiver.friends.remove(senderUser)
+        friends_length = Profile.objects.get(user =user).friends.all()
+        # print(friends_length.length)
+        friends_length_arr = len(friends_length)
         print(rel)
-    context = {"delete": "delete" }
+    context = {"delete": "delete", 'friends_length_arr':friends_length_arr }
     return JsonResponse(context)
 
 
