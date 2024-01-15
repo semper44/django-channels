@@ -29,9 +29,8 @@
                         <h1 id="user" class="hidden mt-7">{{request.user.username}}</h1>
             
                         {% include './status.html' %}
-                    </div>
 
-                    <div class="w-full h-full flex flex-col bg-base-lightbg dark:bg-base-darkbg justify-center items-center mt-4" style="margin-top: 3rem;">
+                    <div class="w-full h-full flex flex-col bg-base-lightbg dark:bg-base-darkbg justify-center items-center mt-[-5.5rem]" style="margin-top: 3rem;">
                         {% if tweets %}                       
                                 {% for i in tweets|my_custom_filter %}
                                     <div class="w-[75%] h-fit hover:scale-105 transition-transform duration-300">

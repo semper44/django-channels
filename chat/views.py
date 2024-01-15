@@ -222,11 +222,18 @@ def home_view(request):
 
 @login_required(login_url="login")
 def personalInitialMessages(request, receiver):
-    sender=Profile.objects.get(user=request.user)
-    group_name=sender.user.username+receiver
+    sender = Profile.objects.get(user=request.user)
+    group_name = sender.user.username + receiver
     reversed_string = group_name[::-1]
-    uniqueId = Message.objects.get(Q(uniqueId__icontains=group_name) | Q(uniqueId__icontains=reversed_string))
-    return JsonResponse({"context":uniqueId.content}) 
+    
+    try:
+        uniqueId = Message.objects.get(Q(uniqueId__icontains=group_name) | Q(uniqueId__icontains=reversed_string))
+        return JsonResponse({"context": uniqueId.content}, status=200) 
+    except Message.DoesNotExist:
+        return JsonResponse({"context": "No matching message found"}, status=404)
+    except Exception as e:
+        return JsonResponse({"context": str(e)}, status=500)
+
 
     # return render(request, "profiles/try.html", {'online_users': "users"})
 

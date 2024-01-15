@@ -132,9 +132,10 @@ def like_post(request):
 
 def notification_view(request):
     notification= Notification.objects.filter(receiver= request.user)
+    notification_length = len(notification)
     # for i in notification:
     #     print(i)
-    return render(request, "hometweet/notifications.html", {"notification": notification})
+    return render(request, "hometweet/notifications.html", {"notification": notification, 'notification_length':notification_length})
 
 
 # def handle_uploaded_file(file):
