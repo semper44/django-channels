@@ -155,17 +155,12 @@ HTML_MINIFY = True
 
 ASGI_APPLICATION = "core.routing.application"
 
-# CHANNEL_LAYERS = {
-#     "default": {
-#         "BACKEND": "channels_redis.core.RedisChannelLayer",
-#         "CONFIG": {
-#             "hosts": ['redis://red-cmfanm6n7f5s7384kij0:6379'],
-#         },
-#     },
-# }
-
 CHANNEL_LAYERS = {
-     "default": {
-        "BACKEND": "channels.layers.InMemoryChannelLayer",
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": ['redis://red-cmfanm6n7f5s7384kij0:6379'],
+        },
     },
-    }
+}
+
