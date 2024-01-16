@@ -129,11 +129,13 @@ def profile_view(request, name):
 
 
 def delete_user_post(request, postid):
+    allpost = Post.objects.filter(author = request.user)
+    print(allpost)
     try:
         post=Post.objects.get(id=postid)
         post.delete()
         print("good")
-        return JsonResponse({"success": "true"})
+        return JsonResponse({"success": "true", 'post_length': len(allpost)})
     except:
         print("bad")
         return JsonResponse({"success": "false"})

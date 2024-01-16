@@ -195,11 +195,12 @@ def owner_delete_group(request, groupid):
 def delete_group_post(request, groupid, postid):
     group= UserGroups.objects.get(id= groupid)
     admin= Group.objects.filter(name= f"{group.name}admin")
+    allgrouppost=UserGroups_Post.objects.filter(usergroups=group)
     if request.user in admin or request.user== group.owner:
         post=UserGroups_Post.objects.get(id=postid)
         post.delete()
         print("good")
-        return JsonResponse({"success": "true"})
+        return JsonResponse({"success": "true", 'post_length': len(allgrouppost)})
     return JsonResponse({"success": "false"})
 
 
