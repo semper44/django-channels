@@ -28,7 +28,7 @@ SECRET_KEY_VALUE = config('SECRET_KEY')
 SECRET_KEY = SECRET_KEY_VALUE
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -91,16 +91,16 @@ WSGI_APPLICATION = 'core.wsgi.application'
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 # DATABASE_URL= os.environ.get('DATABASE_URL')
 DATABASE_URL= config('DATABASE_URL')
-
 if not DEBUG:
-    DATABASES = {'default': dj_database_url.parse(os.environ.get('DATABASE_URL'))}
+    DATABASES = {'default':dj_database_url.parse(DATABASE_URL, conn_max_age=600)
+    }
 else:
     DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
+}
 
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
