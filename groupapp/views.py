@@ -64,6 +64,7 @@ def change_group_cover_picture(request, name):
 def post_on_group(request, name):
     if request.method=="POST":
         try:
+            owner = False
             if request.POST["text"] or request.FILES["file"]:
                 blocked= Group.objects.filter(name= f"{name}blocked")
                 usergroup= UserGroups.objects.get(name=name)
@@ -79,7 +80,6 @@ def post_on_group(request, name):
                     request.POST= details
                     form = Users_Group_Post_form(request.POST, request.FILES)
                     if form.is_valid():
-                        # Create a new post
                         post = form.save(commit=False)
                         profile= CustomUser.objects.get(username=request.user.username )
                         post.author = profile # Assuming you have a user associated with the post
@@ -94,9 +94,10 @@ def post_on_group(request, name):
                         print(form.errors)
                         return JsonResponse({"success": False, "errors": form.errors})
                 
-        except:
-            print('nw')
-            pass        
+        except Exception as e:
+            print(f'Exception: {e}')
+            return JsonResponse({"success": False},staus=400 )
+
         # text =  request.POST.get('text')
                 # file =  request.FILES.get('file')
                     

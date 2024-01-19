@@ -78,7 +78,7 @@
 </div> 
 
 <script>
-    const commentstore=document.querySelector("#commentstore");$(document).ready(function(){$("#comment-submit").on("click",function(){let e=$("#commentmessage").val(),c=$("#comment-id").data("content"),o=new FormData;o.append("csrfmiddlewaretoken","{{ csrf_token }}"),o.append("comments",e),$("#comment_pics")[0]&&o.append("comment_pics",$("#comment_pics")[0].files[0]),$.ajax({method:"POST",url:"/group/comment/save/"+c+"/",data:o,processData:!1,contentType:!1,success:function(e){window.location.reload()},error:function(e){alert(e)}})}),document.querySelector("#generalcomments").onclick=function(){document.querySelector("#commentform").style.display="block",document.querySelector("#commentmessage").focus()},document.querySelector("#commentcancel").onclick=function(){document.querySelector("#commentform").style.display="none"}});
-</script>>
+    const commentstore=document.querySelector("#commentstore");$(document).ready(function(){$("#comment-submit").on("click",function(){let e=$("#commentmessage").val();if(e){let c=$("#comment-id").data("content"),o=new FormData;o.append("csrfmiddlewaretoken","{{ csrf_token }}"),o.append("comments",e),$("#comment_pics")[0]&&o.append("comment_pics",$("#comment_pics")[0].files[0]),$.ajax({method:"POST",url:"/group/comment/save/"+c+"/",data:o,processData:!1,contentType:!1,success:function(e){window.location.reload()},error:function(e){alert(e)}})}}),document.querySelector("#generalcomments").onclick=function(){document.querySelector("#commentform").style.display="block",document.querySelector("#commentmessage").focus()},document.querySelector("#commentcancel").onclick=function(){document.querySelector("#commentform").style.display="none"}});
+</script>
 
 {% endblock content %}
