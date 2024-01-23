@@ -41,7 +41,7 @@ class UserGroups(models.Model):
     name = models.CharField(max_length=100, null=False, blank=False, unique=True)
     members = models.ManyToManyField(CustomUser, related_name="members")    
     description = models.CharField(max_length=100, null=False, blank=False, unique=False)
-    cover_photo = models.ImageField(null = True, blank =True, upload_to= 'group_cover/', default='groupdefault/group.jpg')
+    cover_photo = models.ImageField(null = True, blank =True, upload_to= 'group_cover/', default='group.jpg')
     group = models.ManyToManyField(Group, blank=True)
     owner= models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="owner")
 
