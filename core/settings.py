@@ -28,7 +28,7 @@ SECRET_KEY_VALUE = config('SECRET_KEY')
 SECRET_KEY = SECRET_KEY_VALUE
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
