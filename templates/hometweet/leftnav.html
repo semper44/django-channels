@@ -59,7 +59,14 @@
             </div>
             <div class="w-fit flex flex-col items-start">
                 <div class="text-[#0d2438] dark:text-gray-300 mt-5 hover:bg-base-lightbgvariant  dark:hover:bg-base-darkbgvariant py-2 px-4 rounded-lg cursor-pointer"><a href="{% url 'home' %}">Home</a></div>
-                <div class="text-[#0d2438] dark:text-gray-300 mt-5 hover:bg-base-lightbgvariant  dark:hover:bg-base-darkbgvariant py-2 px-4 rounded-lg cursor-pointer"><a href="{% url 'profile' name=request.user.username %}">Profile</a></div>
+                
+                {% if request.user.username %}
+                    <div class="text-[#0d2438] dark:text-gray-300 mt-5 hover:bg-base-lightbgvariant  dark:hover:bg-base-darkbgvariant py-2 px-4 rounded-lg cursor-pointer"><a href="{% url 'profile' name=request.user.username %}">Profile</a></div>    
+                {% else %}
+                    <div class="text-[#0d2438] dark:text-gray-300 mt-5 hover:bg-base-lightbgvariant  dark:hover:bg-base-darkbgvariant py-2 px-4 rounded-lg cursor-pointer">No profile</a></div>    
+
+                {% endif %}
+                    
                
                 <div id="leftnavmessage" class="text-center justify-center text-[#0d2438] dark:text-gray-300 mt-5 relative hover:bg-base-lightbgvariant  dark:hover:bg-base-darkbgvariant py-2 px-4 rounded-lg cursor-pointer">
                     <a href="{% url 'chatintialmessage' %}">

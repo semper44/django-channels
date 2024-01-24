@@ -264,7 +264,13 @@
         <div class="md:hidden fixed rounded-tr-xl rounded-tl-xl bg-white dark:bg-base-darkbgvariant bottom-0 w-full h-fit py-5 z-99 ">
             <div class="w-full flex justify-evenly">
                 <a href="{% url 'home' %}"><i class="fa fa-home text-[#0d2438] dark:text-white cursor-pointer" aria-hidden="true"></i></a>
-                <a href="{% url 'profile' name=request.user.username %}"><i class="fa fa-user text-[#0d2438] dark:text-white cursor-pointer" aria-hidden="true"></i></a>
+                
+                {% if request.user.username %}   
+                    <a href="{% url 'profile' name=request.user.username %}"><i class="fa fa-user text-[#0d2438] dark:text-white cursor-pointer" aria-hidden="true"></i></a>
+                {% else %}
+                    <i class="fa fa-user text-[#0d2438] dark:text-white cursor-pointer" aria-hidden="true">   
+                {% endif %}
+                    
                 <div x-data="{ open: false }" class="relative">
                     <div @click="open = true">
                         <i class="fa fa-plus-circle text-green-600 cursor-pointer text-4xl" aria-hidden="true" ></i>
