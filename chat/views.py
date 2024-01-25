@@ -117,7 +117,6 @@ def home_view(request):
             personalpost=Post.objects.filter(author=request.user)
             personalpost = Post.objects.filter(author=request.user)
             friend = request.user.profile.friends.all()
-            print('wene')
             for i in friend:
                 ts=Post.objects.filter(author=i.id)
                 

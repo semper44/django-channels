@@ -4,22 +4,20 @@ from user.models import CustomUser
 from userprofiles.models import Profile
 import random
 import string
-from PIL import Image
-from io import BytesIO
-from django.core.files import File
+from cloudinary.models import CloudinaryField
 
 
 
-def compress_image(image): 
-    print('compr') 
-    img = Image.open(image)
-    if img.mode != "RGB":
-        img = img.convert("RGB")   
-    img_output = BytesIO()     
-    img.save(img_output, 'JPEG', quality=80)     
-    compressed_image = File(img_output, name=image.name)    
-    return compressed_image
 
+# def compress_image(image): 
+#     print('compr') 
+#     img = Image.open(image)
+#     if img.mode != "RGB":
+#         img = img.convert("RGB")   
+#     img_output = BytesIO()     
+#     img.save(img_output, 'JPEG', quality=80)     
+#     compressed_image = File(img_output, name=image.name)    
+#     return compressed_image
 
 
 def generate_random_string(length):
@@ -40,7 +38,7 @@ REACTION_CHIOCES = (
 
 class Post(models.Model):
     content = models.TextField(null= True, blank= True)
-    file = models.FileField(null= True, blank= True, upload_to= 'images/')
+    file = CloudinaryField('image',null= True, blank= True)
     date_created = models.DateTimeField(auto_now_add=True)
     author = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name= "tweet_author")
     slug = models.SlugField(unique=True, max_length=100, allow_unicode=True)
@@ -68,10 +66,7 @@ class Post(models.Model):
     #         super().save(*args, **kwargs)
 
     
-    def save(self, *args, **kwargs):
-        if self.file:
-            self.file = compress_image(self.file)
-        
+    def save(self, *args, **kwargs):        
         if not self.slug:
             self.slug = self.generate_unique_slug()
 
@@ -116,9 +111,7 @@ class Coment(models.Model):
     # slug = models.SlugField(unique=True, max_length=100, allow_unicode=True)
 
         
-    print("wahala")
     def generate_unique_slug(self):
-        print("problem")
         base_slug = slugify(self.comments)
         slug = base_slug
         counter = 1
@@ -141,7 +134,7 @@ class Reaction(models.Model):
 
 class Status(models.Model):
     text = models.CharField( max_length=150, null=True, blank=True)
-    file = models.FileField(null= True, blank= True, upload_to='status_files/')
+    file = CloudinaryField('image',null= True, blank= True)
     date_created = models.DateTimeField(auto_now_add=True)
     author = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name= "status_author")
 

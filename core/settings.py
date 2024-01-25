@@ -14,7 +14,9 @@ from pathlib import Path
 import os
 import dj_database_url
 from decouple import config
-
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api	
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -28,7 +30,7 @@ SECRET_KEY_VALUE = config('SECRET_KEY')
 SECRET_KEY = SECRET_KEY_VALUE
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -150,7 +152,7 @@ DATABASES = {
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+# STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 WHITENOISE_MANIFEST_STRICT = False
 
 
@@ -177,3 +179,9 @@ CHANNEL_LAYERS = {
     },
 }
 
+
+cloudinary.config( 
+  	cloud_name ='dboagqxsq',
+  	api_key =725341687541998,
+  	api_secret ='mECBTg47TvbhaXePH3Gb4Z78hzg'
+)

@@ -7,22 +7,22 @@ from django.urls import reverse
 from user.models import CustomUser
 from django.contrib.auth.models import  Group
 from django.urls import reverse
-from PIL import Image
-from io import BytesIO
-from django.core.files import File
 import random
 import string
+from cloudinary.models import CloudinaryField
 
 
 
-def compress_image(image):    
-    img = Image.open(image)
-    if img.mode != "RGB":
-        img = img.convert("RGB")   
-    img_output = BytesIO()     
-    img.save(img_output, 'JPEG', quality=80)     
-    compressed_image = File(img_output, name=image.name)    
-    return compressed_image
+
+# def compress_image(image):    
+#     img = Image.open(image)
+#     if img.mode != "RGB":
+#         img = img.convert("RGB")   
+#     img_output = BytesIO()     
+#     img.save(img_output, 'JPEG', quality=80)     
+#     compressed_image = File(img_output, name=image.name)    
+#     return compressed_image
+
 
 
 def generate_random_string(length):
@@ -41,7 +41,7 @@ class UserGroups(models.Model):
     name = models.CharField(max_length=100, null=False, blank=False, unique=True)
     members = models.ManyToManyField(CustomUser, related_name="members")    
     description = models.CharField(max_length=100, null=False, blank=False, unique=False)
-    cover_photo = models.ImageField(null = True, blank =True, upload_to= 'group_cover/', default='group.jpg')
+    cover_photo = CloudinaryField('image',null = True, blank =True, default='szlqfwnmhsnbekmmxzsi')
     group = models.ManyToManyField(Group, blank=True)
     owner= models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="owner")
 
@@ -54,15 +54,13 @@ class UserGroups_Post(models.Model):
     usergroups=models.ForeignKey(UserGroups, on_delete=models.CASCADE, related_name= "user_groups")
     text = models.CharField(max_length=150, blank=True, null=True)
     status = models.CharField(max_length=10, choices=GROUP_CHOICES)
-    file = models.FileField(null=True, blank=True, upload_to='group_files/')
+    file = CloudinaryField('image',null=True, blank=True,)
     author= models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="groupauthor")
     slug = models.SlugField(unique=True, max_length=100, allow_unicode=True)
     like = models.ManyToManyField(CustomUser, related_name="usergroupposts_likes", blank=True)
 
 
     def save(self, *args, **kwargs):
-        if self.file:
-            self.file = compress_image(self.file)
         if not self.slug:
             self.slug = self.generate_unique_slug()
         super().save(*args, **kwargs)
