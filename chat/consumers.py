@@ -129,19 +129,19 @@ class OnlineConsumer(WebsocketConsumer):
         # print(text_data_json)
         senderreceiver= CustomUser.objects.get(username= receiver_username)
 
-        try:
-            if text_data_json["type"] == "likepost":
-                postId= text_data_json["postId"]
-                post= Post.objects.get(id= postId)
-                senderUser= CustomUser.objects.get(username= sender)
-                if self.scope["user"].username != receiver_username:
-                    notification = Notification.objects.create(content=json.dumps(message), postId=post, sender=senderUser, seen= False, receiver=senderreceiver)
-                    notification.save()
-        
-        except:
+        if text_data_json["type"] == "likepost":
+            postId= text_data_json["postId"]
+            post= Post.objects.get(id= postId)
+            senderUser= CustomUser.objects.get(username= sender)
+            if self.scope["user"].username != receiver_username:
+                notification = Notification.objects.create(content=json.dumps(message), postId=post, sender=senderUser, seen= False, receiver=senderreceiver)
+                notification.save()
+        elif text_data_json["type"] == "friendrequest":
+            print('kk')
             senderUser= CustomUser.objects.get(id= sender)
             notification = Notification.objects.create(content=json.dumps(message), sender=senderUser, seen= False, receiver=senderreceiver)
             notification.save()
+            print('udo')
 
         print("text_data_json")
         print(text_data_json)
@@ -281,8 +281,15 @@ class TryConsumer(WebsocketConsumer):
         previousMessage = Message.objects.filter(uniqueId__icontains=str(user.username))
         if previousMessage.exists():
             for i in previousMessage:
-                result=json.loads(i.content)
-                message=result.copy()
+                print(i.content)
+                print('i.content')
+                try:
+                    result = json.loads(i.content)
+                    message = result.copy()
+                except json.decoder.JSONDecodeError as e:
+                    # Handle the case when content is not valid JSON
+                    print(f"Error decoding JSON: {e}")
+                    message = {}  # Set 
         
         self.send(text_data=json.dumps({
             "type":"initialmessage",
@@ -317,46 +324,23 @@ class TryConsumer(WebsocketConsumer):
        
 
     def receive(self, text_data=None, bytes_data=None):
+        print('b$query')
         text_data_json = json.loads(text_data)
         message = text_data_json['message']
         userfrontend = text_data_json['user']
         receiver = text_data_json['receiver']
         user = self.scope["user"]
         receiverProfile = text_data_json['receiver']
-        modelUser= CustomUser.objects.get(username=receiverProfile)
-        receiverProfile2= Profile.objects.get(user=modelUser.id)
+        custom_user_with_profile = CustomUser.objects.select_related('profile').get(username=receiverProfile)
+        receiverProfile2 = custom_user_with_profile.profile
+        # modelUser= CustomUser.objects.get(username=receiverProfile)
+        # receiverProfile2= Profile.objects.get(user=modelUser.id)
         userProfile= Profile.objects.get(user=user.id)
         user_timezone = get_localzone()
         date= datetime.now(user_timezone)
         formatted_date_str= date.strftime("%a at %H:%M")
-
-        print(text_data_json)
-        content={userfrontend:message, "time":formatted_date_str}
-        c = []  # Initialize the list here
-
-        # print(text_data_json)
-       
-        if text_data_json['type'] == "instantmessage":
-            print(text_data_json)
-            previousMessagefiltered = Message.objects.filter(uniqueId__icontains=str(userfrontend)+str(receiver))
-            previousMessage = Message.objects.filter(uniqueId__icontains=str(receiver)+str(userfrontend))
-            if previousMessagefiltered.exists():
-                for i in previousMessagefiltered:
-                    result=json.loads(i.content)
-                    result.append(content)
-                    i.content = json.dumps(result)  # Convert the updated list back to JSON
-                    i.save()
-            elif previousMessage.exists():
-                for i in previousMessage:
-                    result=json.loads(i.content)
-                    result.append(content)
-                    i.content = json.dumps(result)  # Convert the updated list back to JSON
-                    i.save()
-            else:
-                print("new message")
-                c.append(content)
-                messages = Message.objects.create(content=json.dumps(c), uniqueId=str(userfrontend) + str(receiverProfile), receiver=receiverProfile2, sender=userProfile, seen=False)
-                messages.save()
+        print('afterquey')
+        
 
         if receiver not in total_mutual_friends:
             # try:
@@ -397,6 +381,9 @@ class TryConsumer(WebsocketConsumer):
                     }
                 )
 
+                print(text_data_json)
+                print('chatbetween')
+
                 async_to_sync(self.channel_layer.group_send)(
                     self.room_group_name2,
                     {
@@ -431,7 +418,30 @@ class TryConsumer(WebsocketConsumer):
                         }
                     )
             
-        
+        content={userfrontend:message, "time":formatted_date_str}
+        c = []  # Initialize the list here
+        if text_data_json['type'] == "instantmessage":
+            previousMessagefiltered = Message.objects.filter(uniqueId__icontains=str(userfrontend)+str(receiver))
+            previousMessage = Message.objects.filter(uniqueId__icontains=str(receiver)+str(userfrontend))
+            if previousMessagefiltered.exists():
+                for i in previousMessagefiltered:
+                    result=json.loads(i.content)
+                    result.append(content)
+                    i.content = json.dumps(result)  # Convert the updated list back to JSON
+                    i.save()
+            elif previousMessage.exists():
+                for i in previousMessage:
+                    result=json.loads(i.content)
+                    result.append(content)
+                    i.content = json.dumps(result)  # Convert the updated list back to JSON
+                    i.save()
+            else:
+                print("new message")
+                c.append(content)
+                messages = Message.objects.create(content=json.dumps(c), uniqueId=str(userfrontend) + str(receiverProfile), receiver=receiverProfile2, sender=userProfile, seen=False)
+                messages.save()
+
+
 
             
         # self.send_to_group(

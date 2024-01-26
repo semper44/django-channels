@@ -18,7 +18,8 @@ from .views import (
     search_view_template,
     reset_notif,
     change_profile_picture,
-    delete_user_post
+    delete_user_post,
+    no_profile_found
     # trytry
 )
 
@@ -42,6 +43,7 @@ urlpatterns = [
     path('received_request/', view_received_request, name = "view_received_request"),
     path('logout/', logout_view, name = "logout"),
     path('search/', search_view, name = "search"),
+    path('no_profile_page/', no_profile_found, name = "no_profile_page"),
     path('group_search_view/', group_search_view, name = "group_search_view"),
     path('search_view/', search_view_template, name = "search_view_template"),
     path('blockuser/<str:username>/', block_user_view, name = "blockuser"),

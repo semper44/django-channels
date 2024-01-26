@@ -10,6 +10,7 @@ from django.http import JsonResponse
 from .models import Message
 from django.db.models import Q
 import json
+from userprofiles.noprofiledecorator import special_user_required
 from django.core.serializers.json import DjangoJSONEncoder
 # from channels.layers import get_channel_layer
 
@@ -101,6 +102,7 @@ def chatIntialMessageJson(request):
     return JsonResponse({'messages': arr, "len":length})
    
 @login_required(login_url="login")
+# @special_user_required
 def home_view(request):
     user = request.user
     threshold_datetime = timezone.now() - timezone.timedelta(hours=24)

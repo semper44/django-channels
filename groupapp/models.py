@@ -44,10 +44,6 @@ class UserGroups(models.Model):
     cover_photo = CloudinaryField('image',null = True, blank =True, default='szlqfwnmhsnbekmmxzsi')
     group = models.ManyToManyField(Group, blank=True)
     owner= models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="owner")
-
-    def save(self, *args, **kwargs):
-        self.cover_photo = compress_image(self.cover_photo)
-        super().save(*args, **kwargs)
         
 
 class UserGroups_Post(models.Model):

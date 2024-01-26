@@ -38,7 +38,6 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
-    
     'channels',
     'chat',
     'django.contrib.admin',
@@ -172,12 +171,18 @@ ASGI_APPLICATION = "core.routing.application"
 
 CHANNEL_LAYERS = {
     "default": {
-        "BACKEND": "channels_redis.core.RedisChannelLayer",
-        "CONFIG": {
-            "hosts": ['redis://red-cmfanm6n7f5s7384kij0:6379'],
-        },
-    },
+        "BACKEND": "channels.layers.InMemoryChannelLayer"
+    }
 }
+
+# CHANNEL_LAYERS = {
+#     "default": {
+#         "BACKEND": "channels_redis.core.RedisChannelLayer",
+#         "CONFIG": {
+#             "hosts": ['rediss://red-cmfanm6n7f5s7384kij0:eXhFPIhgtEreVJzlZIZGjzHNa26o872e@oregon-redis.render.com:6379'],
+#         },
+#     },
+# }
 
 
 cloudinary.config( 

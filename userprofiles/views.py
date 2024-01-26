@@ -13,6 +13,8 @@ from itertools import zip_longest
 from groupapp.models import UserGroups, UserGroups_Post
 from django.core import serializers
 from django.contrib import messages
+from .noprofiledecorator import special_user_required
+
 # from datetime import datetime
 
 # from django.utils import timezone
@@ -76,7 +78,13 @@ def logout_view(request):
     return JsonResponse("success", safe=False)
 
 '''view friends tweet view'''
+
+def no_profile_found(request):
+    print('kedu')
+    return render(request, 'profiles/no_profile_page.html')
+
 @login_required(login_url="login")
+# @special_user_required
 def profile_view(request, name):
     same_person=False
     context=None
@@ -165,6 +173,7 @@ def reset_notif(request):
     dbnotif.save(update_fields=["notifications", "message_notif", "logout_notification", "logout_message_notification"])
     print("dbnotif.is_notification_seen")    
     return JsonResponse("true", safe=False)
+
 
 '''find friends list'''
 @login_required(login_url="login")

@@ -16,12 +16,8 @@ from .models import UserGroups_Post, UserGroups
 def create_groups(sender, instance, created, **kwargs): 
     # receiver_ = instance.receiver
     if created:
-        print("hy")
         sender= instance.name
         groupadmin=Group.objects.create(name=f"{sender}admin")
-        print("lol")
         groupblocked=Group.objects.create(name=f"{sender}blocked")
         groupblocked.save()
-        print("hmmmm")
         groupadmin.save()
-        print("hello")
