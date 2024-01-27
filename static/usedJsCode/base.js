@@ -1,4 +1,4 @@
-let processenv = "http://127.0.0.1:8000";
+let processenv = "https://django-channels-byf5.onrender.com";
 const topsearchButton = document.querySelector("#topsearchButton"),
     modal = document.querySelector("#modal"),
     submitButton = document.querySelector("#submit"),
@@ -8,7 +8,7 @@ const topsearchButton = document.querySelector("#topsearchButton"),
     topsearchmodal = document.querySelector("#searchmodal"),
     searchmodalparent = document.querySelector("#searchmodalparent"),
     searchmodalcancel = document.querySelector("#searchmodalcancel");
-let baseresponseUrlKey = "http://127.0.0.1:8000",
+let baseresponseUrlKey = "https://django-channels-byf5.onrender.com",
     baseTypingTimer;
 function mobilecreatepost() {
     (modal.style.display = "block"), document.querySelector("#id_content").focus();
@@ -25,7 +25,7 @@ topsearchButton.addEventListener("input", (e) => {
             e.preventDefault(), (searchmodalparent.style.display = "block");
             let t = new FormData(document.querySelector("#topsearchButtonform")),
                 o = new URLSearchParams(t),
-                n = "https://django-channels-byf5.onrender.com/search?" + o.toString(),
+                n = "https://django-channels-byf5.onrender.comsearch?" + o.toString(),
                 l = await fetch(n, { method: "GET", headers: { "X-CSRFToken": "{{ csrf_token }}" } }),
                 s = await l.json();
             if (((topsearchmodal.innerHTML = ""), s.results.length >= 1)) {
