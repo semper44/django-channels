@@ -169,20 +169,22 @@ HTML_MINIFY = True
 
 ASGI_APPLICATION = "core.routing.application"
 
-CHANNEL_LAYERS = {
-    "default": {
-        "BACKEND": "channels.layers.InMemoryChannelLayer"
-    }
-}
-
 # CHANNEL_LAYERS = {
 #     "default": {
-#         "BACKEND": "channels_redis.core.RedisChannelLayer",
-#         "CONFIG": {
-#             "hosts": ['rediss://red-cmfanm6n7f5s7384kij0:eXhFPIhgtEreVJzlZIZGjzHNa26o872e@oregon-redis.render.com:6379'],
-#         },
-#     },
+#         "BACKEND": "channels.layers.InMemoryChannelLayer"
+#     }
 # }
+
+
+REDIS_URL= config('REDIS_URL')
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [REDIS_URL],
+        },
+    },
+}
 
 
 cloudinary.config( 
