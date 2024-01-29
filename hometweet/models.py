@@ -60,15 +60,11 @@ class Post(models.Model):
 
     def __str__(self):
         return f"{self.content}-{self.author}"  
-    
-    # def save(self, *args, **kwargs):
-    #         self.image = compress_image(self.image)
-    #         super().save(*args, **kwargs)
 
     
-    def save(self, *args, **kwargs):        
+    def save(self, *args, **kwargs): 
         if not self.slug:
-            self.slug = self.generate_unique_slug()
+            self.slug = self.generate_unique_slug()      
 
         super().save(*args, **kwargs)
 

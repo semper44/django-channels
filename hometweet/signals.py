@@ -3,8 +3,6 @@ from django.dispatch import receiver
 from .models import Reply, Coment
 # from groupapp.models import Groupapp
 
-from user.models import CustomUser
-
 @receiver(post_save, sender=Reply)
 def adding_replies(sender, instance, created, *args, **kwargs):
     if created:

@@ -19,73 +19,71 @@
 
         <!-- <div class="w-full h-full flex bg-[#F9FAFB] "> -->
         <div class="w-full h-screen bg-base-lightbg dark:bg-base-darkbg">
-            <div class="w-full h-full bg-base-lightbg dark:bg-base-darkbg">
-            
-                {% if profile_exist %}
-                    <p class="w-full h-screen flex justify-center dark:text-white mt-6 bg-base-lightbg dark:bg-base-darkbg">Nothing to show</p>
-                {% else %} 
-                <div class="h-full w-full bg-base-lightbg dark:bg-base-darkbg">            
-                    <div class="h-fit w-full">
-                        <h1 id="user" class="hidden mt-7">{{request.user.username}}</h1>
-            
-                        {% include './status.html' %}
+           
+            {% if profile_exist %}
+                <p class="w-full h-screen flex justify-center dark:text-white mt-6">Nothing to show</p>
+            {% else %}  
+            <div class=" ">              
+                <div class="h-fit w-full">
+                    <h1 id="user" class="hidden mt-7">{{request.user.username}}</h1>
+                    {% include './status.html' %}
+                </div>
 
-                    <div class="w-full h-full flex flex-col bg-base-lightbg dark:bg-base-darkbg justify-center items-center mt-[-5.5rem]" style="margin-top: 3rem;">
-                        {% if tweets %}                       
-                                {% for i in tweets|my_custom_filter %}
-                                    <div class="w-[75%] h-fit hover:scale-105 transition-transform duration-300">
-                                        <div class="pb-4 lg:max-w-[512px] pt-2 bg-base-lightbgvariant dark:bg-base-darkbgvariant shadow-lg hover:shadow-xl rounded-t-xl mx-4 ">
-                                            <div class="h-fit flex items-center gap-4 px-6">
-                                                <img src="{{i.author.prof_pics.url}}" class="w-[35px] h-[35px] rounded-full"></img>
-                                                <div class="text-green-300 ml-2">{{ i.author.username }}</div>
-                                            </div>
-                                            <div class="h-fit">
-                                                <div class="px-8 mt-3 text-[#0d2438] dark:text-gray-300">
-                                                    {{ i.content }} 
-                                                </div>                      
+                <div class="w-full h-full bg-base-lightbg dark:bg-base-darkbg flex flex-col justify-center items-center " style="margin-top: 2rem;">
+                    {% if tweets %}                       
+                            {% for i in tweets|my_custom_filter %}
+                                <div class="w-[75%] h-fit hover:scale-105 transition-transform duration-300">
+                                    <div class="pb-4 lg:max-w-[512px] pt-2 bg-base-lightbgvariant dark:bg-base-darkbgvariant shadow-lg hover:shadow-xl rounded-t-xl mx-4 ">
+                                        <div class="h-fit flex items-center gap-4 px-6">
+                                            <img src="{{i.author.prof_pics.url}}" class="w-[35px] h-[35px] rounded-full"></img>
+                                            <div class="text-green-300 ml-2">{{ i.author.username }}</div>
+                                        </div>
+                                        <div class="h-fit">
+                                            <div class="px-8 mt-3 text-[#0d2438] dark:text-gray-300">
+                                                {{ i.content }} 
                                             </div>                      
                                         </div>                      
-                                        {% if i.file %}
-                                        <div class="aspect-w-16 aspect-h-9 ">
-                                                <div class=" mx-4 lg:h-[449px] lg:max-w-[512px]">
-                                                    <img src="{{i.file.url}}" alt="" class="object-cover object-center rounded-b-xl w-full h-full">
-                                                    <!-- <img src="{{i.file.url}}" alt="" class="w-full h-[375px] rounded-br-lg rounded-bl-lg"> -->
-                                                </div>
+                                    </div>                      
+                                    {% if i.file %}
+                                    <div class="aspect-w-16 aspect-h-9 ">
+                                            <div class=" mx-4 lg:h-[449px] lg:max-w-[512px]">
+                                                <img src="{{i.file.url}}" alt="" class="object-cover object-center rounded-b-xl w-full h-full">
+                                                <!-- <img src="{{i.file.url}}" alt="" class="w-full h-[375px] rounded-br-lg rounded-bl-lg"> -->
                                             </div>
-                                        {% endif %}
-                                        <div class="px-8 flex gap-4 items-center" style="padding-top: 0.5rem; padding-bottom: 2rem;">
-                                            {% if request.user in i.likes.all %}
-                                            <div class="like-div flex gap-1 items-center">
-                                                <i data-post-id="{{ i.id }}" class="like-button fa fa-heart text-red-600 cursor-pointer" aria-hidden="true"></i>
-                                                <div class="text-gray-500 text-sm">
+                                        </div>
+                                    {% endif %}
+                                    <div class="px-8 flex gap-4 items-center" style="padding-top: 0.5rem; padding-bottom: 2rem;">
+                                        {% if request.user in i.likes.all %}
+                                        <div class="like-div flex gap-1 items-center">
+                                            <i data-post-id="{{ i.id }}" class="like-button fa fa-heart text-red-600 cursor-pointer" aria-hidden="true"></i>
+                                            <div class="text-gray-500 text-sm">
+                                                
+                                                {% if i.likes.count > 1 %}
+                                                    {{i.likes.count}}
                                                     
-                                                    {% if i.likes.count > 1 %}
-                                                        {{i.likes.count}}
-                                                        
-                                                    {% endif %}
-                                                        
-                                                </div>
+                                                {% endif %}
+                                                    
                                             </div>
-                                            {% else %}
-                                                <i data-post-id="{{ i.id }}" class="like-button fa fa-heart text-[#0d2438] dark:text-white cursor-pointer" aria-hidden="true"></i>
-                                            {% endif %} 
-                                            <a href="{% url 'comments' slug=i.slug %}"><i id="postcomments" class="fa fa-comments text-[#0d2438] dark:text-white cursor-pointer" aria-hidden="true"></i></a>
-                                            <i class="fa fa-share text-[#0d2438] dark:text-white cursor-pointer" aria-hidden="true"></i>
-                                            
-                                        </div>                        
-                                    </div>                                                         
-                                {% endfor %}
+                                        </div>
+                                        {% else %}
+                                            <i data-post-id="{{ i.id }}" class="like-button fa fa-heart text-[#0d2438] dark:text-white cursor-pointer" aria-hidden="true"></i>
+                                        {% endif %} 
+                                        <a href="{% url 'comments' slug=i.slug %}"><i id="postcomments" class="fa fa-comments text-[#0d2438] dark:text-white cursor-pointer" aria-hidden="true"></i></a>
+                                        <i class="fa fa-share text-[#0d2438] dark:text-white cursor-pointer" aria-hidden="true"></i>
+                                        
+                                    </div>                        
+                                </div>                                                         
+                            {% endfor %}
 
-                            {% else %}
-                                <div class="h-full w-full bg-base-lightbg dark:bg-base-darkbg text-[#0d2438] dark:text-white text-center">
-                                    No feeds to fetch
-                                </div>
-                            {% endif %}
-                    </div> 
-                </div>   
-                {% endif %} 
-                
-            </div> 
+                        {% else %}
+                            <div class="h-full w-full bg-base-lightbg dark:bg-base-darkbg text-[#0d2438] dark:text-white text-center">
+                                No feeds to fetch
+                            </div>
+                        {% endif %}
+                </div> 
+            </div>
+            {% endif %} 
+            
         </div> 
         
     {% endblock content %}
