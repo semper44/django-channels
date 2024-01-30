@@ -15,6 +15,7 @@
     <script src="{% static 'js/toastify.js' %}"></script>
     <script src="{% static 'jquery/jquery.js' %}"></script>
     <link rel="stylesheet" href="{% static 'css/bg.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/rightnavdummy.css' %}">
     <link rel="stylesheet" href="{% static 'css/sidebar.min.css' %}">
     <link rel="stylesheet" href="{% static 'css/toastify.css' %}">
     <link rel="stylesheet" href="{% static 'output/result.css' %}">
@@ -31,7 +32,7 @@
 <body  class="bg-base-lightbg h-screen dark:bg-base-darkbg w-full">   
     <!-- preview upload -->
     <div id="uploadPreview" class=" hidden w-full">
-        <div class="fixed inset-0 flex items-center justify-center z-50">
+        <div class="fixed inset-0 flex items-center justify-center" style="z-index: 99;">
             <div class="fixed inset-0 bg-black/75"></div>
             <div class="w-full z-50 flex flex-col items-center justify-center">
                 <img id="uploadPreviewImage" src="#" alt="Profile Picture Preview" class="h-[450px] w-[80%] md:w-[50%]">   
@@ -225,7 +226,7 @@
         </div>
 
         <!-- mobile nav -->
-        <div class="md:hidden fixed rounded-tr-xl rounded-tl-xl bg-white dark:bg-base-darkbgvariant bottom-0 w-full h-fit py-5 z-99 ">
+        <div class="md:hidden fixed rounded-tr-xl rounded-tl-xl bg-white dark:bg-base-darkbgvariant bottom-0 w-full h-fit py-5" style="z-index: 50;">
             <div class="w-full flex justify-evenly">
                 <a href="{% url 'home' %}"><i class="fa fa-home text-[#0d2438] dark:text-white cursor-pointer" aria-hidden="true"></i></a>
                 <a href="{% url 'profile' name=request.user.username %}"><i class="fa fa-user text-[#0d2438] dark:text-white cursor-pointer" aria-hidden="true"></i></a>
@@ -305,8 +306,12 @@
                 {% endblock content %}
             </div>
     
-                <!-- right nav -->
-            <div id="righnav" class="hidden border-l border-gray-300 fixed h-full right-0 xl:block bg-base-lightbg dark:bg-base-darkbg" style="width: 21%;">
+            <!-- right nav dummy-->
+            <div id="righnavdummy" class="fixed hidden md:block xl:hidden h-full right-0 bg-base-lightbg dark:bg-base-darkbg">
+            </div>
+            
+            <!-- right nav -->
+            <div id="righnav" class="hidden xl:block border-l border-gray-300 fixed h-full right-0 bg-base-lightbg dark:bg-base-darkbg" style="width: 21%;">
                 {% include 'hometweet/rightnav.html' %}
             </div>
         </div>

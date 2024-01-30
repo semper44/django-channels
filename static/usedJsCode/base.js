@@ -1040,9 +1040,11 @@ $(document).ready(function () {
                     dataType: "json",
                     success: function (n) {
                         if ((n.like_count > 1 && e.text(n.like_count), "like" === n.status))
-                            o.css("color", "rgb(220, 38, 38)"), onlineSocket.send(JSON.stringify({ message: `${samePerson} just liked your photo`, receiver: n.receiver, postId: t, sender: samePerson, type: "likepost" }));
+                            o.css("color", "rgb(220, 38, 38)"), console.log(n.like_count), onlineSocket.send(JSON.stringify({ message: `${samePerson} just liked your photo`, receiver: n.receiver, postId: t, sender: samePerson, type: "likepost" }));
                         else {
                             let l = localStorage.getItem("mode");
+                            console.log('object')
+                            console.log(l)
                             "light" === l ? o.css("color", "#0d2438") : o.css("color", "white");
                         }
                     },

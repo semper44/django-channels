@@ -29,10 +29,10 @@
                     {% include './status.html' %}
                 </div>
 
-                <div class="w-full h-full bg-base-lightbg dark:bg-base-darkbg flex flex-col justify-center items-center " style="margin-top: 2rem;">
+                <div class="w-full h-full bg-base-lightbg dark:bg-base-darkbg flex flex-col justify-center items-center " style="margin-top: 2rem; padding-bottom: 4.5rem;">
                     {% if tweets %}                       
                             {% for i in tweets|my_custom_filter %}
-                                <div class="w-[75%] h-fit hover:scale-105 transition-transform duration-300">
+                                <div class="w-[75%] h-fit hover:scale-105 transition-transform duration-300 z-1">
                                     <div class="pb-4 lg:max-w-[512px] pt-2 bg-base-lightbgvariant dark:bg-base-darkbgvariant shadow-lg hover:shadow-xl rounded-t-xl mx-4 ">
                                         <div class="h-fit flex items-center gap-4 px-6">
                                             <img src="{{i.author.prof_pics.url}}" class="w-[35px] h-[35px] rounded-full"></img>
@@ -53,21 +53,18 @@
                                         </div>
                                     {% endif %}
                                     <div class="px-8 flex gap-4 items-center" style="padding-top: 0.5rem; padding-bottom: 2rem;">
-                                        {% if request.user in i.likes.all %}
                                         <div class="like-div flex gap-1 items-center">
-                                            <i data-post-id="{{ i.id }}" class="like-button fa fa-heart text-red-600 cursor-pointer" aria-hidden="true"></i>
-                                            <div class="text-gray-500 text-sm">
-                                                
+                                            {% if request.user in i.likes.all %}
+                                                <i data-post-id="{{ i.id }}" class="like-button fa fa-heart text-red-600 cursor-pointer" aria-hidden="true"></i>
+                                            {% else %}
+                                                <i data-post-id="{{ i.id }}" class="like-button fa fa-heart text-[#0d2438] dark:text-white cursor-pointer" aria-hidden="true"></i>                                       
+                                            {% endif %} 
+                                            <div class="likeholder text-gray-500 text-sm"> 
                                                 {% if i.likes.count > 1 %}
-                                                    {{i.likes.count}}
-                                                    
+                                                    {{i.likes.count}}                               
                                                 {% endif %}
-                                                    
-                                            </div>
+                                            </div>                                                
                                         </div>
-                                        {% else %}
-                                            <i data-post-id="{{ i.id }}" class="like-button fa fa-heart text-[#0d2438] dark:text-white cursor-pointer" aria-hidden="true"></i>
-                                        {% endif %} 
                                         <a href="{% url 'comments' slug=i.slug %}"><i id="postcomments" class="fa fa-comments text-[#0d2438] dark:text-white cursor-pointer" aria-hidden="true"></i></a>
                                         <i class="fa fa-share text-[#0d2438] dark:text-white cursor-pointer" aria-hidden="true"></i>
                                         

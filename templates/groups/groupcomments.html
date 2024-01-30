@@ -13,20 +13,26 @@
 
 {% block content %}
 
-<div class="w-full h-comment bg-base-lightbg dark:bg-base-darkbg ">
-        <div class="w-full h-fit" style="box-shadow: 0 0 10px rgba(13, 19, 26, 0.5);">                                 
-            <div class="pb-2 lg:max-w-[300px] pt-2 mx-4">
+<div class="w-full h-comment bg-base-lightbg dark:bg-base-darkbg " style="padding-bottom: 8%;">
+        <div class="w-full h-fit" style="box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3), 
+        0 6px 20px rgba(0, 0, 0, 0.15),
+        0 6px 20px rgba(0, 0, 0, 0.7)">     
+        {% if grouppost.file %}                            
+            <div class="pb-2 lg:max-w-[300px] py-2 mx-4">
+            {% else %}          
+            <div class="pb-2 lg:max-w-[300px] mx-4" style="padding: 2.5rem 0;">
+        {% endif %}
                 <div class="h-fit flex items-center gap-4 px-6">
                     <img src="{{grouppost.author.prof_pics.url}}" class="rounded-full" style="width: 35px; height: 35px;">
                     <div class="text-green-300">{{ grouppost.author.username }}</div>
                 </div>
                 <div class="px-8 mt-3 text-[#0d2438] dark:text-gray-300">
-                    {{ grouppost.content }}
+                    {{ grouppost.text }}
                 </div>
                 <p style="display: none;" data-content="{{grouppost.slug}}" id="comment-id"></p>
             </div>
             <div class="pb-6 pl-8">
-                {% if grouppost %}
+                {% if grouppost.file %}
                 <img src="{{grouppost.file.url}}" alt="" class="object-contain object-center rounded-lg w-[80%] text-center rounded-xl md:w-[80%] h-[300px] md:h-[400px]">  
                 {% endif %}
                 <div id="generalcomments" class=" float-right mr-4">
@@ -35,7 +41,7 @@
             </div>
         </div> 
         
-        <div id="commentstore" class="h-[26%] bg-base-lightbg dark:bg-base-darkbg md:h-[55%]" style=" overflow-y: scroll;">
+        <div id="commentstore" class="h-[26%] bg-base-lightbg dark:bg-base-darkbg md:h-[55%]" style=" overflow-y: scroll; margin-top: 1rem;">
             {% for i in groupcomments  %}
                 <div class="grid pl-4">
                     <div class="w-fit flex text-center mt-7">

@@ -199,7 +199,7 @@
             </div>
 
             <!-- all Friends -->
-            <div id="friendsid" data-content="friends" class="content hidden text-[#0d2438] dark:text-white text-center">
+            <div id="friendsid" data-content="friends" class="content hidden text-[#0d2438] dark:text-white text-center" style="padding-bottom: 25%;">
                 {% if friends %}
                 <div id="nofriendstofetch" class="grid sm:grid-cols-2 md:grid-cols-3 gap-6 justify-center">
                     {% for i in friends %}
@@ -227,8 +227,8 @@
             <!-- find friends -->
             <div id="findfriendsdataContainer" data-content="findfriends" class="content hidden">
                 <div>
-                    <div class="dataparent text-[#0d2438] dark:text-white w-full bg-base-lightbg dark:bg-base-darkbg grid sm:grid-cols-2 lg:grid-cols-3 gap-x-4 justify-center"></div>
-                    <div class="dataparent2 text-[#0d2438] dark:text-white h-fit w-full bg-base-lightbg dark:bg-base-darkbg text-center"></div>
+                    <div class="dataparent text-[#0d2438] dark:text-white w-full bg-base-lightbg dark:bg-base-darkbg grid sm:grid-cols-2 lg:grid-cols-3 gap-x-4 justify-center" style="padding-bottom: 25%;"></div>
+                    <div class="dataparent2 text-[#0d2438] dark:text-white h-fit w-full bg-base-lightbg dark:bg-base-darkbg text-center" style="padding-bottom: 25%;"></div>
                 </div>
                 <div id="loadingsequence2" >
                     <div class="dark:bg-black bg-white"></div>
@@ -261,7 +261,7 @@
             </div>
 
             <!-- friends request -->
-            <div id="friendrequestdetails" data-content="friendrequest" class="content h-full hidden mt-4 bg-base-lightbg dark:bg-base-darkbg">
+            <div id="friendrequestdetails" data-content="friendrequest" class="content h-full hidden mt-4 bg-base-lightbg dark:bg-base-darkbg" style="padding-bottom: 25%;">
                 <div>
                     <div class="friendrequestparent w-full text-[#0d2438] dark:text-white grid justify-center gap-6 lg:grid-cols-2"></div>
                     <div class="friendrequestparent2 w-full text-[#0d2438] dark:text-white text-center"></div>
@@ -281,10 +281,10 @@
             
 
             <!-- posts -->
-            <div id="postcontent" data-content="post" class="content w-full h-full flex bg-base-lightbg dark:bg-base-darkbg flex-col items-center">
+            <div id="postcontent" data-content="post" class="content w-full h-full flex bg-base-lightbg dark:bg-base-darkbg flex-col items-center" style="padding-bottom: 25%;">
                 {% if posts %}
                     {% for i in posts %} 
-                    <div class="w-[75%] h-fit hover:scale-105 transition-transform duration-300 ">                                 
+                    <div class="w-[75%] h-fit hover:scale-105 transition-transform duration-300" style="padding-bottom: 4rem;">                                 
                         <div class="pb-4 lg:max-w-[512px] pt-2 bg-base-lightbgvariant dark:bg-base-darkbgvariant shadow-lg hover:shadow-xl rounded-t-xl mx-4">
                             <div class="h-fit flex items-center gap-4 px-6">
                                     <img src="{{request.user.prof_pics.url}}" class="rounded-full" style="width: 35px; height: 35px;">
@@ -303,18 +303,18 @@
                             </div>
                         {% endif %}
                         <div class="px-8 flex gap-4 items-center" style="padding-top: 0.7rem; padding-bottom: 2.5rem">
-                            {% if request.user in i.likes.all %}
                             <div class="like-div flex gap-1 items-center">
-                                <i data-post-id="{{ i.id }}" class="like-button fa fa-heart text-red-600 cursor-pointer" aria-hidden="true"></i>                                                                           
-                                <div class="likeholder text-gray-500 text-sm">                                 
+                                {% if request.user in i.likes.all %}
+                                    <i data-post-id="{{ i.id }}" class="like-button fa fa-heart text-red-600 cursor-pointer" aria-hidden="true"></i>
+                                {% else %}
+                                    <i data-post-id="{{ i.id }}" class="like-button fa fa-heart text-[#0d2438] dark:text-white cursor-pointer" aria-hidden="true"></i>                                       
+                                {% endif %} 
+                                <div class="likeholder text-gray-500 text-sm"> 
                                     {% if i.likes.count > 1 %}
-                                        {{i.likes.count}}                                        
-                                    {% endif %}                                       
-                                </div> 
+                                        {{i.likes.count}}                               
+                                    {% endif %}
+                                </div>                                                
                             </div>
-                            {% else %}
-                            <i data-post-id="{{ i.id }}" class="like-button fa fa-heart text-[#0d2438] dark:text-white cursor-pointer" aria-hidden="true"></i>
-                            {% endif %}
                             <a href="{% url 'comments' slug=i.slug %}"><i id="postcomments" class="fa fa-comments text-[#0d2438] dark:text-white cursor-pointer" aria-hidden="true"></i></a>
                             <i  class="fa fa-share text-[#0d2438] dark:text-white cursor-pointer"   aria-hidden="true"></i>
     

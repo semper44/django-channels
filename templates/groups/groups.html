@@ -24,7 +24,7 @@
 </div>
 
 
-<div class="w-full h-full bg-base-lightbg dark:bg-base-darkbg">
+<div class="w-full h-screen bg-base-lightbg dark:bg-base-darkbg">
     {% if blocked %}  
     <p class="w-full h-full flex items-center justify-center dark:text-white">You have been blocked from this group</p>
     {% else %}        
@@ -203,7 +203,7 @@
                 </div>
                 
                 <!-- posts -->
-                <div id="postcontent" class="w-full h-full flex flex-col items-center justify-center">
+                <div id="postcontent" class="w-full h-full flex flex-col items-center justify-center bg-base-lightbg dark:bg-base-darkbg" style="padding-bottom: 15%;">
                     {% if post %}
                         {% for i in post %}
                             <div data-content="posts" class="content w-[75%] h-fit hover:scale-105 transition-transform duration-300">                                 

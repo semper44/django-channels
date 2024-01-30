@@ -140,8 +140,7 @@ USE_TZ = True
 
 
 DATABASE_URL= config('DATABASE_URL')
-DATABASES = {'default':dj_database_url.parse(DATABASE_URL, conn_max_age=600)
-}
+DATABASES = {'default':dj_database_url.parse(DATABASE_URL, conn_max_age=600)}
 
 
 # DATABASES = {
@@ -150,6 +149,8 @@ DATABASES = {'default':dj_database_url.parse(DATABASE_URL, conn_max_age=600)
 #         'NAME': BASE_DIR / 'db.sqlite3',
 #     }
 # }
+
+
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]

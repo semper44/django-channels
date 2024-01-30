@@ -1,0 +1,45 @@
+@media (min-width:1195px) {
+    #righnavdummy{
+        width: 16%;
+    }
+}
+@media (max-width:1194px) {
+    #righnavdummy{
+        width: 13%;
+    }
+}
+@media (max-width:1017px) {
+    #righnavdummy{
+        width: 10%;
+    }
+}
+@media (max-width:972px) {
+    #righnavdummy{
+        width: 9%;
+    }
+}
+@media (max-width:928px) {
+    #righnavdummy{
+        width: 8%;
+    }
+}
+@media (max-width:876px) {
+    #righnavdummy{
+        width: 9%;
+    }
+}
+@media (max-width:821px) {
+    #righnavdummy{
+        width: 7%;
+    }
+}
+@media (max-width:799px) {
+    #righnavdummy{
+        width: 6%;
+    }
+}
+@media (max-width:775px) {
+    #righnavdummy{
+        width: 4%;
+    }
+}

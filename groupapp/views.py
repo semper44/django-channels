@@ -185,11 +185,8 @@ def delete_user_from_group(request, userid, groupid):
 @login_required(login_url="login")
 def owner_delete_group(request, groupid):
     group= UserGroups.objects.get(id= groupid)
-    print("concern")
     if request.user== group.owner:
-        print("hmm")
         group.delete()
-        print("good")
     return redirect('/')
 
 @login_required(login_url="login")
@@ -295,13 +292,14 @@ def approve_post(request, groupid, postid):
 
 @login_required(login_url="login")
 def comment_view(request, slug):
+    print(slug)
     post= UserGroups_Post.objects.get(slug=slug)
+    print(post.file)
     group= Group.objects.get(name= f"{post.usergroups.name}blocked")
     if request.user not in group.user_set.all():
         comment_arr=[]
         comments= Group_coment.objects.filter(comment_post=post)
         for i in comments:
-            print(i)
             comment_arr.append(i)
         context={"grouppost":post, "groupcomments":comment_arr}
     return render(request, "groups/groupcomments.html", context)
