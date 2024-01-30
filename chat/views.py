@@ -30,9 +30,6 @@ from django.core.serializers.json import DjangoJSONEncoder
 
 
 
-def chat(request, room_name, receiver):
-    return render(request, "chat/chat.html", {"room_name": "room_name"})
-
 @login_required(login_url="login")
 def chatIntialMessage(request):
     return render(request, "chat/messages.html")
@@ -225,7 +222,10 @@ def home_view(request):
 def personalInitialMessages(request, receiver):
     sender = Profile.objects.get(user=request.user)
     group_name = sender.user.username + receiver
-    reversed_string = group_name[::-1]
+    reversed_string = receiver + sender.user.username 
+    # reversed_string = group_name[::-1]
+    print(group_name)
+    print(reversed_string)
     
     try:
         uniqueId = Message.objects.get(Q(uniqueId__icontains=group_name) | Q(uniqueId__icontains=reversed_string))

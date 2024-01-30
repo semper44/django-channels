@@ -36,7 +36,7 @@
                 {% endif %}
                 <!-- change cover_photo -->
                 {% if request.user == group.owner or  admin %}
-                    <form method="post" enctype="multipart/form-data" class="absolute right-2 bottom-2">
+                    <form method="post" enctype="multipart/form-data" class="absolute right-2 bottom-2" style="padding-right: 5%;">
                         {% csrf_token %}
                         {{ form.as_p }}
 
@@ -52,7 +52,7 @@
 
             <div class="w-full h-fit flex justify-between items-center px-4 border-b-2 border-gray-600 dark:border-[#0d2438] ">
                 <h1 class="text-[#0d2438] dark:text-gray-300">{{group.name}}</h1>
-                <div class="w-fit grid items-center py-4">
+                <div class="w-fit grid items-center py-4" style="padding-right: 5%;">
                     {% if request.user == group.owner or  admin %}
                         <div id="draftbutton" data-content="drafts" onclick="showContent('drafts')" class="active w-fit cursor-pointer text-[#0d2438] dark:text-gray-300 dark:hover:text-gray-500">Drafts</div>           
                     {% endif %}
@@ -138,7 +138,7 @@
             </div>
 
             <!-- all Friends, search, members posts -->
-            <div class="w-full mt-7 flex flex-col justify-center items-center">
+            <div class="w-full mt-7 flex flex-col justify-center items-center bg-base-lightbg dark:bg-base-darkbg">
                 <!-- members -->
                 <p id="group-name" class="hidden" data-content="{{group.name}}"></p>
                 <div data-content="members" class="content hidden">
