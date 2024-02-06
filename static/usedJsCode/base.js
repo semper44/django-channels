@@ -25,7 +25,7 @@ topsearchButton.addEventListener("input", (e) => {
             e.preventDefault(), (searchmodalparent.style.display = "block");
             let t = new FormData(document.querySelector("#topsearchButtonform")),
                 o = new URLSearchParams(t),
-                n = "https://django-channels-byf5.onrender.comsearch?" + o.toString(),
+                n = "https://django-channels-byf5.onrender.com/search?" + o.toString(),
                 l = await fetch(n, { method: "GET", headers: { "X-CSRFToken": "{{ csrf_token }}" } }),
                 s = await l.json();
             if (((topsearchmodal.innerHTML = ""), s.results.length >= 1)) {

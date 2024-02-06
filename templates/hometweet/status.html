@@ -17,17 +17,17 @@
     <!-- Modal Overlay -->
 <div id="modal-overlay" class="modal-overlay hidden">
     <!-- Modal Dialog -->
-    <div class="fixed inset-0 grid items-center justify-center z-50">
+    <div class="fixed inset-0 z-50 flex flex-col text-center justify-center mt-4">
         <div class="fixed inset-0 bg-black/75"></div>
-        <div id="status_view-cancel" class="w-full cursor-pointer text-red-600 z-50" style="text-align: right;">X</div>
-        <!-- Swiper Container -->
-            <div class="h-[80%] sm:h-full flex items-center overflow-hidden">               
-                <div id="swiper" class="swiper w-[300px] h-fit ">       
-                    <div id="swiper-wrapper" class="swiper-wrapper h-full w-fit">
+            <div id="status_view-cancel" class="w-full cursor-pointer text-red-600 z-50" style="text-align: right; height: 100px; width: 60%;">X</div>
+            <!-- Swiper Container -->
+            <div class="h-full flex items-center overflow-hidden">               
+                <div id="swiper" class="swiper w-[300px] h-full ">       
+                    <div id="swiper-wrapper" class="swiper-wrapper h-full w-full">
                         <!-- Swiper slides go here -->
                     </div> 
                     <div class="swiper-button-prev"></div>
-		            <div class="swiper-button-next"></div>                   
+                    <div class="swiper-button-next"></div>                   
                 </div>
             </div>
     </div>

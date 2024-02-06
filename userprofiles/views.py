@@ -387,7 +387,6 @@ def view_received_request(request):
 
 @login_required(login_url="login")
 def search_view(request):
-    print('search')
     if "query" in request.GET:
         queries = request.GET.get("query")
         prof_arr=[]

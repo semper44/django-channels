@@ -14,16 +14,22 @@
 
 {% block content %}
 <p id="comment_type" class="hidden">{{post.comment_type}}</p>
-<div class="w-full h-screen lg:h-full bg-base-lightbg dark:bg-base-darkbg ">
-    <div class="w-full h-fit" style="box-shadow: 0 3px 10px rgba(13, 19, 26, 0.5);">                                 
-        <div class="pb-2 lg:max-w-[300px] pt-2 mx-4">
-            <div class="h-fit flex items-center gap-4 px-6">
+<div class="w-full h-screen lg:h-full bg-base-lightbg dark:bg-base-darkbg" style="padding-bottom: 8%;">
+    <div class="w-full md:w-[90%] xl:w-full h-fit" style="box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3), 
+    0 6px 20px rgba(0, 0, 0, 0.15),
+    0 6px 20px rgba(0, 0, 0, 0.7); margin-bottom: 8%;">                                      
+        <div class="lg:max-w-[300px] mx-4">
+            <div class="h-fit flex items-center gap-4 px-6" style="padding-top: 2%;">
                 <img src="{{post.author.prof_pics.url}}" class="rounded-full" style="width: 35px; height: 35px;">
                 <div class="text-green-300">{{ post.author.username }}</div>
             </div>
-            <div class="px-8 mt-3 text-[#0d2438] dark:text-gray-300">
-                {{ post.content }}
-            </div>
+            
+            {% if  post.content %}
+                <div class="px-8 mt-3 text-[#0d2438] dark:text-gray-300" style="padding: 1.5rem 0;">
+                    {{ post.content }}
+                </div>              
+            {% endif %}
+                
             <p style="display: none;" data-content="{{post.slug}}" id="comment-id"></p>
         </div>
         <div class="pb-6 pl-8">
